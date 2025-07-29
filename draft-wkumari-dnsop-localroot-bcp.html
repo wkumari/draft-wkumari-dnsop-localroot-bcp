@@ -1506,11 +1506,13 @@ the root zone over HTTP by IP will be added later. */<a href="#appendix-B-3" cla
         </h3>
 <p id="appendix-B.1-1">See the BIND documentation for <a href="https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror">mirror zones</a>.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
 <p id="appendix-B.1-2">Example configuration using a "mirror" zone:<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
-<p id="appendix-B.1-3"><code>text
+<div class="alignLeft art-text artwork" id="appendix-B.1-3">
+<pre>
 zone "." {
     type mirror;
 };
-</code><a href="#appendix-B.1-3" class="pilcrow">¶</a></p>
+</pre><a href="#appendix-B.1-3" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="knot-resolver">
@@ -1520,7 +1522,8 @@ zone "." {
         </h3>
 <p id="appendix-B.2-1">See the Knot Resolver <a href="https://knot-resolver.readthedocs.io/en/v5.0.1/modules-prefill.html?highlight=cache%20prefilling">Cache prefilling</a> documentation for more information.<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
 <p id="appendix-B.2-2">The following example configuration will prefill the root zone using HTTPS:<a href="#appendix-B.2-2" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-3"><code>text
+<div class="alignLeft art-text artwork" id="appendix-B.2-3">
+<pre>
 modules.load('prefill')
 prefill.config({
       ['.'] = {
@@ -1529,7 +1532,8 @@ prefill.config({
               ca_file = '/etc/pki/tls/certs/ca-bundle.crt', -- optional
       }
 })
-</code><a href="#appendix-B.2-3" class="pilcrow">¶</a></p>
+</pre><a href="#appendix-B.2-3" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="unbound-19-and-above">
@@ -1539,7 +1543,8 @@ prefill.config({
         </h3>
 <p id="appendix-B.3-1">See the Unbound documentation for <a href="https://unbound.docs.nlnetlabs.nl/en/latest/manpages/unbound.conf.html#unbound-conf-auth-url">Authority Zone Options</a> configuration.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
 <p id="appendix-B.3-2">The following example configuration will prefill the root zone using HTTPS:<a href="#appendix-B.3-2" class="pilcrow">¶</a></p>
-<p id="appendix-B.3-3"><code>text
+<div class="alignLeft art-text artwork" id="appendix-B.3-3">
+<pre>
 auth-zone:
   name: "."
   url: "https://www.internic.net/domain/root.zone"
@@ -1549,7 +1554,8 @@ auth-zone:
     for-upstream: yes
     zonefile: "root.zone"
   prefetch: yes
-</code><a href="#appendix-B.3-3" class="pilcrow">¶</a></p>
+</pre><a href="#appendix-B.3-3" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>

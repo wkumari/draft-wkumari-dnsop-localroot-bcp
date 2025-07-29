@@ -320,7 +320,9 @@ ISC BIND 9.14 and above
 
    Example configuration using a "mirror" zone:
 
-   text zone "." { type mirror; };
+   zone "." {
+       type mirror;
+   };
 
 Knot Resolver
 
@@ -332,10 +334,14 @@ Knot Resolver
    The following example configuration will prefill the root zone using
    HTTPS:
 
-   text modules.load('prefill') prefill.config({ ['.'] = { url =
-   'https://www.internic.net/domain/root.zone', interval = 86400 --
-   seconds ca_file = '/etc/pki/tls/certs/ca-bundle.crt', -- optional }
-   })
+ modules.load('prefill')
+ prefill.config({
+       ['.'] = {
+               url = 'https://www.internic.net/domain/root.zone',
+               interval = 86400  -- seconds
+               ca_file = '/etc/pki/tls/certs/ca-bundle.crt', -- optional
+       }
+ })
 
 Unbound 1.9 and above
 
@@ -346,9 +352,15 @@ Unbound 1.9 and above
    The following example configuration will prefill the root zone using
    HTTPS:
 
-   text auth-zone: name: "." url: "https://www.internic.net/domain/
-   root.zone" zonefile: "root.zone" fallback-enabled: yes for-
-   downstream: no for-upstream: yes zonefile: "root.zone" prefetch: yes
+   auth-zone:
+     name: "."
+     url: "https://www.internic.net/domain/root.zone"
+     zonefile: "root.zone"
+           fallback-enabled: yes
+       for-downstream: no
+       for-upstream: yes
+       zonefile: "root.zone"
+     prefetch: yes
 
 Authors' Addresses
 
