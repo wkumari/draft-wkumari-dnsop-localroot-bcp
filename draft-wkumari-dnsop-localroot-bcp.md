@@ -120,15 +120,13 @@ and use that service when the recursive resolver looks up root
 information."
 
 While {{RFC8806}} behavior can be achieved by "manually" configuring software
-the act as a secondary server for the root-zone (see {{RFC8806}} Section
+that acts as a secondary server for the root-zone (see {{RFC8806}} Section
 B.1. Example Configuration: BIND 9.12 and Section B.2 Example Configuration:
 Unbound 1.8), most resolver implmentations now support simpler, and more
 robust, configuration mechanisms to enable this support. For example, ISC BIND
 9.14 and above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and
 Knot Resolver uses its "prefill" module to load the root zone information. See
-Appendix A for details. In addition to providing simpler configuration of
-the LocalRoot mechanism, these mechanisms support "falling back" to querying
-the root-servers directly if they are unable to fetch the entire root zone.
+Appendix A for configuration details. In addition to providing simpler configuration of the LocalRoot mechanism, these mechanisms support "falling back" to querying the root-servers directly if they are unable to fetch the entire root zone.
 
 
 # Conventions and Definitions {#definitions}
@@ -137,7 +135,7 @@ the root-servers directly if they are unable to fetch the entire root zone.
 
 # Making RFC8806 behavior be a Best Current Practice
 
-{{RFC8806}} is an Informational document, which describes a mechanism that
+{{RFC8806}} is an Informational document that describes a mechanism that
 resolver operators can use to improve the performance, reliability, and privacy
 of their resolvers.
 
@@ -165,7 +163,7 @@ This document:
   > answering queries from itself.
 
 This document relaxes this requirement. Some resolver implementations achieve
-the behavior described in RFC8806 by fetching the zone information and "prefilling" their cache with this information. As the resulting behavior is (essentially) indistinguishable from the mechanism defined in RFC8806, this is viewed as simply being an acceptable implementation decision.
+the behavior described in RFC8806 by fetching the zone information and "prefilling" their cache with this information. As the resulting behavior is (essentially) indistinguishable from the mechanism defined in RFC8806, this is viewed as being an acceptable implementation decision.
 
 /* Ed (WK): Y'all know what I mean, but this could be worded better! How an implementation decides to implement LocalRoot behavior should not matter, just that they behave.... */
 
@@ -181,7 +179,7 @@ able to fetch the contents of the entire root zone. This is currently usually
 performed through AXFR ({{RFC5936}}), although some resolvers may allow fetching this information via HTTP. In order for AXFR to work, the resolver
 must be able to use TCP (which is already required by {{RFC7766}}).
 
-Where possible, HTTP should be preferred as it will allow for compression, and the possibility of using low-cost, well-distributed CDNs to distribute the zone files.
+Where possible, HTTP should be preferred as it will allow for compression as well as the possibility of using low-cost, well-distributed CDNs to distribute the zone files.
 
 Resolver software MUST validate the contents of the zone before using it. This
 SHOULD be done using the mechanism in {{RFC8976}}, but MAY be done by simply validating every signed record in a zone with DNSSEC {{RFC9364}}.
