@@ -232,11 +232,11 @@ See the BIND documentation for [mirror zones](https://bind9.readthedocs.io/en/st
 
 Example configuration using a "mirror" zone:
 
-```text
+~~~
 zone "." {
     type mirror;
 };
-```
+~~~
 
 ## Knot Resolver
 {:numbered="false"}
@@ -245,7 +245,7 @@ See the Knot Resolver [Cache prefilling](https://knot-resolver.readthedocs.io/en
 
 The following example configuration will prefill the root zone using HTTPS:
 
-```text
+~~~
 modules.load('prefill')
 prefill.config({
       ['.'] = {
@@ -254,7 +254,7 @@ prefill.config({
               ca_file = '/etc/pki/tls/certs/ca-bundle.crt', -- optional
       }
 })
-```
+~~~
 
 ## Unbound 1.9 and above
 {:numbered="false"}
@@ -263,7 +263,7 @@ See the Unbound documentation for [Authority Zone Options](https://unbound.docs.
 
 The following example configuration will prefill the root zone using HTTPS:
 
-```text
+~~~
 auth-zone:
   name: "."
   url: "https://www.internic.net/domain/root.zone"
@@ -273,7 +273,7 @@ auth-zone:
     for-upstream: yes
     zonefile: "root.zone"
   prefetch: yes
-```
+~~~
 
 
 
