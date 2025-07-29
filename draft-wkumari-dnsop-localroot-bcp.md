@@ -1,5 +1,5 @@
 ---
-title: "Making Local-Rool a Best Current Practice"
+title: "Making LocalRoot a Best Current Practice"
 #abbrev: "TODO - Abbreviation"
 category: bcp
 
