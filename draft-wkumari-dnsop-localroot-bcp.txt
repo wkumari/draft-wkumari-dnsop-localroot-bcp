@@ -13,7 +13,7 @@ Expires: 30 January 2026                                         J. Reid
                                                             29 July 2025
 
 
-               Making Local-Rool a Best Current Practice
+                Making LocalRoot a Best Current Practice
                 draft-wkumari-dnsop-localroot-bcp-latest
 
 Abstract
