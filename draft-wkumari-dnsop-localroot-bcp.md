@@ -80,14 +80,13 @@ RFC 8806 (often called "LocalRoot") defines a mechanism whereby a
 recursive resolver can fetch the contents of an entire zone and place this
 information into the resolver's cache.
 
-This has several benefits, including increasing reliability, increasing
-performance, improving privacy, and decreasing or mitigating the effect of some
+This has several benefits, including increased reliability, increased
+performance, improved privacy, and decreased or mitigating the effect of some
 types of DoS attacks.
 
 While the majority of DNS resolver implementations natively support RFC 8806,
 it remains tricky to configure and maintain. This document recommends that DNS
-resolver software simplify this configuration, and further suggests that it
-become the default.
+resolver software simplify this configuration, and further suggests that configuration becomes the default.
 
 This document updates Section 2 of RFC8806 by relaxing the requirement that
 implementations MUST run an authoritative service.
@@ -165,7 +164,6 @@ This document:
 This document relaxes this requirement. Some resolver implementations achieve
 the behavior described in RFC8806 by fetching the zone information and "prefilling" their cache with this information. As the resulting behavior is (essentially) indistinguishable from the mechanism defined in RFC8806, this is viewed as being an acceptable implementation decision.
 
-/* Ed (WK): Y'all know what I mean, but this could be worded better! How an implementation decides to implement LocalRoot behavior should not matter, just that they behave.... */
 
 
 # Applicability
