@@ -1,8 +1,8 @@
 <!-- regenerate: on (set to off if you edit this file) -->
 
-# Making Local-Rool a Best Current Practice
+# Making LocalRoot a Best Current Practice
 
-This is the working area for the individual Internet-Draft, "Making Local-Rool a Best Current Practice".
+This is the working area for the individual Internet-Draft, "Making LocalRoot a Best Current Practice".
 
 * [Editor's Copy](https://wkumari.github.io/draft-wkumari-dnsop-localroot-bcp/#go.draft-wkumari-dnsop-localroot-bcp.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-wkumari-dnsop-localroot-bcp)
