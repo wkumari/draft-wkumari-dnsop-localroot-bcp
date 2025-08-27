@@ -72,7 +72,9 @@ informative:
   KNOT-PREFILL:
     title: "Knot Resolver Prefill"
     target: https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html
-
+  QNAMEMIN:
+    title: DNS Query Privacy
+    target: https://www.potaroo.net/ispcol/2019-08/qmin.html
 
 --- abstract
 
@@ -121,7 +123,7 @@ information."
 While {{RFC8806}} behavior can be achieved by "manually" configuring software
 that acts as a secondary server for the root-zone (see {{RFC8806}} Section
 B.1. Example Configuration: BIND 9.12 and Section B.2 Example Configuration:
-Unbound 1.8), most resolver implmentations now support simpler, and more
+Unbound 1.8), most resolver implementations now support simpler, and more
 robust, configuration mechanisms to enable this support. For example, ISC BIND
 9.14 and above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and
 Knot Resolver uses its "prefill" module to load the root zone information. See
@@ -142,8 +144,8 @@ This document:
 
 1. promotes the behavior in {{RFC8806}} to be a Best Current Practice.
 2. RECOMMENDS that resolver implementations provide a simple configuration
-   option to enable or disable functionality and
-3. RECOMMENDS that resolver implementations enable this behavior by default and
+   option to enable or disable functionality, and
+3. RECOMMENDS that resolver implementations enable this behavior by default. and
 4. RECOMMENDS that {{RFC8976}} be used to validate the zone information
    before loading it.
 
@@ -168,25 +170,41 @@ the behavior described in RFC8806 by fetching the zone information and "prefilli
 
 # Applicability
 
-This behavior should apply to all general-purpose recursive resolvers.
+This behavior should apply to all general-purpose recursive resolvers usedon the public Internet.
 
 # Operational Considerations
 
 In order for the {{RFC8806}} mechanism to be effective, a resolver must be
 able to fetch the contents of the entire root zone. This is currently usually
-performed through AXFR ({{RFC5936}}), although some resolvers may allow fetching this information via HTTP. In order for AXFR to work, the resolver
+performed through AXFR ({{RFC5936}}). In order for AXFR to work, the resolver
 must be able to use TCP (which is already required by {{RFC7766}}).
 
-Where possible, HTTP should be preferred as it will allow for compression as well as the possibility of using low-cost, well-distributed CDNs to distribute the zone files.
+Resolvers MAY allow fetching this information via HTTPS.
+Where possible, HTTPS should be preferred as it will allow for compression as well as the possibility of using low-cost, well-distributed CDNs to distribute the zone files.
 
-Resolver software MUST validate the contents of the zone before using it. This
-SHOULD be done using the mechanism in {{RFC8976}}, but MAY be done by simply validating every signed record in a zone with DNSSEC {{RFC9364}}.
+Resolvers MUST validate the contents of the zone before using it. This
+SHOULD be done using the mechanism in {{RFC8976}}, but MAY be done by validating every signed record in a zone with DNSSEC {{RFC9364}}.
 
-/* Ed (WK): We might want to add some more discussions around failure handling, but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your grandmother to suck eggs" - implementations already handle this, so let's not try to overspecify or overconstrain what they do.
+/* Ed (WK): We might want to add some more discussions around failure handling, but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your grandmother to suck eggs" - implementations already handle this, so let's not try to overspecify or overconstrain what they do.  */
+
+/* Ed (GH): As the NS records are unsigned the possibility of tampering with the root zone exists through these unsigned NS records. For this reason ZONEMD should be strongly recommended, or even MUST be used.*/
 
 # Security Considerations
 
+There are two areas of potential concern  that can be mitigated to some extent by using this mechanism, coupled with the use of {{RFC8976}}.
+
+The first is the potential to provide insert corrupted referral records in response to queries to a root server. The nameserver information provided in a referral
+response is not a DNSSEC-signed record in the root zone, and there is the potential for an on-the-wire insertion attack by replacing this part of a referral response with 
+a different nameserver set. If ZONEMD is used to authenticate the the local copy of the root zone, such on-the-wire attacks are not feasible.
+
+The second is the issue of leak of potentially sensitive infomation that may be contained in the query name used in DNS queries. Root Servers do not currently support
+queried over encrypted transports, and the query name is visible to on-the-wire onlookers, and also held in any operational logs maintained by root server operators. Such
+concerns may be mitigated by Query Name Minimisation {{RFC9156}} but common implementations of this mechanism appear to only mninimize query names of four or fewer labels,
+and the uptake rate of query name minimisation appears to be quite low {{QNAMEMIN}}. {{RFC8806}} eliminates the need for the resolver to perform specific queries to any root
+nameserver, and obviates any such consideration of query name leakage.
+
 /* Ed (WK): Fill this in. I think that it just contains descriptions of the benefits from RFC8806, but I'm guessing that there are some other concerns too... */
+
 
 
 # IANA Considerations
