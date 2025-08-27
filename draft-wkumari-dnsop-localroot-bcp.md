@@ -62,6 +62,7 @@ normative:
 informative:
   RFC5936:  # DNS Zone Transfer
   RFC7766:  # DNS Transport over TCP
+  RFC9156:  # QNAME Minimisation
 
   BIND-MIRROR:
     title: "BIND 9 Mirror Zones"
@@ -164,13 +165,17 @@ This document:
   > answering queries from itself.
 
 This document relaxes this requirement. Some resolver implementations achieve
-the behavior described in RFC8806 by fetching the zone information and "prefilling" their cache with this information. As the resulting behavior is (essentially) indistinguishable from the mechanism defined in RFC8806, this is viewed as being an acceptable implementation decision.
+the behavior described in RFC8806 by fetching the zone information and
+"prefilling" their cache with this information. As the resulting behavior is
+(essentially) indistinguishable from the mechanism defined in RFC8806, this is
+viewed as being an acceptable implementation decision.
 
 
 
 # Applicability
 
-This behavior should apply to all general-purpose recursive resolvers usedon the public Internet.
+This behavior should apply to all general-purpose recursive resolvers used on
+the public Internet.
 
 # Operational Considerations
 
@@ -185,25 +190,42 @@ Where possible, HTTPS should be preferred as it will allow for compression as we
 Resolvers MUST validate the contents of the zone before using it. This
 SHOULD be done using the mechanism in {{RFC8976}}, but MAY be done by validating every signed record in a zone with DNSSEC {{RFC9364}}.
 
-/* Ed (WK): We might want to add some more discussions around failure handling, but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your grandmother to suck eggs" - implementations already handle this, so let's not try to overspecify or overconstrain what they do.  */
+/* Ed (WK): We might want to add some more discussions around failure handling,
+but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your
+grandmother to suck eggs" - implementations already handle this, so let's not
+try to overspecify or overconstrain what they do.  */
 
-/* Ed (GH): As the NS records are unsigned the possibility of tampering with the root zone exists through these unsigned NS records. For this reason ZONEMD should be strongly recommended, or even MUST be used.*/
+/* Ed (GH): As the NS records are unsigned the possibility of tampering with
+the root zone exists through these unsigned NS records. For this reason ZONEMD
+should be strongly recommended, or even MUST be used.*/
 
 # Security Considerations
 
-There are two areas of potential concern  that can be mitigated to some extent by using this mechanism, coupled with the use of {{RFC8976}}.
+There are two areas of potential concern  that can be mitigated to some extent
+by using this mechanism, coupled with the use of {{RFC8976}}.
 
-The first is the potential to provide insert corrupted referral records in response to queries to a root server. The nameserver information provided in a referral
-response is not a DNSSEC-signed record in the root zone, and there is the potential for an on-the-wire insertion attack by replacing this part of a referral response with 
-a different nameserver set. If ZONEMD is used to authenticate the the local copy of the root zone, such on-the-wire attacks are not feasible.
+The first is the potential to provide insert corrupted referral records in
+response to queries to a root server. The nameserver information provided in a
+referral response is not a DNSSEC-signed record in the root zone, and there is
+the potential for an on-the-wire insertion attack by replacing this part of a
+referral response with a different nameserver set. If ZONEMD is used to
+authenticate the the local copy of the root zone, such on-the-wire attacks are
+not feasible.
 
-The second is the issue of leak of potentially sensitive infomation that may be contained in the query name used in DNS queries. Root Servers do not currently support
-queried over encrypted transports, and the query name is visible to on-the-wire onlookers, and also held in any operational logs maintained by root server operators. Such
-concerns may be mitigated by Query Name Minimisation {{RFC9156}} but common implementations of this mechanism appear to only mninimize query names of four or fewer labels,
-and the uptake rate of query name minimisation appears to be quite low {{QNAMEMIN}}. {{RFC8806}} eliminates the need for the resolver to perform specific queries to any root
-nameserver, and obviates any such consideration of query name leakage.
+The second is the issue of leak of potentially sensitive infomation that may be
+contained in the query name used in DNS queries. Root Servers do not currently
+support queried over encrypted transports, and the query name is visible to
+on-the-wire onlookers, and also held in any operational logs maintained by root
+server operators. Such concerns may be mitigated by Query Name Minimisation
+{{RFC9156}} but common implementations of this mechanism appear to only
+mninimize query names of four or fewer labels, and the uptake rate of query
+name minimisation appears to be quite low {{QNAMEMIN}}. {{RFC8806}} eliminates
+the need for the resolver to perform specific queries to any root nameserver,
+and obviates any such consideration of query name leakage.
 
-/* Ed (WK): Fill this in. I think that it just contains descriptions of the benefits from RFC8806, but I'm guessing that there are some other concerns too... */
+/* Ed (WK): Fill this in. I think that it just contains descriptions of the
+benefits from RFC8806, but I'm guessing that there are some other concerns
+too... */
 
 
 
@@ -219,29 +241,35 @@ This document has no IANA actions.
 {:numbered="false"}
 
 The authors have discussed this idea with many people, and have likely
-forgotten to acknowledge and credit many of them. If we discussed this with you,
-and you are not listed, please please let us know and we'll add you.
+forgotten to acknowledge and credit many of them. If we discussed this with
+you, and you are not listed, please please let us know and we'll add you.
 
-The authors would like to thank Vint Cerf, John Crain, Puneet Sood, Robert Story, Suzanne Woolf.
+The authors would like to thank Vint Cerf, John Crain, Puneet Sood, Robert
+Story, Suzanne Woolf.
 
-In addition, one of the authors would like to once again thank the bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing the soundtrack
+In addition, one of the authors would like to once again thank the bands
+"Infected Mushroom", "Kraftwerk", and "deadmau5" for providing the soundtrack
 to which this was written.
 
 # Appendix A: Example Configurations
 {:numbered="false"}
 
-These examples are provided to show how the LocalRoot mechanism can be configured in various resolver implementations. They are not intended to be exhaustive, and may not work with all versions of the software.
+These examples are provided to show how the LocalRoot mechanism can be
+configured in various resolver implementations. They are not intended to be
+exhaustive, and may not work with all versions of the software.
 
-/* Ed (WK): These examples are just to get started. We would appreciate contributions from the resolver operators.
+/* Ed (WK): These examples are just to get started. We would appreciate
+contributions from the resolver operators.
 
-Yes, we are fully aware of the circular dependency of trying to
-resolve e.g www.internic.net when bootstrapping. More discussion on serving
-the root zone over HTTP by IP will be added later. */
+Yes, we are fully aware of the circular dependency of trying to resolve e.g
+www.internic.net when bootstrapping. More discussion on serving the root zone
+over HTTP by IP will be added later. */
 
 ## ISC BIND 9.14 and above
 {:numbered="false"}
 
-See the BIND documentation for [mirror zones](https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror).
+See the BIND documentation for [mirror
+zones](https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror).
 
 
 Example configuration using a "mirror" zone:
@@ -255,7 +283,9 @@ zone "." {
 ## Knot Resolver
 {:numbered="false"}
 
-See the Knot Resolver [Cache prefilling](https://knot-resolver.readthedocs.io/en/v5.0.1/modules-prefill.html?highlight=cache%20prefilling) documentation for more information.
+See the Knot Resolver [Cache
+prefilling](https://knot-resolver.readthedocs.io/en/v5.0.1/modules-prefill.html?highlight=cache%20prefilling)
+documentation for more information.
 
 The following example configuration will prefill the root zone using HTTPS:
 
@@ -288,6 +318,3 @@ auth-zone:
     zonefile: "root.zone"
   prefetch: yes
 ~~~
-
-
-
