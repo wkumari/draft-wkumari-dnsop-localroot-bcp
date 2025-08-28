@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-26T00:21:14.529099+00:00",
+  "timestamp": "2025-08-28T00:21:16.977106+00:00",
   "repo": "wkumari/draft-wkumari-dnsop-localroot-bcp",
   "labels": [
     {
@@ -50,5 +50,42 @@
     }
   ],
   "issues": [],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOPU1mrM6lf98I",
+      "title": "Update draft-wkumari-dnsop-localroot-bcp.md",
+      "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/1",
+      "state": "MERGED",
+      "author": "gih900",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "cleaned up a typo, added a frst pass effort at the security section.",
+      "createdAt": "2025-08-26T22:45:45Z",
+      "updatedAt": "2025-08-27T00:18:50Z",
+      "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
+      "baseRefName": "main",
+      "baseRefOid": "d5a28f45240c6815f021ae7f39b30a3cd5fca989",
+      "headRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
+      "headRefName": "gih900-patch-1",
+      "headRefOid": "4f19f7c23d3a3233e65cf4200031e9807729bd9f",
+      "closedAt": "2025-08-27T00:18:48Z",
+      "mergedAt": "2025-08-27T00:18:48Z",
+      "mergedBy": "wkumari",
+      "mergeCommit": {
+        "oid": "69204063c73b9a9bf54eea6d6ad0adab69fb881d"
+      },
+      "comments": [
+        {
+          "author": "wkumari",
+          "authorAssociation": "OWNER",
+          "body": "Excellent, thank you! \r\n\r\nI'm accepting the PR, and will then make a minor edit to fix training whitespace.",
+          "createdAt": "2025-08-27T00:18:50Z",
+          "updatedAt": "2025-08-27T00:18:50Z"
+        }
+      ],
+      "reviews": []
+    }
+  ]
 }
