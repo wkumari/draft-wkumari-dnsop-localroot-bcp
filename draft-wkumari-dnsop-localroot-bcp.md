@@ -76,6 +76,12 @@ informative:
   QNAMEMIN:
     title: DNS Query Privacy
     target: https://www.potaroo.net/ispcol/2019-08/qmin.html
+  LOCALROOTPRIVACY:
+    title: Analyzing and mitigating privacy with the DNS root service
+    target: http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf
+  CACHEME:
+    title: Cache Me If You Can: Effects of DNS Time-to-Live
+    target: https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf
 
 --- abstract
 
@@ -187,6 +193,8 @@ must be able to use TCP (which is already required by {{RFC7766}}).
 Resolvers MAY allow fetching this information via HTTPS.
 Where possible, HTTPS should be preferred as it will allow for compression as well as the possibility of using low-cost, well-distributed CDNs to distribute the zone files.
 
+/* ED (WH): I don't think we can get away without describing how/where to pull this information from at some point.  The ICANN https servers are one source, or should resolver code bases use their own defined CDNs? */
+
 Resolvers MUST validate the contents of the zone before using it. This
 SHOULD be done using the mechanism in {{RFC8976}}, but MAY be done by validating every signed record in a zone with DNSSEC {{RFC9364}}.
 
@@ -199,35 +207,54 @@ try to overspecify or overconstrain what they do.  */
 the root zone exists through these unsigned NS records. For this reason ZONEMD
 should be strongly recommended, or even MUST be used.*/
 
+/* Ed (WH): I agree with GH, and said as much in {{LOCALROOTPRIVACY}} */
+
 # Security Considerations
 
-There are two areas of potential concern  that can be mitigated to some extent
+There are three areas of potential concern  that can be mitigated to some extent
 by using this mechanism, coupled with the use of {{RFC8976}}.
 
-The first is the potential to provide insert corrupted referral records in
-response to queries to a root server. The nameserver information provided in a
-referral response is not a DNSSEC-signed record in the root zone, and there is
+The first is the potential to insert corrupted referral address records in
+response to queries to a root server. The referral addresses provided in a
+referral response is not a DNSSEC-signed record in the root zone, and thus there is
 the potential for an on-the-wire insertion attack by replacing this part of a
-referral response with a different nameserver set. If ZONEMD is used to
+referral response with a different address set. If ZONEMD is used to
 authenticate the the local copy of the root zone, such on-the-wire attacks are
 not feasible.
 
-The second is the issue of leak of potentially sensitive infomation that may be
-contained in the query name used in DNS queries. Root Servers do not currently
-support queried over encrypted transports, and the query name is visible to
-on-the-wire onlookers, and also held in any operational logs maintained by root
-server operators. Such concerns may be mitigated by Query Name Minimisation
-{{RFC9156}} but common implementations of this mechanism appear to only
-mninimize query names of four or fewer labels, and the uptake rate of query
-name minimisation appears to be quite low {{QNAMEMIN}}. {{RFC8806}} eliminates
-the need for the resolver to perform specific queries to any root nameserver,
-and obviates any such consideration of query name leakage.
+The second is the issue of leak of potentially sensitive information
+that may be contained in the query name used in DNS queries. Most root
+servers (except b.root-servers.net) do not currently support queries
+over encrypted transports, resulting in query names that are visible
+to on-the-wire eavesdroppers, and may also be held in any operational
+logs maintained by root server operators. Such concerns may be
+mitigated by Query Name Minimization {{RFC9156}}, but common
+implementations of this mechanism appear to only minimize query names
+of four or fewer labels, and the uptake rate of query name
+minimization appears to be quite low {{QNAMEMIN}}. Furthermore, even
+with Query Name Minimization, queries for non-existent names
+(generated from keyword searches and mis-configurations) can cause
+additional privacy leaks.  {{RFC8806}} eliminates the need for the
+resolver to perform specific queries to any root nameserver, and
+obviates any such consideration of query name leakage
+{{LOCALROOTPRIVACY}}.
+
+The final issue solved with LocalRoot is that when information is
+always available locally, usage of it is no longer subject to DDoS
+attacks against the remote servers.  By having the answers effectively
+permanently in cache, no queries to the upstream service provider
+(such as root servers) are needed since {{RFC8806}} resolvers
+effectively always have a cached set of data that is considered fresh
+longer than the typical TTL records within the zone {{CACHEME}}
+{{LOCALROOTPRIVACY}}.
 
 /* Ed (WK): Fill this in. I think that it just contains descriptions of the
 benefits from RFC8806, but I'm guessing that there are some other concerns
 too... */
 
-
+Security requirements associated with the need to verify that the
+contents of the retrieved root zone are correct were discussed above,
+and mitigated by the usage of {{RFC8976}}.
 
 # IANA Considerations
 
