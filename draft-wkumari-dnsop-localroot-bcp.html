@@ -1084,7 +1084,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 28 February 2026</td>
+<td class="center">Expires 2 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1100,12 +1100,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-08-27" class="published">27 August 2025</time>
+<time datetime="2025-08-29" class="published">29 August 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-02-28">28 February 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-02">2 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1197,7 +1197,7 @@ that it is likely better as a standalone document.<a href="#section-abstract-6.1
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 February 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1390,15 +1390,17 @@ performed through AXFR (<span>[<a href="#RFC5936" class="cite xref">RFC5936</a>]
 must be able to use TCP (which is already required by <span>[<a href="#RFC7766" class="cite xref">RFC7766</a>]</span>).<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">Resolvers <span class="bcp14">MAY</span> allow fetching this information via HTTPS.
 Where possible, HTTPS should be preferred as it will allow for compression as well as the possibility of using low-cost, well-distributed CDNs to distribute the zone files.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">Resolvers <span class="bcp14">MUST</span> validate the contents of the zone before using it. This
-<span class="bcp14">SHOULD</span> be done using the mechanism in <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>, but <span class="bcp14">MAY</span> be done by validating every signed record in a zone with DNSSEC <span>[<a href="#RFC9364" class="cite xref">RFC9364</a>]</span>.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">/* Ed (WK): We might want to add some more discussions around failure handling,
+<p id="section-6-3">/* ED (WH): I don't think we can get away without describing how/where to pull this information from at some point.  The ICANN https servers are one source, or should resolver code bases use their own defined CDNs? */<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">Resolvers <span class="bcp14">MUST</span> validate the contents of the zone before using it. This
+<span class="bcp14">SHOULD</span> be done using the mechanism in <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>, but <span class="bcp14">MAY</span> be done by validating every signed record in a zone with DNSSEC <span>[<a href="#RFC9364" class="cite xref">RFC9364</a>]</span>.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-5">/* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> already covers much of this and 2: "don't teach your
 grandmother to suck eggs" - implementations already handle this, so let's not
-try to overspecify or overconstrain what they do.  */<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">/* Ed (GH): As the NS records are unsigned the possibility of tampering with
+try to overspecify or overconstrain what they do.  */<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">/* Ed (GH): As the NS records are unsigned the possibility of tampering with
 the root zone exists through these unsigned NS records. For this reason ZONEMD
-should be strongly recommended, or even <span class="bcp14">MUST</span> be used.*/<a href="#section-6-5" class="pilcrow">¶</a></p>
+should be strongly recommended, or even <span class="bcp14">MUST</span> be used.*/<a href="#section-6-6" class="pilcrow">¶</a></p>
+<p id="section-6-7">/* Ed (WH): I agree with GH, and said as much in <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span> */<a href="#section-6-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -1406,28 +1408,45 @@ should be strongly recommended, or even <span class="bcp14">MUST</span> be used.
       <h2 id="name-security-considerations">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">There are two areas of potential concern  that can be mitigated to some extent
+<p id="section-7-1">There are three areas of potential concern  that can be mitigated to some extent
 by using this mechanism, coupled with the use of <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">The first is the potential to provide insert corrupted referral records in
-response to queries to a root server. The nameserver information provided in a
-referral response is not a DNSSEC-signed record in the root zone, and there is
+<p id="section-7-2">The first is the potential to insert corrupted referral address records in
+response to queries to a root server. The referral addresses provided in a
+referral response is not a DNSSEC-signed record in the root zone, and thus there is
 the potential for an on-the-wire insertion attack by replacing this part of a
-referral response with a different nameserver set. If ZONEMD is used to
+referral response with a different address set. If ZONEMD is used to
 authenticate the the local copy of the root zone, such on-the-wire attacks are
 not feasible.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">The second is the issue of leak of potentially sensitive infomation that may be
-contained in the query name used in DNS queries. Root Servers do not currently
-support queried over encrypted transports, and the query name is visible to
-on-the-wire onlookers, and also held in any operational logs maintained by root
-server operators. Such concerns may be mitigated by Query Name Minimisation
-<span>[<a href="#RFC9156" class="cite xref">RFC9156</a>]</span> but common implementations of this mechanism appear to only
-mninimize query names of four or fewer labels, and the uptake rate of query
-name minimisation appears to be quite low <span>[<a href="#QNAMEMIN" class="cite xref">QNAMEMIN</a>]</span>. <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> eliminates
-the need for the resolver to perform specific queries to any root nameserver,
-and obviates any such consideration of query name leakage.<a href="#section-7-3" class="pilcrow">¶</a></p>
-<p id="section-7-4">/* Ed (WK): Fill this in. I think that it just contains descriptions of the
+<p id="section-7-3">The second is the issue of leak of potentially sensitive information
+that may be contained in the query name used in DNS queries. Most root
+servers (except b.root-servers.net) do not currently support queries
+over encrypted transports, resulting in query names that are visible
+to on-the-wire eavesdroppers, and may also be held in any operational
+logs maintained by root server operators. Such concerns may be
+mitigated by Query Name Minimization <span>[<a href="#RFC9156" class="cite xref">RFC9156</a>]</span>, but common
+implementations of this mechanism appear to only minimize query names
+of four or fewer labels, and the uptake rate of query name
+minimization appears to be quite low <span>[<a href="#QNAMEMIN" class="cite xref">QNAMEMIN</a>]</span>. Furthermore, even
+with Query Name Minimization, queries for non-existent names
+(generated from keyword searches and mis-configurations) can cause
+additional privacy leaks.  <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> eliminates the need for the
+resolver to perform specific queries to any root nameserver, and
+obviates any such consideration of query name leakage
+<span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">The final issue solved with LocalRoot is that when information is
+always available locally, usage of it is no longer subject to DDoS
+attacks against the remote servers.  By having the answers effectively
+permanently in cache, no queries to the upstream service provider
+(such as root servers) are needed since <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> resolvers
+effectively always have a cached set of data that is considered fresh
+longer than the typical TTL records within the zone <span>[<a href="#CACHEME" class="cite xref">CACHEME</a>]</span>
+        <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-7-4" class="pilcrow">¶</a></p>
+<p id="section-7-5">/* Ed (WK): Fill this in. I think that it just contains descriptions of the
 benefits from RFC8806, but I'm guessing that there are some other concerns
-too... */<a href="#section-7-4" class="pilcrow">¶</a></p>
+too... */<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-6">Security requirements associated with the need to verify that the
+contents of the retrieved root zone are correct were discussed above,
+and mitigated by the usage of <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.<a href="#section-7-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1482,9 +1501,17 @@ too... */<a href="#section-7-4" class="pilcrow">¶</a></p>
         <dd>
 <span class="refTitle">"BIND 9 Mirror Zones"</span>, <span>n.d.</span>, <span>&lt;<a href="https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror">https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="CACHEME">[CACHEME]</dt>
+        <dd>
+<span class="refTitle">"Cache Me If You Can: Effects of DNS Time-to-Live"</span>, <span>n.d.</span>, <span>&lt;<a href="https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf">https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="KNOT-PREFILL">[KNOT-PREFILL]</dt>
         <dd>
 <span class="refTitle">"Knot Resolver Prefill"</span>, <span>n.d.</span>, <span>&lt;<a href="https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html">https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="LOCALROOTPRIVACY">[LOCALROOTPRIVACY]</dt>
+        <dd>
+<span class="refTitle">"Analyzing and mitigating privacy with the DNS root service"</span>, <span>n.d.</span>, <span>&lt;<a href="http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf">http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="QNAMEMIN">[QNAMEMIN]</dt>
         <dd>
