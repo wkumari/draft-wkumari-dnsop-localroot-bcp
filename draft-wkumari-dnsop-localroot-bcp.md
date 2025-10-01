@@ -115,10 +115,6 @@ bootstrapping issue. In addition, we need to add text about loadbalancing and
 fetching from multiple sources. Much of the premise behind RFC8806 is that it
 doesn't matter where you fetch the zone from, as long as you validate it, and
 use zone checksums {{RFC8976}}.
-
-1. Security Considerations - flesh this out. We think that it just contains
-  text from RFC8806, but I suspect there will be some other concerns too,
-  including more text on fallback behavior and scaling.
 */
 
 --- middle
@@ -215,12 +211,12 @@ of data that hosting it on multiple CDNs should be trivial.... but, I also
 believe that this topic should be discussed with the WG. */
 
 Resolvers MUST validate the contents of the zone before using it, including
-validating the ZONEMD record (if present), using the mechanism in {{RFC8976}}.
+validating the ZONEMD record, using the mechanism in {{RFC8976}}.
 
 /* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your
 grandmother to suck eggs" - implementations already handle this, so let's not
-try to overspecify or over-constrain what they do */
+try to overspecify or over-constrain what they do. */
 
 # Security Considerations
 
