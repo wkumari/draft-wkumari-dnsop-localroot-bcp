@@ -6,11 +6,13 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Best Current Practice                           USC/ISI
-Expires: 2 March 2026                                            J. Reid
+Expires: 4 April 2026                                            J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                          29 August 2025
+                                                               D. Conrad
+                                              Layer 9 Technologies, LLC.
+                                                          1 October 2025
 
 
                 Making LocalRoot a Best Current Practice
@@ -23,8 +25,8 @@ Abstract
    this information into the resolver's cache.
 
    This has several benefits, including increased reliability, increased
-   performance, improved privacy, and decreased or mitigating the effect
-   of some types of DoS attacks.
+   performance, improved privacy, and decreased or mitigation of the
+   effect of some types of DoS attacks.
 
    While the majority of DNS resolver implementations natively support
    RFC 8806, it remains tricky to configure and maintain.  This document
@@ -40,18 +42,18 @@ Abstract
    1.  I started writing this as rfc8806-bis, but as I did so I realized
        that it is likely better as a standalone document.
 
-   2.  DONE - Add Zone Checksum
+   2.  This document recommends ("Operation Considerations") using
+       HTTP(S) for fetching the zone.  We still need to add text to
+       cover priming and discuss the bootstrapping issue.  In addition,
+       we need to add text about loadbalancing and fetching from
+       multiple sources.  Much of the premise behind RFC8806 is that it
+       doesn't matter where you fetch the zone from, as long as you
+       validate it, and use zone checksums [RFC8976].
 
-   3.  DONE - Look up BIND and Unbound support.
-
-   4.  This document recommends ("Operation Considerations") using HTTP.
-       Need to discuss the bootstrapping issue, and load balancing.
-
-   5.  Security Considerations - flesh this out.  I think that it just
-       contains descriptions of the benefits from RFC8806, but I suspect
-       there will be some other concerns too.
-
-   */
+   3.  Security Considerations - flesh this out.  We think that it just
+       contains text from RFC8806, but I suspect there will be some
+       other concerns too, including more text on fallback behavior and
+       scaling. */
 
 About This Document
 
@@ -87,7 +89,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 March 2026.
+   This Internet-Draft will expire on 4 April 2026.
 
 Copyright Notice
 
@@ -168,8 +170,8 @@ Table of Contents
    3.  RECOMMENDS that resolver implementations enable this behavior by
        default. and
 
-   4.  RECOMMENDS that [RFC8976] be used to validate the zone
-       information before loading it.
+   4.  REQUIRES that [RFC8976] be used to validate the zone information
+       before loading it.
 
 4.  Changes from RFC8806
 
@@ -213,48 +215,39 @@ Table of Contents
    /* ED (WH): I don't think we can get away without describing how/
    where to pull this information from at some point.  The ICANN https
    servers are one source, or should resolver code bases use their own
-   defined CDNs? */
+   defined CDNs?
 
-   Resolvers MUST validate the contents of the zone before using it.
-   This SHOULD be done using the mechanism in [RFC8976], but MAY be done
-   by validating every signed record in a zone with DNSSEC [RFC9364].
+   (WK): 100% agree.  I personally think that this should be hosted on
+   multiple CDNs, and that expecting a single server or service to
+   always be available would be a massive mistake.  But, I also don't
+   think that resolvers should pull from their own CDNs - I don't want
+   Acme Anvil and Resolvers (or their CDN!) go out of business, and have
+   Acme Resolvers fail.  This is (I believe) a sufficiently small amount
+   of data that hosting it on multiple CDNs should be trivial.... but, I
+   also believe that this topic should be discussed with the WG. */
+
+   Resolvers MUST validate the contents of the zone before using it,
+   including validating the ZONEMD record (if present), using the
+   mechanism in [RFC8976].
 
    /* Ed (WK): We might want to add some more discussions around failure
    handling, but, 1: [RFC8806] already covers much of this and 2: "don't
    teach your grandmother to suck eggs" - implementations already handle
-   this, so let's not try to overspecify or overconstrain what they do.
-   */
-
-   /* Ed (GH): As the NS records are unsigned the possibility of
-   tampering with the root zone exists through these unsigned NS
-   records.  For this reason ZONEMD should be strongly recommended, or
-   even MUST be used.*/
-
-   /* Ed (WH): I agree with GH, and said as much in [LOCALROOTPRIVACY]
+   this, so let's not try to overspecify or over-constrain what they do
    */
 
 7.  Security Considerations
 
-   There are three areas of potential concern that can be mitigated to
-   some extent by using this mechanism, coupled with the use of
-   [RFC8976].
+   There are areas of potential concern that are mitigated to some
+   extent by using this mechanism.
 
-   The first is the potential to insert corrupted referral address
-   records in response to queries to a root server.  The referral
-   addresses provided in a referral response is not a DNSSEC-signed
-   record in the root zone, and thus there is the potential for an on-
-   the-wire insertion attack by replacing this part of a referral
-   response with a different address set.  If ZONEMD is used to
-   authenticate the the local copy of the root zone, such on-the-wire
-   attacks are not feasible.
-
-   The second is the issue of leak of potentially sensitive information
-   that may be contained in the query name used in DNS queries.  Most
-   root servers (except b.root-servers.net) do not currently support
-   queries over encrypted transports, resulting in query names that are
-   visible to on-the-wire eavesdroppers, and may also be held in any
-   operational logs maintained by root server operators.  Such concerns
-   may be mitigated by Query Name Minimization [RFC9156], but common
+   The issue of leakage of potentially sensitive information that may be
+   contained in the query name used in DNS queries.  Most root servers
+   (except b.root-servers.net) do not currently support queries over
+   encrypted transports, resulting in query names that are visible to
+   on-the-wire eavesdroppers, and may also be held in any operational
+   logs maintained by root server operators.  Such concerns may be
+   mitigated by Query Name Minimization [RFC9156], but common
    implementations of this mechanism appear to only minimize query names
    of four or fewer labels, and the uptake rate of query name
    minimization appears to be quite low [QNAMEMIN].  Furthermore, even
@@ -273,14 +266,6 @@ Table of Contents
    effectively always have a cached set of data that is considered fresh
    longer than the typical TTL records within the zone [CACHEME]
    [LOCALROOTPRIVACY].
-
-   /* Ed (WK): Fill this in.  I think that it just contains descriptions
-   of the benefits from RFC8806, but I'm guessing that there are some
-   other concerns too... */
-
-   Security requirements associated with the need to verify that the
-   contents of the retrieved root zone are correct were discussed above,
-   and mitigated by the usage of [RFC8976].
 
 8.  IANA Considerations
 
@@ -457,3 +442,8 @@ Authors' Addresses
    South Brisbane  QLD 4101
    Australia
    Email: gih@apnic.net
+
+
+   David Conrad
+   Layer 9 Technologies, LLC.
+   Email: david.conrad@layer9.tech
