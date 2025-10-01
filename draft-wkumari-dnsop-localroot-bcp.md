@@ -4,9 +4,7 @@ title: "Making LocalRoot a Best Current Practice"
 category: bcp
 
 docname: draft-wkumari-dnsop-localroot-bcp-latest
-submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
-#number:
-#date:
+submissiontype: IETF
 consensus: true
 v: 3
 area: "Operations and Management"
@@ -27,15 +25,15 @@ venue:
   latest: "https://wkumari.github.io/draft-wkumari-dnsop-localroot-bcp/draft-wkumari-dnsop-localroot-bcp.html"
 
 author:
- -
+  -
     fullname: Warren Kumari
     organization: Google, Inc.
     email: warren@kumari.net
- -
+  -
     fullname: Wes Hardaker
     organization: USC/ISI
     email: ietf@hardakers.net
- -
+  -
     ins: J. Reid
     name: Jim Reid
     org: RTFM llp
@@ -44,7 +42,7 @@ author:
     code: G51 4BL
     country: UK
     email: jim@rfc1035.com
- -
+  -
     ins: G. Huston
     fullname: Geoff Huston
     organization: APNIC
@@ -53,6 +51,10 @@ author:
     city: South Brisbane
     code: QLD 4101
     country: Australia
+  -
+    fullname: David Conrad
+    organization: Layer 9 Technologies, LLC.
+    email: david.conrad@layer9.tech
 
 normative:
   RFC8806:
@@ -85,17 +87,18 @@ informative:
 
 --- abstract
 
-RFC 8806 (often called "LocalRoot") defines a mechanism whereby a
-recursive resolver can fetch the contents of an entire zone and place this
-information into the resolver's cache.
+RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
+resolver can fetch the contents of an entire zone and place this information
+into the resolver's cache.
 
 This has several benefits, including increased reliability, increased
-performance, improved privacy, and decreased or mitigating the effect of some
-types of DoS attacks.
+performance, improved privacy, and decreased or mitigation of the effect of
+some types of DoS attacks.
 
 While the majority of DNS resolver implementations natively support RFC 8806,
 it remains tricky to configure and maintain. This document recommends that DNS
-resolver software simplify this configuration, and further suggests that configuration becomes the default.
+resolver software simplify this configuration, and further suggests that
+configuration becomes the default.
 
 This document updates Section 2 of RFC8806 by relaxing the requirement that
 implementations MUST run an authoritative service.
@@ -103,38 +106,42 @@ implementations MUST run an authoritative service.
 
 /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):
 
-1. I started writing this as rfc8806-bis, but as I did so I realized
-that it is likely better as a standalone document.
+1. I started writing this as rfc8806-bis, but as I did so I realized that it is
+likely better as a standalone document.
 
-1. DONE - Add Zone Checksum
+1. This document recommends ("Operation Considerations") using HTTP(S) for
+fetching the zone. We still need to add text to cover priming and discuss the
+bootstrapping issue. In addition, we need to add text about loadbalancing and
+fetching from multiple sources. Much of the premise behind RFC8806 is that it
+doesn't matter where you fetch the zone from, as long as you validate it, and
+use zone checksums {{RFC8976}}.
 
-2. DONE - Look up BIND and Unbound support.
-
-3. This document recommends ("Operation Considerations") using HTTP. Need to discuss the bootstrapping issue, and load balancing.
-
-4. Security Considerations - flesh this out. I think that it just contains descriptions of the benefits from RFC8806, but I suspect there will be some other concerns too.
-
+1. Security Considerations - flesh this out. We think that it just contains
+  text from RFC8806, but I suspect there will be some other concerns too,
+  including more text on fallback behavior and scaling.
 */
 
 --- middle
 
 # Introduction
 
-{{RFC8806}} provides "a method for the operator of a recursive
-resolver to have a complete root zone locally, and to hide queries
-for the root zone from outsiders.  The basic idea is to create an up-to-date
-root zone service on the same host as the recursive server,
-and use that service when the recursive resolver looks up root
-information."
+{{RFC8806}} provides "a method for the operator of a recursive resolver to have
+a complete root zone locally, and to hide queries for the root zone from
+outsiders.  The basic idea is to create an up-to-date root zone service on the
+same host as the recursive server, and use that service when the recursive
+resolver looks up root information."
 
 While {{RFC8806}} behavior can be achieved by "manually" configuring software
-that acts as a secondary server for the root-zone (see {{RFC8806}} Section
-B.1. Example Configuration: BIND 9.12 and Section B.2 Example Configuration:
-Unbound 1.8), most resolver implementations now support simpler, and more
-robust, configuration mechanisms to enable this support. For example, ISC BIND
-9.14 and above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and
-Knot Resolver uses its "prefill" module to load the root zone information. See
-Appendix A for configuration details. In addition to providing simpler configuration of the LocalRoot mechanism, these mechanisms support "falling back" to querying the root-servers directly if they are unable to fetch the entire root zone.
+that acts as a secondary server for the root-zone (see {{RFC8806}} Section B.1.
+Example Configuration: BIND 9.12 and Section B.2 Example Configuration: Unbound
+1.8), most resolver implementations now support simpler, and more robust,
+configuration mechanisms to enable this support. For example, ISC BIND 9.14 and
+above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and Knot
+Resolver uses its "prefill" module to load the root zone information. See
+Appendix A for configuration details. In addition to providing simpler
+configuration of the LocalRoot mechanism, these mechanisms support "falling
+back" to querying the root-servers directly if they are unable to fetch the
+entire root zone.
 
 
 # Conventions and Definitions {#definitions}
@@ -153,7 +160,7 @@ This document:
 2. RECOMMENDS that resolver implementations provide a simple configuration
    option to enable or disable functionality, and
 3. RECOMMENDS that resolver implementations enable this behavior by default. and
-4. RECOMMENDS that {{RFC8976}} be used to validate the zone information
+4. REQUIRES that {{RFC8976}} be used to validate the zone information
    before loading it.
 
 # Changes from RFC8806
@@ -190,39 +197,37 @@ able to fetch the contents of the entire root zone. This is currently usually
 performed through AXFR ({{RFC5936}}). In order for AXFR to work, the resolver
 must be able to use TCP (which is already required by {{RFC7766}}).
 
-Resolvers MAY allow fetching this information via HTTPS.
-Where possible, HTTPS should be preferred as it will allow for compression as well as the possibility of using low-cost, well-distributed CDNs to distribute the zone files.
+Resolvers MAY allow fetching this information via HTTPS. Where possible, HTTPS
+should be preferred as it will allow for compression as well as the possibility
+of using low-cost, well-distributed CDNs to distribute the zone files.
 
-/* ED (WH): I don't think we can get away without describing how/where to pull this information from at some point.  The ICANN https servers are one source, or should resolver code bases use their own defined CDNs? */
+/* ED (WH): I don't think we can get away without describing how/where to pull
+this information from at some point.  The ICANN https servers are one source,
+or should resolver code bases use their own defined CDNs?
 
-Resolvers MUST validate the contents of the zone before using it. This
-SHOULD be done using the mechanism in {{RFC8976}}, but MAY be done by validating every signed record in a zone with DNSSEC {{RFC9364}}.
+(WK): 100% agree. I personally think that this should be hosted on multiple
+CDNs, and that expecting a single server or service to always be available
+would be a massive mistake. But, I also don't think that resolvers should pull
+from their own CDNs
+- I don't want Acme Anvil and Resolvers (or their CDN!)  go out of business,
+and have Acme Resolvers fail. This is (I believe) a sufficiently small amount
+of data that hosting it on multiple CDNs should be trivial.... but, I also
+believe that this topic should be discussed with the WG. */
+
+Resolvers MUST validate the contents of the zone before using it, including
+validating the ZONEMD record (if present), using the mechanism in {{RFC8976}}.
 
 /* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your
 grandmother to suck eggs" - implementations already handle this, so let's not
-try to overspecify or overconstrain what they do.  */
-
-/* Ed (GH): As the NS records are unsigned the possibility of tampering with
-the root zone exists through these unsigned NS records. For this reason ZONEMD
-should be strongly recommended, or even MUST be used.*/
-
-/* Ed (WH): I agree with GH, and said as much in {{LOCALROOTPRIVACY}} */
+try to overspecify or over-constrain what they do */
 
 # Security Considerations
 
-There are three areas of potential concern  that can be mitigated to some extent
-by using this mechanism, coupled with the use of {{RFC8976}}.
+There are areas of potential concern that are mitigated to some extent
+by using this mechanism.
 
-The first is the potential to insert corrupted referral address records in
-response to queries to a root server. The referral addresses provided in a
-referral response is not a DNSSEC-signed record in the root zone, and thus there is
-the potential for an on-the-wire insertion attack by replacing this part of a
-referral response with a different address set. If ZONEMD is used to
-authenticate the the local copy of the root zone, such on-the-wire attacks are
-not feasible.
-
-The second is the issue of leak of potentially sensitive information
+The issue of leakage of potentially sensitive information
 that may be contained in the query name used in DNS queries. Most root
 servers (except b.root-servers.net) do not currently support queries
 over encrypted transports, resulting in query names that are visible
@@ -248,13 +253,6 @@ effectively always have a cached set of data that is considered fresh
 longer than the typical TTL records within the zone {{CACHEME}}
 {{LOCALROOTPRIVACY}}.
 
-/* Ed (WK): Fill this in. I think that it just contains descriptions of the
-benefits from RFC8806, but I'm guessing that there are some other concerns
-too... */
-
-Security requirements associated with the need to verify that the
-contents of the retrieved root zone are correct were discussed above,
-and mitigated by the usage of {{RFC8976}}.
 
 # IANA Considerations
 
