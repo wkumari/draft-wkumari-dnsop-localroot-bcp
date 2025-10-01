@@ -34,12 +34,7 @@ fetching the zone. We still need to add text to cover priming and discuss the
 bootstrapping issue. In addition, we need to add text about loadbalancing and
 fetching from multiple sources. Much of the premise behind RFC8806 is that it
 doesn't matter where you fetch the zone from, as long as you validate it, and
-use zone checksums  . 
-         
-         
-           Security Considerations - flesh this out. We think that it just contains
-  text from RFC8806, but I suspect there will be some other concerns too,
-  including more text on fallback behavior and scaling.
+use zone checksums  .
 */ 
          
        
@@ -1161,13 +1156,8 @@ fetching the zone. We still need to add text to cover priming and discuss the
 bootstrapping issue. In addition, we need to add text about loadbalancing and
 fetching from multiple sources. Much of the premise behind RFC8806 is that it
 doesn't matter where you fetch the zone from, as long as you validate it, and
-use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.<a href="#section-abstract-6.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li id="section-abstract-6.3">
-          <p id="section-abstract-6.3.1">Security Considerations - flesh this out. We think that it just contains
-  text from RFC8806, but I suspect there will be some other concerns too,
-  including more text on fallback behavior and scaling.
-*/<a href="#section-abstract-6.3.1" class="pilcrow">¶</a></p>
+use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.
+*/<a href="#section-abstract-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 </section>
@@ -1414,11 +1404,11 @@ and have Acme Resolvers fail. This is (I believe) a sufficiently small amount
 of data that hosting it on multiple CDNs should be trivial.... but, I also
 believe that this topic should be discussed with the WG. */<a href="#section-6-4" class="pilcrow">¶</a></p>
 <p id="section-6-5">Resolvers <span class="bcp14">MUST</span> validate the contents of the zone before using it, including
-validating the ZONEMD record (if present), using the mechanism in <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.<a href="#section-6-5" class="pilcrow">¶</a></p>
+validating the ZONEMD record, using the mechanism in <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.<a href="#section-6-5" class="pilcrow">¶</a></p>
 <p id="section-6-6">/* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> already covers much of this and 2: "don't teach your
 grandmother to suck eggs" - implementations already handle this, so let's not
-try to overspecify or over-constrain what they do */<a href="#section-6-6" class="pilcrow">¶</a></p>
+try to overspecify or over-constrain what they do. */<a href="#section-6-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">

@@ -48,12 +48,7 @@ Abstract
        we need to add text about loadbalancing and fetching from
        multiple sources.  Much of the premise behind RFC8806 is that it
        doesn't matter where you fetch the zone from, as long as you
-       validate it, and use zone checksums [RFC8976].
-
-   3.  Security Considerations - flesh this out.  We think that it just
-       contains text from RFC8806, but I suspect there will be some
-       other concerns too, including more text on fallback behavior and
-       scaling. */
+       validate it, and use zone checksums [RFC8976]. */
 
 About This Document
 
@@ -227,13 +222,13 @@ Table of Contents
    also believe that this topic should be discussed with the WG. */
 
    Resolvers MUST validate the contents of the zone before using it,
-   including validating the ZONEMD record (if present), using the
-   mechanism in [RFC8976].
+   including validating the ZONEMD record, using the mechanism in
+   [RFC8976].
 
    /* Ed (WK): We might want to add some more discussions around failure
    handling, but, 1: [RFC8806] already covers much of this and 2: "don't
    teach your grandmother to suck eggs" - implementations already handle
-   this, so let's not try to overspecify or over-constrain what they do
+   this, so let's not try to overspecify or over-constrain what they do.
    */
 
 7.  Security Considerations
