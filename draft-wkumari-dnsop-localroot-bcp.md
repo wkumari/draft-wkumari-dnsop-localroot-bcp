@@ -265,8 +265,10 @@ The authors have discussed this idea with many people, and have likely
 forgotten to acknowledge and credit many of them. If we discussed this with
 you, and you are not listed, please please let us know and we'll add you.
 
-The authors would like to thank Vint Cerf, John Crain, Puneet Sood, Robert
-Story, Suzanne Woolf.
+The authors would like to thank Joe Abley, Vint Cerf, John Crain, Marco Davids,
+Paul Hoffman, Peter Koch, Matt Larson, Florian Obser, Swapneel Patnekar, Puneet
+Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and many many others for their
+comments, suggestions and input.
 
 In addition, one of the authors would like to once again thank the bands
 "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing the soundtrack
