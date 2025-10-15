@@ -183,7 +183,9 @@ resolver service addresses. For example, this can be done by simply
 "prefilling" the resolver's cache with the contents of the root
 zone. As the resulting behavior is (essentially) indistinguishable
 from the mechanism defined in RFC8806, this is viewed as being an
-acceptable implementation decision.
+acceptable implementation decision.  In the end, the fundamental
+requirement is simply: resolvers MUST return the records from the root
+zone without modification.
 
 
 
