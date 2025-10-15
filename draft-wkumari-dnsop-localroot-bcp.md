@@ -31,7 +31,7 @@ author:
     email: warren@kumari.net
   -
     fullname: Wes Hardaker
-    organization: USC/ISI
+    organization: USC/ISI and Google, Inc.
     email: ietf@hardakers.net
   -
     ins: J. Reid
