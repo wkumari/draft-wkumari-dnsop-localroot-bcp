@@ -182,12 +182,19 @@ Table of Contents
       act as an authoritative server for the root zone, but only for
       answering queries from itself.
 
-   This document relaxes this requirement.  Some resolver
-   implementations achieve the behavior described in RFC8806 by fetching
-   the zone information and "prefilling" their cache with this
-   information.  As the resulting behavior is (essentially)
-   indistinguishable from the mechanism defined in RFC8806, this is
-   viewed as being an acceptable implementation decision.
+   This document relaxes this requirement.  Resolver implementations can
+   achieve the desired behavior of directly serving the contents of the
+   root zone via multiple implementation choices, beyond those listed in
+   [RFC8806].  This can include what is described in RFC8806, but this
+   document allows for implementations to select any mechanism for
+   fetching and re-distributing the contents of the root zone on their
+   resolver service addresses.  For example, this can be done by simply
+   "prefilling" the resolver's cache with the contents of the root zone.
+   As the resulting behavior is (essentially) indistinguishable from the
+   mechanism defined in RFC8806, this is viewed as being an acceptable
+   implementation decision.  In the end, the fundamental requirement is
+   simply: resolvers MUST return the records from the root zone without
+   modification.
 
 5.  Applicability
 
@@ -197,10 +204,10 @@ Table of Contents
 6.  Operational Considerations
 
    In order for the [RFC8806] mechanism to be effective, a resolver must
-   be able to fetch the contents of the entire root zone.  This is
-   currently usually performed through AXFR ([RFC5936]).  In order for
-   AXFR to work, the resolver must be able to use TCP (which is already
-   required by [RFC7766]).
+   be able to fetch and redistribute the records from the entire root
+   zone.  This is currently usually performed through AXFR ([RFC5936]).
+   In order for AXFR to work, the resolver must be able to use TCP
+   (which is already required by [RFC7766]).
 
    Resolvers MAY allow fetching this information via HTTPS.  Where
    possible, HTTPS should be preferred as it will allow for compression

@@ -1364,11 +1364,19 @@ act as an authoritative server for the root zone, but only for
 answering queries from itself.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-4-3">This document relaxes this requirement. Some resolver implementations achieve
-the behavior described in RFC8806 by fetching the zone information and
-"prefilling" their cache with this information. As the resulting behavior is
-(essentially) indistinguishable from the mechanism defined in RFC8806, this is
-viewed as being an acceptable implementation decision.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-3">This document relaxes this requirement. Resolver implementations can
+achieve the desired behavior of directly serving the contents of the
+root zone via multiple implementation choices, beyond those listed in
+<span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>.  This can include what is described in RFC8806, but this
+document allows for implementations to select any mechanism for
+fetching and re-distributing the contents of the root zone on their
+resolver service addresses. For example, this can be done by simply
+"prefilling" the resolver's cache with the contents of the root
+zone. As the resulting behavior is (essentially) indistinguishable
+from the mechanism defined in RFC8806, this is viewed as being an
+acceptable implementation decision.  In the end, the fundamental
+requirement is simply: resolvers <span class="bcp14">MUST</span> return the records from the root
+zone without modification.<a href="#section-4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="applicability">
@@ -1385,10 +1393,11 @@ the public Internet.<a href="#section-5-1" class="pilcrow">¶</a></p>
       <h2 id="name-operational-considerations">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
       </h2>
-<p id="section-6-1">In order for the <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> mechanism to be effective, a resolver must be
-able to fetch the contents of the entire root zone. This is currently usually
-performed through AXFR (<span>[<a href="#RFC5936" class="cite xref">RFC5936</a>]</span>). In order for AXFR to work, the resolver
-must be able to use TCP (which is already required by <span>[<a href="#RFC7766" class="cite xref">RFC7766</a>]</span>).<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">In order for the <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> mechanism to be effective, a resolver
+must be able to fetch and redistribute the records from the entire root
+zone.  This is currently usually performed through AXFR
+(<span>[<a href="#RFC5936" class="cite xref">RFC5936</a>]</span>). In order for AXFR to work, the resolver must be able to
+use TCP (which is already required by <span>[<a href="#RFC7766" class="cite xref">RFC7766</a>]</span>).<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">Resolvers <span class="bcp14">MAY</span> allow fetching this information via HTTPS. Where possible, HTTPS
 should be preferred as it will allow for compression as well as the possibility
 of using low-cost, well-distributed CDNs to distribute the zone files.<a href="#section-6-2" class="pilcrow">¶</a></p>
