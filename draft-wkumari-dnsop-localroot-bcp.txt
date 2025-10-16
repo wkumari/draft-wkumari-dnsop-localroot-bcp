@@ -5,14 +5,14 @@
 Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
-Intended status: Best Current Practice                           USC/ISI
-Expires: 4 April 2026                                            J. Reid
+Intended status: Best Current Practice          USC/ISI and Google, Inc.
+Expires: 19 April 2026                                           J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
                                                                D. Conrad
                                               Layer 9 Technologies, LLC.
-                                                          1 October 2025
+                                                         16 October 2025
 
 
                 Making LocalRoot a Best Current Practice
@@ -84,7 +84,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 April 2026.
+   This Internet-Draft will expire on 19 April 2026.
 
 Copyright Notice
 
@@ -421,7 +421,7 @@ Authors' Addresses
 
 
    Wes Hardaker
-   USC/ISI
+   USC/ISI and Google, Inc.
    Email: ietf@hardakers.net
 
 
