@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-14T00:20:32.738164+00:00",
+  "timestamp": "2025-10-16T00:21:50.608749+00:00",
   "repo": "wkumari/draft-wkumari-dnsop-localroot-bcp",
   "labels": [
     {
@@ -85,6 +85,58 @@
           "updatedAt": "2025-08-27T00:18:50Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOPU1mrM6t9Rjc",
+      "title": "affiliation update",
+      "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/2",
+      "state": "OPEN",
+      "author": "hardaker",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "So I'm sort of affiliated with both, how about I list both?  Worried, of course, that I've now broken Jari's affiliation scraping in yet another way.",
+      "createdAt": "2025-10-15T20:04:37Z",
+      "updatedAt": "2025-10-15T20:04:38Z",
+      "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
+      "baseRefName": "main",
+      "baseRefOid": "aba4b8897b8af5b2a23a259148ebafb9e03c5746",
+      "headRepository": "hardaker/draft-wkumari-dnsop-localroot-bcp",
+      "headRefName": "wes-affiliation",
+      "headRefOid": "c4ff6345c7e018c4afb8ba97f97171917e0f78b7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOPU1mrM6t9bdo",
+      "title": "Loopback changes",
+      "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/3",
+      "state": "OPEN",
+      "author": "hardaker",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Per my conversation with Warren, i promised to suggest some changes WRT the loopback relaxation restructions.  I tried to make it more generic, and following the general principle that you must return identical data any way you choose to do that is fine.",
+      "createdAt": "2025-10-15T20:19:47Z",
+      "updatedAt": "2025-10-15T20:19:48Z",
+      "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
+      "baseRefName": "main",
+      "baseRefOid": "aba4b8897b8af5b2a23a259148ebafb9e03c5746",
+      "headRepository": "hardaker/draft-wkumari-dnsop-localroot-bcp",
+      "headRefName": "loopback-changes",
+      "headRefOid": "e9324b24c50d3507102e0d2f55ac15d97fe7cb11",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
