@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-16T00:21:50.608749+00:00",
+  "timestamp": "2025-10-19T00:23:43.424677+00:00",
   "repo": "wkumari/draft-wkumari-dnsop-localroot-bcp",
   "labels": [
     {
@@ -92,24 +92,26 @@
       "id": "PR_kwDOPU1mrM6t9Rjc",
       "title": "affiliation update",
       "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/2",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "hardaker",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "So I'm sort of affiliated with both, how about I list both?  Worried, of course, that I've now broken Jari's affiliation scraping in yet another way.",
       "createdAt": "2025-10-15T20:04:37Z",
-      "updatedAt": "2025-10-15T20:04:38Z",
+      "updatedAt": "2025-10-16T01:36:24Z",
       "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
       "baseRefName": "main",
       "baseRefOid": "aba4b8897b8af5b2a23a259148ebafb9e03c5746",
       "headRepository": "hardaker/draft-wkumari-dnsop-localroot-bcp",
       "headRefName": "wes-affiliation",
       "headRefOid": "c4ff6345c7e018c4afb8ba97f97171917e0f78b7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-10-16T01:36:24Z",
+      "mergedAt": "2025-10-16T01:36:24Z",
+      "mergedBy": "wkumari",
+      "mergeCommit": {
+        "oid": "5a635856be0c4a02815aeb85725bc00ffe1c58a9"
+      },
       "comments": [],
       "reviews": []
     },
@@ -118,25 +120,35 @@
       "id": "PR_kwDOPU1mrM6t9bdo",
       "title": "Loopback changes",
       "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/3",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "hardaker",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Per my conversation with Warren, i promised to suggest some changes WRT the loopback relaxation restructions.  I tried to make it more generic, and following the general principle that you must return identical data any way you choose to do that is fine.",
       "createdAt": "2025-10-15T20:19:47Z",
-      "updatedAt": "2025-10-15T20:19:48Z",
+      "updatedAt": "2025-10-16T01:37:55Z",
       "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
       "baseRefName": "main",
       "baseRefOid": "aba4b8897b8af5b2a23a259148ebafb9e03c5746",
       "headRepository": "hardaker/draft-wkumari-dnsop-localroot-bcp",
       "headRefName": "loopback-changes",
       "headRefOid": "e9324b24c50d3507102e0d2f55ac15d97fe7cb11",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2025-10-16T01:37:55Z",
+      "mergedAt": "2025-10-16T01:37:55Z",
+      "mergedBy": "wkumari",
+      "mergeCommit": {
+        "oid": "1a653baa57a0bc0b3b4e9536379aa01ef3c5788c"
+      },
+      "comments": [
+        {
+          "author": "wkumari",
+          "authorAssociation": "OWNER",
+          "body": "Sure. I'm not sure I love it, but... ",
+          "createdAt": "2025-10-16T01:37:53Z",
+          "updatedAt": "2025-10-16T01:37:53Z"
+        }
+      ],
       "reviews": []
     }
   ]
