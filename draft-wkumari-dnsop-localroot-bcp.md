@@ -148,7 +148,12 @@ entire IANA root zone.
 
 {{RFC8806}} is an Informational document that describes a mechanism that
 resolver operators can use to improve the performance, reliability, and privacy
-of their resolvers.
+of their resolvers.  This document concludes the experiment
+{{RFC8806}} was a success.  The reality is that secure DNS resolution
+using a local copy of the IANA root zone is possible because
+technologies like DNSSEC and ZONEMD {{RFC8976}} allow for the contents
+to be fetched from any location and subsequently verified and used
+within validating resolvers.
 
 This document:
 
@@ -241,6 +246,8 @@ When bootstrapping a resolvers' {{RFC8806}} mechanism,
    configured root key trust anchor.  Once the zone data has been
    verified as being the IANA root zone, the resolver can begin
    operation using the steps defined in {{RFC8806}} can be followed.
+   The contents of the fetched zone MUST NOT be used until after
+   ZONEMD verification is complete and successful.
    
 /* ED(WH): I think this must be a biz and actually replace 8806,
    because other 8806 is an experimental protocol still */
