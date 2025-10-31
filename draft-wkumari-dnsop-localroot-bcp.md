@@ -194,17 +194,65 @@ zone without modification.
 This behavior should apply to all general-purpose recursive resolvers used on
 the public Internet.
 
+# Availability of root zone data
+
+In order for the {{RFC8806}} mechanism to be effective, a resolver must be
+able to fetch the contents of the entire root zone.
+
+This is currently usually performed through AXFR ({{RFC5936}}) and MAY
+continue doing so.  Resolvers also MAY allow fetching this information
+via HTTPS. Where possible, HTTPS should be preferred as it allows for
+compression negotiation as well as the possibility of using low-cost,
+well-distributed CDNs to distribute the zone files.
+
+# Protocol steps
+
+When bootstrapping a resolvers' {{RFC8806}} mechanism, 
+
+1. The resolver should use one of the following sources to obtain a
+   list of locations where the current root zone may be available from:
+
+    a. Use a locally configured list of sources from which to fetch a
+       copy of the root zone.
+    b. Use a list of sources distributed with the resolver software itself.
+    c. Download a copy of available sources from the IANA using one the
+       following URLs (TODO: link to format section for this list):
+       - TBD
+
+2. The resolver MUST select one of the available sources from step 1,
+   and from it retrieve a current copy of the root zone.
+   
+3. If the resolver failed to retrieve the root zone content in step 2,
+   and there are other available sources from available sources from
+   step 1, it SHOULD attempt to retrieve the root zone from that list.
+   If the resolver has exhausted the list of sources, it SHOULD stop
+   attempting to download the root zone and MUST fall back to using
+   regular DNS mechanisms for performing DNS resolutions.  Upon a
+   failure, but before exhausting the list of available root zone
+   sources, the resolver MAY choose to cease attempting download the
+   root zone and if so it MUST fall back to using regular DNS
+   mechanisms for performing DNS resolutions.
+   
+4. Having successfully downloaded a copy of the root zone, the
+   resolver MUST verify the contents of the root zone using the ZONEMD
+   {{RFC8976}} record contained within it.  Note that this REQUIRES
+   verification of the ZONEMD record using DNSSEC {{BCP0237}} and the
+   configured root key trust anchor.
+   
+5. The resolver MUST check the sources in step 1 at a regular interval
+   to identify when a new copy of the root zone is available.  This
+   internal MAY be configurable and SHOULD default to 1 hour. When a
+   resolver has detected that a new copy of the root zone is
+   available, the resolver should consider its copy stale and MUST
+   start at step 1 to obtain a new zone.  Resolvers MAY check multiple
+   sources to ensure one source has not fallen significantly behind in
+   its copy of the root zone.  Resolvers MUST have an upper limit
+   beyond which if a new copy is not available it will revert to using
+   regular DNS queries to the root zone instead of continuing to use
+   the previously downloaded copy.  This upper limit stale value MAY
+   be configurable and SHOULD default to 1 day.
+   
 # Operational Considerations
-
-In order for the {{RFC8806}} mechanism to be effective, a resolver
-must be able to fetch and redistribute the records from the entire root
-zone.  This is currently usually performed through AXFR
-({{RFC5936}}). In order for AXFR to work, the resolver must be able to
-use TCP (which is already required by {{RFC7766}}).
-
-Resolvers MAY allow fetching this information via HTTPS. Where possible, HTTPS
-should be preferred as it will allow for compression as well as the possibility
-of using low-cost, well-distributed CDNs to distribute the zone files.
 
 /* ED (WH): I don't think we can get away without describing how/where to pull
 this information from at some point.  The ICANN https servers are one source,
@@ -218,9 +266,6 @@ from their own CDNs
 and have Acme Resolvers fail. This is (I believe) a sufficiently small amount
 of data that hosting it on multiple CDNs should be trivial.... but, I also
 believe that this topic should be discussed with the WG. */
-
-Resolvers MUST validate the contents of the zone before using it, including
-validating the ZONEMD record, using the mechanism in {{RFC8976}}.
 
 /* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your
