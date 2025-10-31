@@ -207,6 +207,8 @@ well-distributed CDNs to distribute the zone files.
 
 # Protocol steps
 
+{: protocol-steps}
+
 When bootstrapping a resolvers' {{RFC8806}} mechanism, 
 
 1. The resolver should use one of the following sources to obtain a
@@ -215,9 +217,8 @@ When bootstrapping a resolvers' {{RFC8806}} mechanism,
     a. Use a locally configured list of sources from which to fetch a
        copy of the root zone.
     b. Use a list of sources distributed with the resolver software itself.
-    c. Download a copy of available sources from the IANA using one the
-       following URLs (TODO: link to format section for this list):
-       - TBD
+    c. Download a copy of available sources from the IANA using the
+       sources describe in {{iana-list-format}}.
 
 2. The resolver MUST select one of the available sources from step 1,
    and from it retrieve a current copy of the root zone.
@@ -252,6 +253,32 @@ When bootstrapping a resolvers' {{RFC8806}} mechanism,
    the previously downloaded copy.  This upper limit stale value MAY
    be configurable and SHOULD default to 1 day.
    
+# IANA Root Zone List Format
+
+{: #iana-list-format}
+
+IANA will publish a list of root zone sources for TBD-URL.  This list
+may be used in steps 1a - 1c as described in {{iana-list-format}}.
+The list can be used either by the resolver software or operating
+system at distribution time (1.b), by a network operator when
+configuring a resolver (1.b), or to be updated dynamically on a
+regular basis by a running resolver (1.c).
+
+The contents of the IANA file MUST be verified as to its integrity as
+having come from IANA and MUST be verified as complete.
+
+The format of the list will be a newline delimited list of URLs
+{{?RFC2056}}.  URLs in the list may include any protocol capable of
+transferring DNS zone data, including AXFR {{?RFC5936}}, HTTPS
+{{?RFC9110}}, etc. Any URLs that reference an unknown transfer
+protocol protocol MUST be discarded.
+
+If after filtering the list there are no acceptable list elements
+left, the resolver MUST revert to using regular DNS instead of
+operating as a LocalRoot.
+
+/* ED (WH): this section needs more work */
+
 # Operational Considerations
 
 /* ED (WH): I don't think we can get away without describing how/where to pull
