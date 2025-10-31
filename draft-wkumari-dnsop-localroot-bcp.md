@@ -88,7 +88,7 @@ informative:
 --- abstract
 
 RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
-resolver can fetch the contents of an entire zone and place this information
+resolver can fetch the contents of an entire IANA root zone and place this information
 into the resolver's cache.
 
 This has several benefits, including increased reliability, increased
@@ -122,22 +122,22 @@ use zone checksums {{RFC8976}}.
 # Introduction
 
 {{RFC8806}} provides "a method for the operator of a recursive resolver to have
-a complete root zone locally, and to hide queries for the root zone from
-outsiders.  The basic idea is to create an up-to-date root zone service on the
+a complete IANA root zone locally, and to hide queries for the IANA root zone from
+outsiders.  The basic idea is to create an up-to-date IANA root zone service on the
 same host as the recursive server, and use that service when the recursive
 resolver looks up root information."
 
 While {{RFC8806}} behavior can be achieved by "manually" configuring software
-that acts as a secondary server for the root-zone (see {{RFC8806}} Section B.1.
+that acts as a secondary server for the IANA root zone (see {{RFC8806}} Section B.1.
 Example Configuration: BIND 9.12 and Section B.2 Example Configuration: Unbound
 1.8), most resolver implementations now support simpler, and more robust,
 configuration mechanisms to enable this support. For example, ISC BIND 9.14 and
 above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and Knot
-Resolver uses its "prefill" module to load the root zone information. See
+Resolver uses its "prefill" module to load the IANA root zone information. See
 Appendix A for configuration details. In addition to providing simpler
 configuration of the LocalRoot mechanism, these mechanisms support "falling
 back" to querying the root-servers directly if they are unable to fetch the
-entire root zone.
+entire IANA root zone.
 
 
 # Conventions and Definitions {#definitions}
@@ -148,7 +148,12 @@ entire root zone.
 
 {{RFC8806}} is an Informational document that describes a mechanism that
 resolver operators can use to improve the performance, reliability, and privacy
-of their resolvers.
+of their resolvers.  This document concludes the experiment
+{{RFC8806}} was a success.  The reality is that secure DNS resolution
+using a local copy of the IANA root zone is possible because
+technologies like DNSSEC and ZONEMD {{RFC8976}} allow for the contents
+to be fetched from any location and subsequently verified and used
+within validating resolvers.
 
 This document:
 
@@ -156,7 +161,7 @@ This document:
 2. RECOMMENDS that resolver implementations provide a simple configuration
    option to enable or disable functionality, and
 3. RECOMMENDS that resolver implementations enable this behavior by default. and
-4. REQUIRES that {{RFC8976}} be used to validate the zone information
+4. REQUIRES that {{RFC8976}} be used to validate the IANA root zone information
    before loading it.
 
 # Changes from RFC8806
@@ -194,17 +199,101 @@ zone without modification.
 This behavior should apply to all general-purpose recursive resolvers used on
 the public Internet.
 
+# Availability of IANA root zone data
+
+In order for the {{RFC8806}} mechanism to be effective, a resolver must be
+able to fetch the contents of the entire IANA root zone.
+
+This is currently usually performed through AXFR ({{RFC5936}}) and MAY
+continue doing so.  Resolvers also MAY allow fetching this information
+via HTTPS. Where possible, HTTPS should be preferred as it allows for
+compression negotiation as well as the possibility of using low-cost,
+well-distributed CDNs to distribute the zone files.
+
+# Protocol steps
+
+{: protocol-steps}
+
+When bootstrapping a resolvers' {{RFC8806}} mechanism, 
+
+1. The resolver should use one of the following sources to obtain a
+   list of locations where the current IANA root zone may be available from:
+
+    a. Use a locally configured list of sources from which to fetch a
+       copy of the IANA root zone.
+    b. Use a list of sources distributed with the resolver software itself.
+    c. Download a copy of available sources from the IANA using the
+       sources describe in {{iana-list-format}}.
+
+2. The resolver MUST select one of the available sources from step 1,
+   and from it retrieve a current copy of the IANA root zone.
+   
+3. If the resolver failed to retrieve the IANA root zone content in step 2,
+   and there are other available sources from available sources from
+   step 1, it SHOULD attempt to retrieve the IANA root zone from that list.
+   If the resolver has exhausted the list of sources, it SHOULD stop
+   attempting to download the IANA root zone and MUST fall back to using
+   regular DNS mechanisms for performing DNS resolutions.  Upon a
+   failure, but before exhausting the list of available IANA root zone
+   sources, the resolver MAY choose to cease attempting download the
+   IANA root zone and if so it MUST fall back to using regular DNS
+   mechanisms for performing DNS resolutions.
+   
+4. Having successfully downloaded a copy of the IANA root zone, the
+   resolver MUST verify the contents of the IANA root zone using the ZONEMD
+   {{RFC8976}} record contained within it.  Note that this REQUIRES
+   verification of the ZONEMD record using DNSSEC {{BCP0237}} and the
+   configured root key trust anchor.  Once the zone data has been
+   verified as being the IANA root zone, the resolver can begin
+   operation using the steps defined in {{RFC8806}} can be followed.
+   The contents of the fetched zone MUST NOT be used until after
+   ZONEMD verification is complete and successful.
+   
+/* ED(WH): I think this must be a biz and actually replace 8806,
+   because other 8806 is an experimental protocol still */
+   
+5. The resolver MUST check the sources in step 1 at a regular interval
+   to identify when a new copy of the IANA root zone is available.  This
+   internal MAY be configurable and SHOULD default to 1 hour. When a
+   resolver has detected that a new copy of the IANA root zone is
+   available, the resolver should consider its copy stale and MUST
+   start at step 1 to obtain a new zone.  Resolvers MAY check multiple
+   sources to ensure one source has not fallen significantly behind in
+   its copy of the IANA root zone.  Resolvers MUST have an upper limit
+   beyond which if a new copy is not available it will revert to using
+   regular DNS queries to the IANA root zone instead of continuing to use
+   the previously downloaded copy.  This upper limit stale value MAY
+   be configurable and SHOULD default to 1 day.  Once the stale timer
+   has been reached, the resolver may resume {{RFC8806}} operations
+   once a fresh copy can be obtained after restarting at step 1.
+   
+# IANA Root Zone List Format
+
+{: #iana-list-format}
+
+IANA will publish a list of IANA root zone sources for TBD-URL.  This list
+may be used in steps 1a - 1c as described in {{iana-list-format}}.
+The list can be used either by the resolver software or operating
+system at distribution time (1.b), by a network operator when
+configuring a resolver (1.b), or to be updated dynamically on a
+regular basis by a running resolver (1.c).
+
+The contents of the IANA file MUST be verified as to its integrity as
+having come from IANA and MUST be verified as complete.
+
+The format of the list will be a newline delimited list of URLs
+{{?RFC2056}}.  URLs in the list may include any protocol capable of
+transferring DNS zone data, including AXFR {{?RFC5936}}, HTTPS
+{{?RFC9110}}, etc. Any URLs that reference an unknown transfer
+protocol protocol MUST be discarded.
+
+If after filtering the list there are no acceptable list elements
+left, the resolver MUST revert to using regular DNS instead of
+operating as a LocalRoot.
+
+/* ED (WH): this section needs more work */
+
 # Operational Considerations
-
-In order for the {{RFC8806}} mechanism to be effective, a resolver
-must be able to fetch and redistribute the records from the entire root
-zone.  This is currently usually performed through AXFR
-({{RFC5936}}). In order for AXFR to work, the resolver must be able to
-use TCP (which is already required by {{RFC7766}}).
-
-Resolvers MAY allow fetching this information via HTTPS. Where possible, HTTPS
-should be preferred as it will allow for compression as well as the possibility
-of using low-cost, well-distributed CDNs to distribute the zone files.
 
 /* ED (WH): I don't think we can get away without describing how/where to pull
 this information from at some point.  The ICANN https servers are one source,
@@ -218,9 +307,6 @@ from their own CDNs
 and have Acme Resolvers fail. This is (I believe) a sufficiently small amount
 of data that hosting it on multiple CDNs should be trivial.... but, I also
 believe that this topic should be discussed with the WG. */
-
-Resolvers MUST validate the contents of the zone before using it, including
-validating the ZONEMD record, using the mechanism in {{RFC8976}}.
 
 /* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your
@@ -294,7 +380,7 @@ exhaustive, and may not work with all versions of the software.
 contributions from the resolver operators.
 
 Yes, we are fully aware of the circular dependency of trying to resolve e.g
-www.internic.net when bootstrapping. More discussion on serving the root zone
+www.internic.net when bootstrapping. More discussion on serving the IANA root zone
 over HTTP by IP will be added later. */
 
 ## ISC BIND 9.14 and above
@@ -319,7 +405,7 @@ See the Knot Resolver [Cache
 prefilling](https://knot-resolver.readthedocs.io/en/v5.0.1/modules-prefill.html?highlight=cache%20prefilling)
 documentation for more information.
 
-The following example configuration will prefill the root zone using HTTPS:
+The following example configuration will prefill the IANA root zone using HTTPS:
 
 ~~~
 modules.load('prefill')
@@ -337,7 +423,7 @@ prefill.config({
 
 See the Unbound documentation for [Authority Zone Options](https://unbound.docs.nlnetlabs.nl/en/latest/manpages/unbound.conf.html#unbound-conf-auth-url) configuration.
 
-The following example configuration will prefill the root zone using HTTPS:
+The following example configuration will prefill the IANA root zone using HTTPS:
 
 ~~~
 auth-zone:
