@@ -238,7 +238,12 @@ When bootstrapping a resolvers' {{RFC8806}} mechanism,
    resolver MUST verify the contents of the root zone using the ZONEMD
    {{RFC8976}} record contained within it.  Note that this REQUIRES
    verification of the ZONEMD record using DNSSEC {{BCP0237}} and the
-   configured root key trust anchor.
+   configured root key trust anchor.  Once the zone data has been
+   verified as being the IANA root zone, the resolver can begin
+   operation using the steps defined in {{RFC8806}} can be followed.
+   
+/* ED(WH): I think this must be a biz and actually replace 8806,
+   because other 8806 is an experimental protocol still */
    
 5. The resolver MUST check the sources in step 1 at a regular interval
    to identify when a new copy of the root zone is available.  This
@@ -251,7 +256,9 @@ When bootstrapping a resolvers' {{RFC8806}} mechanism,
    beyond which if a new copy is not available it will revert to using
    regular DNS queries to the root zone instead of continuing to use
    the previously downloaded copy.  This upper limit stale value MAY
-   be configurable and SHOULD default to 1 day.
+   be configurable and SHOULD default to 1 day.  Once the stale timer
+   has been reached, the resolver may resume {{RFC8806}} operations
+   once a fresh copy can be obtained after restarting at step 1.
    
 # IANA Root Zone List Format
 
