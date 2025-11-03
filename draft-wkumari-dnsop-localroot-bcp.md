@@ -163,6 +163,8 @@ This document:
 3. RECOMMENDS that resolver implementations enable this behavior by default. and
 4. REQUIRES that {{RFC8976}} be used to validate the IANA root zone information
    before loading it.
+5. Adds a mechanism for priming the list of places for fetching root zone data.
+6. Adds protocol steps for ensuring resolution stability and resiliency.
 
 # Changes from RFC8806
 
@@ -214,10 +216,15 @@ well-distributed CDNs to distribute the zone files.
 
 {: protocol-steps}
 
-When bootstrapping a resolvers' {{RFC8806}} mechanism, 
+When initializing a resolvers' {{RFC8806}} mechanism, the following
+steps MAY be used to implement the LocalRoot functionality.  Note that
+as long as the desired effect of performing normal DNS resolution
+remains stable when combined with LocalRoot functionality, other
+implementations MAY be used.
 
 1. The resolver should use one of the following sources to obtain a
-   list of locations where the current IANA root zone may be available from:
+   list of locations where the current IANA root zone may be available
+   from:
 
     a. Use a locally configured list of sources from which to fetch a
        copy of the IANA root zone.
