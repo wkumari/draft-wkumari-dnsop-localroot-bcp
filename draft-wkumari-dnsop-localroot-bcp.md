@@ -1,7 +1,7 @@
 ---
-title: "Making LocalRoot a Best Current Practice"
+title: "Running a Root Server Local to a Resolver"
 #abbrev: "TODO - Abbreviation"
-category: std
+category: bcp
 
 docname: draft-wkumari-dnsop-localroot-bcp-latest
 submissiontype: IETF
@@ -87,6 +87,23 @@ informative:
 
 --- abstract
 
+Some DNS recursive resolver operators want to prevent snooping by
+third parties of requests sent to DNS root servers.  Some DNS
+recursive resolvers have longer-than-desired round-trip times to the
+closest DNS root server; those resolvers may have difficulty getting
+responses from the root servers, such as during a network attack.
+Resolvers can solve both of these issues by serving or pre-caching a
+copy of the full root zone on the same server or within the resolver
+software.  
+
+This document shows how to fetch and maintain such a copy of the root
+zone, how to detect if it becomes stale, and mechanisms for handling
+error states.  Implementing this specification will not cause problems
+for other users of the DNS service.
+
+This document obsoletes RFC 8806.
+
+/* OLD abstract:
 RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
 resolver can fetch the contents of an entire IANA root zone and place this information
 into the resolver's cache.
@@ -102,6 +119,8 @@ configuration becomes the default.
 
 This document updates Section 2 of RFC8806 by relaxing the requirement that
 implementations MUST run an authoritative service.
+
+*/
 
 
 /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):
