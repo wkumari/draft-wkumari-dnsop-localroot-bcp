@@ -1,7 +1,7 @@
 ---
 title: "Making LocalRoot a Best Current Practice"
 #abbrev: "TODO - Abbreviation"
-category: bcp
+category: std
 
 docname: draft-wkumari-dnsop-localroot-bcp-latest
 submissiontype: IETF
@@ -59,7 +59,7 @@ author:
 normative:
   RFC8806:
   RFC8976:
-  RFC9364:  # DNSSEC
+  BCP237:
 
 informative:
   RFC5936:  # DNS Zone Transfer
@@ -249,7 +249,7 @@ implementations MAY be used.
 4. Having successfully downloaded a copy of the IANA root zone, the
    resolver MUST verify the contents of the IANA root zone using the ZONEMD
    {{RFC8976}} record contained within it.  Note that this REQUIRES
-   verification of the ZONEMD record using DNSSEC {{BCP0237}} and the
+   verification of the ZONEMD record using DNSSEC  {{BCP237}} and the
    configured root key trust anchor.  Once the zone data has been
    verified as being the IANA root zone, the resolver can begin
    operation using the steps defined in {{RFC8806}} can be followed.
