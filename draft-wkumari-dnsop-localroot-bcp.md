@@ -140,7 +140,8 @@ use zone checksums {{RFC8976}}.
 
 # Introduction
 
-{{RFC8806}} provides "a method for the operator of a recursive resolver to have
+Serving the root zone locally, commonly referred to as "LocalRoot",
+provides "a method for the operator of a recursive resolver to have
 a complete IANA root zone locally, and to hide queries for the IANA root zone from
 outsiders.  The basic idea is to create an up-to-date IANA root zone service on the
 same host as the recursive server, and use that service when the recursive
@@ -219,6 +220,25 @@ zone without modification.
 
 This behavior should apply to all general-purpose recursive resolvers used on
 the public Internet.
+
+# Resolver Requirements
+
+In order to implement the mechanism described in this document:
+
+- The system MUST be able to validate the contents of the root zone
+  using ZONEMD {{RFC8976}}, which also requires supporting
+  {{DNSSEC}} for verifying the root zone's ZONEMD record.
+
+- The system MUST have an up-to-date copy of the public part of the
+  Key Signing Key (KSK) {{RFC4033}} used to sign the DNS root.
+
+- The system MUST be able to retrieve a copy of the entire root zone
+  (including all DNSSEC-related records) {{protocol-steps}}.
+
+- The system MUST be able to fall back to using regular DNS for
+  performing resolution using the authoritative root servers
+  themselves whenever the local copy of the root zone data is
+  unavailable or has been deemed stale {{protocol-steps}}.
 
 # Availability of IANA root zone data
 
