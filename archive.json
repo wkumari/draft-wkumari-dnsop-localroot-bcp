@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-02T00:23:23.005936+00:00",
+  "timestamp": "2025-11-04T00:21:37.568540+00:00",
   "repo": "wkumari/draft-wkumari-dnsop-localroot-bcp",
   "labels": [
     {
@@ -156,26 +156,42 @@
       "id": "PR_kwDOPU1mrM6w7I0c",
       "title": "Protocol details",
       "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/4",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "hardaker",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This patch adds specific details for how to use a list of URLs to routinely fetch the root zone from a list of URLs, one set of which will be stored at IANA.",
       "createdAt": "2025-10-31T22:20:35Z",
-      "updatedAt": "2025-10-31T22:20:36Z",
+      "updatedAt": "2025-11-03T21:14:13Z",
       "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
       "baseRefName": "main",
       "baseRefOid": "1a653baa57a0bc0b3b4e9536379aa01ef3c5788c",
       "headRepository": "hardaker/draft-wkumari-dnsop-localroot-bcp",
       "headRefName": "protocol-details",
-      "headRefOid": "a7819e1746224c4de4db25b74d98afd8f0d46e81",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "c95daaa2c44f1abf429d64513500b4d93bf3ba11",
+      "closedAt": "2025-11-03T21:14:12Z",
+      "mergedAt": "2025-11-03T21:14:12Z",
+      "mergedBy": "hardaker",
+      "mergeCommit": {
+        "oid": "c95daaa2c44f1abf429d64513500b4d93bf3ba11"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOPU1mrM7LaAlR",
+          "commit": {
+            "abbreviatedOid": "c95daaa"
+          },
+          "author": "wkumari",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "As discussed in person.",
+          "createdAt": "2025-11-03T19:32:36Z",
+          "updatedAt": "2025-11-03T19:32:36Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
