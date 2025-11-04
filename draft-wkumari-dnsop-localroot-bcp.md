@@ -239,6 +239,10 @@ In order to implement the mechanism described in this document:
   performing resolution using the authoritative root servers
   themselves whenever the local copy of the root zone data is
   unavailable or has been deemed stale {{protocol-steps}}.
+  
+A corollary of the above list is that a resolver running LocalRoot
+MUST return equivalent answers about the DNS root or any other part of
+the DNS as if it was not operating as a LocalRoot.
 
 # Availability of IANA root zone data
 
