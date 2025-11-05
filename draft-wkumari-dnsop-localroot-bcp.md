@@ -236,24 +236,25 @@ In order to implement the mechanism described in this document:
 - The system MUST be able to retrieve a copy of the entire root zone
   (including all DNSSEC-related records) {{protocol-steps}}.
 
-- The system MUST be able to fall back to using regular DNS for
-  performing resolution using the authoritative root servers
-  themselves whenever the local copy of the root zone data is
-  unavailable or has been deemed stale {{protocol-steps}}.
+- The system MUST be able to fall back to querying the authoritative
+  root servers whenever the local copy of the root zone
+  data is unavailable or has been deemed stale {{protocol-steps}}.
   
 A corollary of the above list is that a resolver running LocalRoot
 MUST return equivalent answers about the DNS root or any other part of
 the DNS as if it was not operating as a LocalRoot.
 
-# Operation of a LocalRoot enabled resolver
+# Functionality of a LocalRoot enabled resolver
 
-In order to properly become a LocalRoot enabled resolver, a number of
-items need to implemented:
+The functionality of LocalRoot enabled resolver includes:
 
-1. Identifying from where to download root zone data {{iana-root-zone-list}}.
-2. Download the root zone data {{protocol-steps}}.
-3. Integrate and serve the data as part of the resolution process
+1. Consulting the list of publication points for DNS root zone data
+   {{iana-root-zone-list}}.
+2. Downloading and refreshing the root zone data from a publication
+   point {{protocol-steps}}.
+3. Integrating and serving the data while performing DNS resolutions
    {{integrating-root-zone-data}}
+
 
 ## Availability of IANA root zone data
 
