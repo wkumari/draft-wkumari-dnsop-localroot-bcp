@@ -87,19 +87,20 @@ informative:
 
 --- abstract
 
-Some DNS recursive resolver operators want to prevent snooping by
-third parties of requests sent to DNS root servers.  Some DNS
-recursive resolvers have longer-than-desired round-trip times to the
-closest DNS root server; those resolvers may have difficulty getting
-responses from the root servers, such as during a network attack.
-Resolvers can solve both of these issues by serving or pre-caching a
-copy of the full root zone on the same server or within the resolver
-software.  
+Many DNS recursive resolver operators wish to prevent snooping by
+third parties of requests sent to DNS root servers.  In addition, some
+DNS recursive resolvers have longer-than-desired round-trip times to
+the closest DNS root server; those resolvers may have difficulty
+getting responses from the root servers, such as during a network
+attack.  Resolvers can solve both of these issues by serving or
+pre-caching a copy of the full root zone on the same server or within
+the resolver
+software.
 
-This document shows how to fetch and maintain such a copy of the root
+This document shows how to fetch, cache and maintain such a copy of the root
 zone, how to detect if it becomes stale, and mechanisms for handling
-error states.  Implementing this specification will not cause problems
-for other users of the DNS service.
+error states.  This specification is designed to increase the
+resiliency, privacy and efficiency of DNS resolver services.
 
 This document obsoletes RFC 8806.
 
@@ -140,7 +141,7 @@ use zone checksums {{RFC8976}}.
 
 # Introduction
 
-Serving the root zone locally, commonly referred to as "LocalRoot",
+Caching the root zone data locally, commonly referred to as "LocalRoot",
 provides "a method for the operator of a recursive resolver to have
 a complete IANA root zone locally, and to hide queries for the IANA root zone from
 outsiders.  The basic idea is to create an up-to-date IANA root zone service on the
