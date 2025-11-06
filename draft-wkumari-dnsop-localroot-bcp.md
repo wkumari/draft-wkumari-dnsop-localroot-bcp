@@ -141,25 +141,52 @@ use zone checksums {{RFC8976}}.
 
 # Introduction
 
-Caching the root zone data locally, commonly referred to as "LocalRoot",
-provides "a method for the operator of a recursive resolver to have
-a complete IANA root zone locally, and to hide queries for the IANA root zone from
-outsiders.  The basic idea is to create an up-to-date IANA root zone service on the
-same host as the recursive server, and use that service when the recursive
-resolver looks up root information."
+DNS recursive resolvers have to provide answers to all queries from
+their clients, even those for domain names that do not exist.  For
+each queried name that is within a top-level domain (TLD) that is not
+in the recursive resolver's cache, the resolver must send a query to
+a root server to get the information for that TLD or to find out that
+the TLD does not exist.  Research shows that the vast majority of
+queries going to the root are for names that do not exist in the root
+zone.
 
-While {{RFC8806}} behavior can be achieved by "manually" configuring software
-that acts as a secondary server for the IANA root zone (see {{RFC8806}} Section B.1.
-Example Configuration: BIND 9.12 and Section B.2 Example Configuration: Unbound
-1.8), most resolver implementations now support simpler, and more robust,
-configuration mechanisms to enable this support. For example, ISC BIND 9.14 and
-above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and Knot
-Resolver uses its "prefill" module to load the IANA root zone information. See
-Appendix A for configuration details. In addition to providing simpler
-configuration of the LocalRoot mechanism, these mechanisms support "falling
-back" to querying the root-servers directly if they are unable to fetch the
-entire IANA root zone.
+Many of the queries from recursive resolvers to root servers get
+answers that are referrals to other servers.  Malicious third parties
+might be able to observe that traffic on the network between the
+recursive resolver and root servers.
 
+------
+
+Caching the root zone data locally, commonly referred to as
+"LocalRoot", provides "a method for the operator of a recursive
+resolver to have a complete IANA root zone locally, and to hide
+queries for the IANA root zone from outsiders.  The basic idea of a
+LocalRoot resolver is to create and maintain an up-to-date IANA root
+zone cache, and use that information when the recursive resolver looks
+up root information.  This can be implemented using a number of
+different techniques, but the net effect is the same: few, if any,
+queries are sent to the actual DNS root zone.
+
+Note that enabling LocalRoot in a resolver will probably have little
+effect on getting faster responses to the stub resolver for good
+queries on TLDs, because the TTL for most TLDs is usually long-lived
+(on the order of a day or two) and thus are usually already in the
+resolver's cache.  Negative answers from the root servers are also
+cached in a similar fashion, though potentially for a shorter time.
+
+Two potential mechanisms are documented herein for achieving LocalRoot
+functionality: having the resolver pre-fetch the root zone at regular
+intervals and pre-populate its cache with information, or by running
+an authoritative server in parallel and pointing the recursive
+resolver at this server's IP address as the source of root zone data.
+The net effect of using either of these techniques should be nearly
+indistinguishable to that of a non-Localroot resolver to a client.
+
+A different approach to partially mitigating some of the problems that
+a LocalRoot resolver solves can be achieved using "Aggressive Use of
+DNSSEC-Validated Cache" {{RFC8198}} functionality.
+
+Readers are expected to be familiar with {{RFC8499}}.
 
 # Conventions and Definitions {#definitions}
 
