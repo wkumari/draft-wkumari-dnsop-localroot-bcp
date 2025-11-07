@@ -283,44 +283,43 @@ The functionality of LocalRoot enabled resolver includes:
    {{integrating-root-zone-data}}
 
 
-## Availability of IANA root zone data
+## Consulting the list of IANA DNS root data publication points
 
-[ed: will integrate or drop this]
+{: #iana-root-zone-list}
 
 In order for the {{RFC8806}} mechanism to be effective, a resolver must be
 able to fetch the contents of the entire IANA root zone.
 
-This is currently usually performed through AXFR ({{RFC5936}}) and MAY
-continue doing so.  Resolvers also MAY allow fetching this information
-via HTTPS. Where possible, HTTPS should be preferred as it allows for
-compression negotiation as well as the possibility of using low-cost,
-well-distributed CDNs to distribute the zone files.
+IANA will maintain and publish a list of IANA DNS root zone sources at
+TBD-URL.  This list of "IANA root zone data publication points" may be
+used when downloading and refreshing the root zone data, as described
+in {{protocol-steps}}.  Specifically, the IANA DNS root zone
+publication list can be used by the resolver software directly, by the
+operating system, by a network operator when configuring a resolver.
+
+The contents of the IANA DNS root publication points file MUST be
+verified as to its integrity as having come from IANA and MUST be
+verified as complete.
+
+The format of the IANA root zone data publication points list will be
+a newline delimited file of URLs {{?RFC2056}}.  URLs in the list may
+include any protocol capable of transferring DNS zone data, including
+AXFR {{?RFC5936}}, HTTPS {{?RFC9110}}, etc.
+
+Any URLs that reference an unknown transfer protocol SHOULD be
+discarded.  If after filtering the list there are no acceptable list
+elements left, the resolver MUST revert to using regular DNS queries
+to the IANA root zone instead of operating as a LocalRoot.
+
+[ED: likely drop or move ] This is currently usually performed through
+AXFR ({{RFC5936}}) and MAY continue doing so.  Resolvers also MAY
+allow fetching this information via HTTPS. Where possible, HTTPS
+should be preferred as it allows for compression negotiation as well
+as the possibility of using low-cost, well-distributed CDNs to
+distribute the zone files.
 
 ## IANA Root Zone List
 
-{: #iana-root-zone-list}
-
-IANA will publish a list of IANA root zone sources at TBD-URL.  This list
-may be used in steps 1a - 1c as described in {{iana-list-format}}.
-The list can be used either by the resolver software or operating
-system at distribution time (1.b), by a network operator when
-configuring a resolver (1.b), or to be updated dynamically on a
-regular basis by a running resolver (1.c).
-
-The contents of the IANA file MUST be verified as to its integrity as
-having come from IANA and MUST be verified as complete.
-
-The format of the list will be a newline delimited list of URLs
-{{?RFC2056}}.  URLs in the list may include any protocol capable of
-transferring DNS zone data, including AXFR {{?RFC5936}}, HTTPS
-{{?RFC9110}}, etc. Any URLs that reference an unknown transfer
-protocol protocol MUST be discarded.
-
-If after filtering the list there are no acceptable list elements
-left, the resolver MUST revert to using regular DNS instead of
-operating as a LocalRoot.
-
-/* ED (WH): this section needs more work */
 
 ## Protocol steps
 
