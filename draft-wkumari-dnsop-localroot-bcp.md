@@ -274,9 +274,11 @@ you, and you are not listed, please please let us know and we'll add you.
 The authors would like to thank Vint Cerf, John Crain, Puneet Sood, Robert
 Story, Suzanne Woolf.
 
-In addition, one of the authors would like to once again thank the bands
-"Infected Mushroom", "Kraftwerk", and "deadmau5" for providing the soundtrack
-to which this was written.
+In addition, one of the authors would like to once again thank the
+bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing
+the soundtrack to which this was written.  Another author recently
+discovered the band "Trampled by Turtles" and has submitted it as a
+nomination for the best-band-name-ever award.
 
 # Appendix A: Example Configurations
 {:numbered="false"}
