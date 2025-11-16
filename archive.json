@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-13T00:22:13.585683+00:00",
+  "timestamp": "2025-11-16T00:23:53.166189+00:00",
   "repo": "wkumari/draft-wkumari-dnsop-localroot-bcp",
   "labels": [
     {
@@ -192,6 +192,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOPU1mrM6zMX3N",
+      "title": "Fix indenting of Unbound example and remove \"prefetch: yes\"",
+      "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/pull/5",
+      "state": "OPEN",
+      "author": "cschutijser",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "If \"prefetch: yes\" should be kept, it should be configured under the\r\n\"server:\" clause, not underneath \"auth-zone:\"",
+      "createdAt": "2025-11-13T10:26:13Z",
+      "updatedAt": "2025-11-13T10:41:43Z",
+      "baseRepository": "wkumari/draft-wkumari-dnsop-localroot-bcp",
+      "baseRefName": "main",
+      "baseRefOid": "cfa231fb5f4cd425ff585518ee305a3bfe829034",
+      "headRepository": "cschutijser/draft-wkumari-dnsop-localroot-bcp",
+      "headRefName": "indenting",
+      "headRefOid": "6674b226253d0a348ad83b97d975a2cd75171e9f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
