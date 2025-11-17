@@ -521,12 +521,11 @@ The following example configuration will prefill the IANA root zone using HTTPS:
 
 ~~~
 auth-zone:
-  name: "."
-  url: "https://www.internic.net/domain/root.zone"
-  zonefile: "root.zone"
-        fallback-enabled: yes
+    name: "."
+    url: "https://www.internic.net/domain/root.zone"
+    zonefile: "root.zone"
+    fallback-enabled: yes
     for-downstream: no
     for-upstream: yes
     zonefile: "root.zone"
-  prefetch: yes
 ~~~
