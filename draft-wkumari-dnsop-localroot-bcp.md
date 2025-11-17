@@ -60,11 +60,15 @@ normative:
   RFC8806:
   RFC8976:
   BCP237:
+  RFC8499:
+  RFC4033:
+  RFC8198:
 
 informative:
   RFC5936:  # DNS Zone Transfer
   RFC7766:  # DNS Transport over TCP
   RFC9156:  # QNAME Minimisation
+  RFC9110:  # HTTP Semantics
 
   BIND-MIRROR:
     title: "BIND 9 Mirror Zones"
@@ -255,7 +259,7 @@ In order to implement the mechanism described in this document:
 
 - The system MUST be able to validate the contents of the root zone
   using ZONEMD {{RFC8976}}, which also requires supporting
-  {{DNSSEC}} for verifying the root zone's ZONEMD record.
+  DNSSEC for verifying the root zone's ZONEMD record.
 
 - The system MUST have an up-to-date copy of the public part of the
   Key Signing Key (KSK) {{RFC4033}} used to sign the DNS root.
@@ -266,7 +270,7 @@ In order to implement the mechanism described in this document:
 - The system MUST be able to fall back to querying the authoritative
   root servers whenever the local copy of the root zone
   data is unavailable or has been deemed stale {{protocol-steps}}.
-  
+
 A corollary of the above list is that a resolver running LocalRoot
 MUST return equivalent answers about the DNS root or any other part of
 the DNS as if it was not operating as a LocalRoot.
@@ -283,9 +287,7 @@ The functionality of LocalRoot enabled resolver includes:
    {{integrating-root-zone-data}}
 
 
-## Consulting the list of IANA DNS root data publication points
-
-{: #iana-root-zone-list}
+## Consulting the list of IANA DNS root data publication points {#iana-root-zone-list}
 
 In order for the {{RFC8806}} mechanism to be effective, a resolver must be
 able to fetch the contents of the entire IANA root zone.
@@ -304,26 +306,22 @@ verified as complete.
 The format of the IANA root zone data publication points list will be
 a newline delimited file of URLs {{?RFC2056}}.  URLs in the list may
 include any protocol capable of transferring DNS zone data, including
-AXFR {{?RFC5936}}, HTTPS {{?RFC9110}}, etc.
+AXFR {{RFC5936}}, HTTPS {{RFC9110}}, etc.
 
 Any URLs that reference an unknown transfer protocol SHOULD be
 discarded.  If after filtering the list there are no acceptable list
 elements left, the resolver MUST revert to using regular DNS queries
 to the IANA root zone instead of operating as a LocalRoot.
 
-[ED: likely drop or move ] This is currently usually performed through
+(ED: likely drop or move ) This is currently usually performed through
 AXFR ({{RFC5936}}) and MAY continue doing so.  Resolvers also MAY
 allow fetching this information via HTTPS. Where possible, HTTPS
 should be preferred as it allows for compression negotiation as well
 as the possibility of using low-cost, well-distributed CDNs to
 distribute the zone files.
 
-## IANA Root Zone List
 
-
-## Protocol steps
-
-{: #protocol-steps}
+## Protocol steps {#protocol-steps}
 
 When initializing a resolvers' {{RFC8806}} mechanism, the following
 steps MAY be used to implement the LocalRoot functionality.  Note that
@@ -339,11 +337,11 @@ implementations MAY be used.
        copy of the IANA root zone.
     b. Use a list of sources distributed with the resolver software itself.
     c. Download a copy of available sources from the IANA using the
-       sources describe in {{iana-list-format}}.
+       sources describe in {{iana-root-zone-list}}.
 
 2. The resolver MUST select one of the available sources from step 1,
    and from it retrieve a current copy of the IANA root zone.
-   
+
 3. If the resolver failed to retrieve the IANA root zone content in step 2,
    and there are other available sources from available sources from
    step 1, it SHOULD attempt to retrieve the IANA root zone from that list.
@@ -354,7 +352,7 @@ implementations MAY be used.
    sources, the resolver MAY choose to cease attempting download the
    IANA root zone and if so it MUST fall back to using regular DNS
    mechanisms for performing DNS resolutions.
-   
+
 4. Having successfully downloaded a copy of the IANA root zone, the
    resolver MUST verify the contents of the IANA root zone using the ZONEMD
    {{RFC8976}} record contained within it.  Note that this REQUIRES
@@ -364,10 +362,10 @@ implementations MAY be used.
    operation using the steps defined in {{RFC8806}} can be followed.
    The contents of the fetched zone MUST NOT be used until after
    ZONEMD verification is complete and successful.
-   
+
 /* ED(WH): I think this must be a biz and actually replace 8806,
    because other 8806 is an experimental protocol still */
-   
+
 5. The resolver MUST check the sources in step 1 at a regular interval
    to identify when a new copy of the IANA root zone is available.  This
    internal MAY be configurable and SHOULD default to 1 hour. When a
@@ -382,7 +380,7 @@ implementations MAY be used.
    be configurable and SHOULD default to 1 day.  Once the stale timer
    has been reached, the resolver may resume {{RFC8806}} operations
    once a fresh copy can be obtained after restarting at step 1.
-   
+
 ## Integrating root zone data into the resolution process
 
 {: #integrating-root-zone-data }
