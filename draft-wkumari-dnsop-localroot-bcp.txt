@@ -6,23 +6,40 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Best Current Practice          USC/ISI and Google, Inc.
-Expires: 19 April 2026                                           J. Reid
+Expires: 21 May 2026                                             J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
                                                                D. Conrad
                                               Layer 9 Technologies, LLC.
-                                                         16 October 2025
+                                                        17 November 2025
 
 
-                Making LocalRoot a Best Current Practice
+               Running a Root Server Local to a Resolver
                 draft-wkumari-dnsop-localroot-bcp-latest
 
 Abstract
 
-   RFC 8806 (often called "LocalRoot") defines a mechanism whereby a
-   recursive resolver can fetch the contents of an entire zone and place
-   this information into the resolver's cache.
+   Many DNS recursive resolver operators wish to prevent snooping by
+   third parties of requests sent to DNS root servers.  In addition,
+   some DNS recursive resolvers have longer-than-desired round-trip
+   times to the closest DNS root server; those resolvers may have
+   difficulty getting responses from the root servers, such as during a
+   network attack.  Resolvers can solve both of these issues by serving
+   or pre-caching a copy of the full root zone on the same server or
+   within the resolver software.
+
+   This document shows how to fetch, cache and maintain such a copy of
+   the root zone, how to detect if it becomes stale, and mechanisms for
+   handling error states.  This specification is designed to increase
+   the resiliency, privacy and efficiency of DNS resolver services.
+
+   This document obsoletes RFC 8806.
+
+   /* OLD abstract: RFC 8806 (often called "LocalRoot") defines a
+   mechanism whereby a recursive resolver can fetch the contents of an
+   entire IANA root zone and place this information into the resolver's
+   cache.
 
    This has several benefits, including increased reliability, increased
    performance, improved privacy, and decreased or mitigation of the
@@ -35,6 +52,8 @@ Abstract
 
    This document updates Section 2 of RFC8806 by relaxing the
    requirement that implementations MUST run an authoritative service.
+
+   */
 
    /* Ed (WK): Open questions / ToDo / Notes (to be removed before
    publication):
@@ -84,7 +103,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 April 2026.
+   This Internet-Draft will expire on 21 May 2026.
 
 Copyright Notice
 
@@ -107,12 +126,18 @@ Table of Contents
    3.  Making RFC8806 behavior be a Best Current Practice
    4.  Changes from RFC8806
    5.  Applicability
-   6.  Operational Considerations
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   6.  Resolver Requirements
+   7.  Functionality of a LocalRoot enabled resolver
+     7.1.  Consulting the list of IANA DNS root data publication
+           points
+     7.2.  Protocol steps
+     7.3.  Integrating root zone data into the resolution process
+   8.  Operational Considerations
+   9.  Security Considerations
+   10. IANA Considerations
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Acknowledgments
    Appendix A: Example Configurations
      ISC BIND 9.14 and above
@@ -122,24 +147,52 @@ Table of Contents
 
 1.  Introduction
 
-   [RFC8806] provides "a method for the operator of a recursive resolver
-   to have a complete root zone locally, and to hide queries for the
-   root zone from outsiders.  The basic idea is to create an up-to-date
-   root zone service on the same host as the recursive server, and use
-   that service when the recursive resolver looks up root information."
+   DNS recursive resolvers have to provide answers to all queries from
+   their clients, even those for domain names that do not exist.  For
+   each queried name that is within a top-level domain (TLD) that is not
+   in the recursive resolver's cache, the resolver must send a query to
+   a root server to get the information for that TLD or to find out that
+   the TLD does not exist.  Research shows that the vast majority of
+   queries going to the root are for names that do not exist in the root
+   zone.
 
-   While [RFC8806] behavior can be achieved by "manually" configuring
-   software that acts as a secondary server for the root-zone (see
-   [RFC8806] Section B.1.  Example Configuration: BIND 9.12 and
-   Section B.2 Example Configuration: Unbound 1.8), most resolver
-   implementations now support simpler, and more robust, configuration
-   mechanisms to enable this support.  For example, ISC BIND 9.14 and
-   above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and
-   Knot Resolver uses its "prefill" module to load the root zone
-   information.  See Appendix A for configuration details.  In addition
-   to providing simpler configuration of the LocalRoot mechanism, these
-   mechanisms support "falling back" to querying the root-servers
-   directly if they are unable to fetch the entire root zone.
+   Many of the queries from recursive resolvers to root servers get
+   answers that are referrals to other servers.  Malicious third parties
+   might be able to observe that traffic on the network between the
+   recursive resolver and root servers.
+
+
+   Caching the root zone data locally, commonly referred to as
+   "LocalRoot", provides "a method for the operator of a recursive
+   resolver to have a complete IANA root zone locally, and to hide
+   queries for the IANA root zone from outsiders.  The basic idea of a
+   LocalRoot resolver is to create and maintain an up-to-date IANA root
+   zone cache, and use that information when the recursive resolver
+   looks up root information.  This can be implemented using a number of
+   different techniques, but the net effect is the same: few, if any,
+   queries are sent to the actual DNS root zone.
+
+   Note that enabling LocalRoot in a resolver will probably have little
+   effect on getting faster responses to the stub resolver for good
+   queries on TLDs, because the TTL for most TLDs is usually long-lived
+   (on the order of a day or two) and thus are usually already in the
+   resolver's cache.  Negative answers from the root servers are also
+   cached in a similar fashion, though potentially for a shorter time.
+
+   Two potential mechanisms are documented herein for achieving
+   LocalRoot functionality: having the resolver pre-fetch the root zone
+   at regular intervals and pre-populate its cache with information, or
+   by running an authoritative server in parallel and pointing the
+   recursive resolver at this server's IP address as the source of root
+   zone data.  The net effect of using either of these techniques should
+   be nearly indistinguishable to that of a non-Localroot resolver to a
+   client.
+
+   A different approach to partially mitigating some of the problems
+   that a LocalRoot resolver solves can be achieved using "Aggressive
+   Use of DNSSEC-Validated Cache" [RFC8198] functionality.
+
+   Readers are expected to be familiar with [RFC8499].
 
 2.  Conventions and Definitions
 
@@ -153,7 +206,12 @@ Table of Contents
 
    [RFC8806] is an Informational document that describes a mechanism
    that resolver operators can use to improve the performance,
-   reliability, and privacy of their resolvers.
+   reliability, and privacy of their resolvers.  This document concludes
+   the experiment [RFC8806] was a success.  The reality is that secure
+   DNS resolution using a local copy of the IANA root zone is possible
+   because technologies like DNSSEC and ZONEMD [RFC8976] allow for the
+   contents to be fetched from any location and subsequently verified
+   and used within validating resolvers.
 
    This document:
 
@@ -165,8 +223,14 @@ Table of Contents
    3.  RECOMMENDS that resolver implementations enable this behavior by
        default. and
 
-   4.  REQUIRES that [RFC8976] be used to validate the zone information
-       before loading it.
+   4.  REQUIRES that [RFC8976] be used to validate the IANA root zone
+       information before loading it.
+
+   5.  Adds a mechanism for priming the list of places for fetching root
+       zone data.
+
+   6.  Adds protocol steps for ensuring resolution stability and
+       resiliency.
 
 4.  Changes from RFC8806
 
@@ -201,18 +265,140 @@ Table of Contents
    This behavior should apply to all general-purpose recursive resolvers
    used on the public Internet.
 
-6.  Operational Considerations
+6.  Resolver Requirements
+
+   In order to implement the mechanism described in this document:
+
+   *  The system MUST be able to validate the contents of the root zone
+      using ZONEMD [RFC8976], which also requires supporting DNSSEC for
+      verifying the root zone's ZONEMD record.
+
+   *  The system MUST have an up-to-date copy of the public part of the
+      Key Signing Key (KSK) [RFC4033] used to sign the DNS root.
+
+   *  The system MUST be able to retrieve a copy of the entire root zone
+      (including all DNSSEC-related records) Section 7.2.
+
+   *  The system MUST be able to fall back to querying the authoritative
+      root servers whenever the local copy of the root zone data is
+      unavailable or has been deemed stale Section 7.2.
+
+   A corollary of the above list is that a resolver running LocalRoot
+   MUST return equivalent answers about the DNS root or any other part
+   of the DNS as if it was not operating as a LocalRoot.
+
+7.  Functionality of a LocalRoot enabled resolver
+
+   The functionality of LocalRoot enabled resolver includes:
+
+   1.  Consulting the list of publication points for DNS root zone data
+       Section 7.1.
+
+   2.  Downloading and refreshing the root zone data from a publication
+       point Section 7.2.
+
+   3.  Integrating and serving the data while performing DNS resolutions
+       Section 8
+
+7.1.  Consulting the list of IANA DNS root data publication points
 
    In order for the [RFC8806] mechanism to be effective, a resolver must
-   be able to fetch and redistribute the records from the entire root
-   zone.  This is currently usually performed through AXFR ([RFC5936]).
-   In order for AXFR to work, the resolver must be able to use TCP
-   (which is already required by [RFC7766]).
+   be able to fetch the contents of the entire IANA root zone.
 
-   Resolvers MAY allow fetching this information via HTTPS.  Where
-   possible, HTTPS should be preferred as it will allow for compression
-   as well as the possibility of using low-cost, well-distributed CDNs
-   to distribute the zone files.
+   IANA will maintain and publish a list of IANA DNS root zone sources
+   at TBD-URL.  This list of "IANA root zone data publication points"
+   may be used when downloading and refreshing the root zone data, as
+   described in Section 7.2.  Specifically, the IANA DNS root zone
+   publication list can be used by the resolver software directly, by
+   the operating system, by a network operator when configuring a
+   resolver.
+
+   The contents of the IANA DNS root publication points file MUST be
+   verified as to its integrity as having come from IANA and MUST be
+   verified as complete.
+
+   The format of the IANA root zone data publication points list will be
+   a newline delimited file of URLs [RFC2056].  URLs in the list may
+   include any protocol capable of transferring DNS zone data, including
+   AXFR [RFC5936], HTTPS [RFC9110], etc.
+
+   Any URLs that reference an unknown transfer protocol SHOULD be
+   discarded.  If after filtering the list there are no acceptable list
+   elements left, the resolver MUST revert to using regular DNS queries
+   to the IANA root zone instead of operating as a LocalRoot.
+
+   (ED: likely drop or move ) This is currently usually performed
+   through AXFR ([RFC5936]) and MAY continue doing so.  Resolvers also
+   MAY allow fetching this information via HTTPS.  Where possible, HTTPS
+   should be preferred as it allows for compression negotiation as well
+   as the possibility of using low-cost, well-distributed CDNs to
+   distribute the zone files.
+
+7.2.  Protocol steps
+
+   When initializing a resolvers' [RFC8806] mechanism, the following
+   steps MAY be used to implement the LocalRoot functionality.  Note
+   that as long as the desired effect of performing normal DNS
+   resolution remains stable when combined with LocalRoot functionality,
+   other implementations MAY be used.
+
+   1.  The resolver should use one of the following sources to obtain a
+       list of locations where the current IANA root zone may be
+       available from:
+
+       a.  Use a locally configured list of sources from which to fetch
+       a copy of the IANA root zone.  b.  Use a list of sources
+       distributed with the resolver software itself.  c.  Download a
+       copy of available sources from the IANA using the sources
+       describe in Section 7.1.
+
+   2.  The resolver MUST select one of the available sources from step
+       1, and from it retrieve a current copy of the IANA root zone.
+
+   3.  If the resolver failed to retrieve the IANA root zone content in
+       step 2, and there are other available sources from available
+       sources from step 1, it SHOULD attempt to retrieve the IANA root
+       zone from that list.  If the resolver has exhausted the list of
+       sources, it SHOULD stop attempting to download the IANA root zone
+       and MUST fall back to using regular DNS mechanisms for performing
+       DNS resolutions.  Upon a failure, but before exhausting the list
+       of available IANA root zone sources, the resolver MAY choose to
+       cease attempting download the IANA root zone and if so it MUST
+       fall back to using regular DNS mechanisms for performing DNS
+       resolutions.
+
+   4.  Having successfully downloaded a copy of the IANA root zone, the
+       resolver MUST verify the contents of the IANA root zone using the
+       ZONEMD [RFC8976] record contained within it.  Note that this
+       REQUIRES verification of the ZONEMD record using DNSSEC [BCP237]
+       and the configured root key trust anchor.  Once the zone data has
+       been verified as being the IANA root zone, the resolver can begin
+       operation using the steps defined in [RFC8806] can be followed.
+       The contents of the fetched zone MUST NOT be used until after
+       ZONEMD verification is complete and successful.
+
+   /* ED(WH): I think this must be a biz and actually replace 8806,
+   because other 8806 is an experimental protocol still */
+
+   1.  The resolver MUST check the sources in step 1 at a regular
+       interval to identify when a new copy of the IANA root zone is
+       available.  This internal MAY be configurable and SHOULD default
+       to 1 hour.  When a resolver has detected that a new copy of the
+       IANA root zone is available, the resolver should consider its
+       copy stale and MUST start at step 1 to obtain a new zone.
+       Resolvers MAY check multiple sources to ensure one source has not
+       fallen significantly behind in its copy of the IANA root zone.
+       Resolvers MUST have an upper limit beyond which if a new copy is
+       not available it will revert to using regular DNS queries to the
+       IANA root zone instead of continuing to use the previously
+       downloaded copy.  This upper limit stale value MAY be
+       configurable and SHOULD default to 1 day.  Once the stale timer
+       has been reached, the resolver may resume [RFC8806] operations
+       once a fresh copy can be obtained after restarting at step 1.
+
+7.3.  Integrating root zone data into the resolution process
+
+8.  Operational Considerations
 
    /* ED (WH): I don't think we can get away without describing how/
    where to pull this information from at some point.  The ICANN https
@@ -228,17 +414,13 @@ Table of Contents
    of data that hosting it on multiple CDNs should be trivial.... but, I
    also believe that this topic should be discussed with the WG. */
 
-   Resolvers MUST validate the contents of the zone before using it,
-   including validating the ZONEMD record, using the mechanism in
-   [RFC8976].
-
    /* Ed (WK): We might want to add some more discussions around failure
    handling, but, 1: [RFC8806] already covers much of this and 2: "don't
    teach your grandmother to suck eggs" - implementations already handle
    this, so let's not try to overspecify or over-constrain what they do.
    */
 
-7.  Security Considerations
+9.  Security Considerations
 
    There are areas of potential concern that are mitigated to some
    extent by using this mechanism.
@@ -269,22 +451,43 @@ Table of Contents
    longer than the typical TTL records within the zone [CACHEME]
    [LOCALROOTPRIVACY].
 
-8.  IANA Considerations
+10.  IANA Considerations
 
    This document has no IANA actions.
 
-9.  References
+11.  References
 
-9.1.  Normative References
+11.1.  Normative References
+
+   [BCP237]   Best Current Practice 237,
+              <https://www.rfc-editor.org/info/bcp237>.
+              At the time of writing, this BCP comprises the following:
+
+              Hoffman, P., "DNS Security Extensions (DNSSEC)", BCP 237,
+              RFC 9364, DOI 10.17487/RFC9364, February 2023,
+              <https://www.rfc-editor.org/info/rfc9364>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+   [RFC4033]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
+              Rose, "DNS Security Introduction and Requirements",
+              RFC 4033, DOI 10.17487/RFC4033, March 2005,
+              <https://www.rfc-editor.org/rfc/rfc4033>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC8198]  Fujiwara, K., Kato, A., and W. Kumari, "Aggressive Use of
+              DNSSEC-Validated Cache", RFC 8198, DOI 10.17487/RFC8198,
+              July 2017, <https://www.rfc-editor.org/rfc/rfc8198>.
+
+   [RFC8499]  Hoffman, P., Sullivan, A., and K. Fujiwara, "DNS
+              Terminology", RFC 8499, DOI 10.17487/RFC8499, January
+              2019, <https://www.rfc-editor.org/rfc/rfc8499>.
 
    [RFC8806]  Kumari, W. and P. Hoffman, "Running a Root Server Local to
               a Resolver", RFC 8806, DOI 10.17487/RFC8806, June 2020,
@@ -295,11 +498,7 @@ Table of Contents
               DOI 10.17487/RFC8976, February 2021,
               <https://www.rfc-editor.org/rfc/rfc8976>.
 
-   [RFC9364]  Hoffman, P., "DNS Security Extensions (DNSSEC)", BCP 237,
-              RFC 9364, DOI 10.17487/RFC9364, February 2023,
-              <https://www.rfc-editor.org/rfc/rfc9364>.
-
-9.2.  Informative References
+11.2.  Informative References
 
    [BIND-MIRROR]
               "BIND 9 Mirror Zones", n.d.,
@@ -321,6 +520,10 @@ Table of Contents
    [QNAMEMIN] "DNS Query Privacy", n.d.,
               <https://www.potaroo.net/ispcol/2019-08/qmin.html>.
 
+   [RFC2056]  Denenberg, R., Kunze, J., and D. Lynch, "Uniform Resource
+              Locators for Z39.50", RFC 2056, DOI 10.17487/RFC2056,
+              November 1996, <https://www.rfc-editor.org/rfc/rfc2056>.
+
    [RFC5936]  Lewis, E. and A. Hoenes, Ed., "DNS Zone Transfer Protocol
               (AXFR)", RFC 5936, DOI 10.17487/RFC5936, June 2010,
               <https://www.rfc-editor.org/rfc/rfc5936>.
@@ -329,6 +532,11 @@ Table of Contents
               D. Wessels, "DNS Transport over TCP - Implementation
               Requirements", RFC 7766, DOI 10.17487/RFC7766, March 2016,
               <https://www.rfc-editor.org/rfc/rfc7766>.
+
+   [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., "HTTP Semantics", STD 97, RFC 9110,
+              DOI 10.17487/RFC9110, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9110>.
 
    [RFC9156]  Bortzmeyer, S., Dolmans, R., and P. Hoffman, "DNS Query
               Name Minimisation to Improve Privacy", RFC 9156,
@@ -354,7 +562,9 @@ Acknowledgments
 
    In addition, one of the authors would like to once again thank the
    bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing
-   the soundtrack to which this was written.
+   the soundtrack to which this was written.  Another author recently
+   discovered the band "Trampled by Turtles" and has submitted it as a
+   nomination for the best-band-name-ever award.
 
 Appendix A: Example Configurations
 
@@ -368,7 +578,7 @@ Appendix A: Example Configurations
 
    Yes, we are fully aware of the circular dependency of trying to
    resolve e.g www.internic.net when bootstrapping.  More discussion on
-   serving the root zone over HTTP by IP will be added later. */
+   serving the IANA root zone over HTTP by IP will be added later. */
 
 ISC BIND 9.14 and above
 
@@ -389,8 +599,8 @@ Knot Resolver
    prefill.html?highlight=cache%20prefilling) documentation for more
    information.
 
-   The following example configuration will prefill the root zone using
-   HTTPS:
+   The following example configuration will prefill the IANA root zone
+   using HTTPS:
 
  modules.load('prefill')
  prefill.config({
@@ -407,8 +617,8 @@ Unbound 1.9 and above
    (https://unbound.docs.nlnetlabs.nl/en/latest/manpages/
    unbound.conf.html#unbound-conf-auth-url) configuration.
 
-   The following example configuration will prefill the root zone using
-   HTTPS:
+   The following example configuration will prefill the IANA root zone
+   using HTTPS:
 
    auth-zone:
      name: "."

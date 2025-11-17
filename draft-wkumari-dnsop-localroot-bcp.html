@@ -4,15 +4,30 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Making LocalRoot a Best Current Practice</title>
+<title>Running a Root Server Local to a Resolver</title>
 <meta content="Warren Kumari" name="author">
 <meta content="Wes Hardaker" name="author">
 <meta content="Jim Reid" name="author">
 <meta content="Geoff Huston" name="author">
 <meta content="David Conrad" name="author">
 <meta content="
-       RFC 8806 (often called &quot;LocalRoot&quot;) defines a mechanism whereby a recursive
-resolver can fetch the contents of an entire zone and place this information
+       Many DNS recursive resolver operators wish to prevent snooping by
+third parties of requests sent to DNS root servers.  In addition, some
+DNS recursive resolvers have longer-than-desired round-trip times to
+the closest DNS root server; those resolvers may have difficulty
+getting responses from the root servers, such as during a network
+attack.  Resolvers can solve both of these issues by serving or
+pre-caching a copy of the full root zone on the same server or within
+the resolver
+software. 
+       This document shows how to fetch, cache and maintain such a copy of the root
+zone, how to detect if it becomes stale, and mechanisms for handling
+error states.  This specification is designed to increase the
+resiliency, privacy and efficiency of DNS resolver services. 
+       This document obsoletes RFC 8806. 
+       /* OLD abstract:
+RFC 8806 (often called &quot;LocalRoot&quot;) defines a mechanism whereby a recursive
+resolver can fetch the contents of an entire IANA root zone and place this information
 into the resolver's cache. 
        This has several benefits, including increased reliability, increased
 performance, improved privacy, and decreased or mitigation of the effect of
@@ -23,6 +38,7 @@ resolver software simplify this configuration, and further suggests that
 configuration becomes the default. 
        This document updates Section 2 of RFC8806 by relaxing the requirement that
 implementations  MUST  run an authoritative service. 
+       */ 
        /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication): 
        
            I started writing this as rfc8806-bis, but as I did so I realized that it is
@@ -39,7 +55,7 @@ use zone checksums  .
          
        
     " name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="DNS" name="keyword">
 <meta content="DNSSEC" name="keyword">
 <meta content="zone cut" name="keyword">
@@ -47,18 +63,17 @@ use zone checksums  .
 <meta content="referral" name="keyword">
 <meta content="draft-wkumari-dnsop-localroot-bcp-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.4.0
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.5
-    setuptools 80.9.0
     wcwidth 0.2.14
 -->
 <link href="draft-wkumari-dnsop-localroot-bcp.xml" rel="alternate" type="application/rfc+xml">
@@ -1077,12 +1092,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">Making LocalRoot a Best Current Practice</td>
-<td class="right">October 2025</td>
+<td class="center">Running a Root Server Local to a Resolve</td>
+<td class="right">November 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 19 April 2026</td>
+<td class="center">Expires 21 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1098,12 +1113,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-16" class="published">16 October 2025</time>
+<time datetime="2025-11-17" class="published">17 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-19">19 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-21">21 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1129,35 +1144,51 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">Making LocalRoot a Best Current Practice</h1>
+<h1 id="title">Running a Root Server Local to a Resolver</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
-resolver can fetch the contents of an entire zone and place this information
-into the resolver's cache.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This has several benefits, including increased reliability, increased
+<p id="section-abstract-1">Many DNS recursive resolver operators wish to prevent snooping by
+third parties of requests sent to DNS root servers.  In addition, some
+DNS recursive resolvers have longer-than-desired round-trip times to
+the closest DNS root server; those resolvers may have difficulty
+getting responses from the root servers, such as during a network
+attack.  Resolvers can solve both of these issues by serving or
+pre-caching a copy of the full root zone on the same server or within
+the resolver
+software.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document shows how to fetch, cache and maintain such a copy of the root
+zone, how to detect if it becomes stale, and mechanisms for handling
+error states.  This specification is designed to increase the
+resiliency, privacy and efficiency of DNS resolver services.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">This document obsoletes RFC 8806.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">/* OLD abstract:
+RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
+resolver can fetch the contents of an entire IANA root zone and place this information
+into the resolver's cache.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
+<p id="section-abstract-5">This has several benefits, including increased reliability, increased
 performance, improved privacy, and decreased or mitigation of the effect of
-some types of DoS attacks.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">While the majority of DNS resolver implementations natively support RFC 8806,
+some types of DoS attacks.<a href="#section-abstract-5" class="pilcrow">¶</a></p>
+<p id="section-abstract-6">While the majority of DNS resolver implementations natively support RFC 8806,
 it remains tricky to configure and maintain. This document recommends that DNS
 resolver software simplify this configuration, and further suggests that
-configuration becomes the default.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
-<p id="section-abstract-4">This document updates Section 2 of RFC8806 by relaxing the requirement that
-implementations <span class="bcp14">MUST</span> run an authoritative service.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
-<p id="section-abstract-5">/* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):<a href="#section-abstract-5" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-abstract-6">
-<li id="section-abstract-6.1">
-          <p id="section-abstract-6.1.1">I started writing this as rfc8806-bis, but as I did so I realized that it is
-likely better as a standalone document.<a href="#section-abstract-6.1.1" class="pilcrow">¶</a></p>
+configuration becomes the default.<a href="#section-abstract-6" class="pilcrow">¶</a></p>
+<p id="section-abstract-7">This document updates Section 2 of RFC8806 by relaxing the requirement that
+implementations <span class="bcp14">MUST</span> run an authoritative service.<a href="#section-abstract-7" class="pilcrow">¶</a></p>
+<p id="section-abstract-8">*/<a href="#section-abstract-8" class="pilcrow">¶</a></p>
+<p id="section-abstract-9">/* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):<a href="#section-abstract-9" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-abstract-10">
+<li id="section-abstract-10.1">
+          <p id="section-abstract-10.1.1">I started writing this as rfc8806-bis, but as I did so I realized that it is
+likely better as a standalone document.<a href="#section-abstract-10.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-abstract-6.2">
-          <p id="section-abstract-6.2.1">This document recommends ("Operation Considerations") using HTTP(S) for
+        <li id="section-abstract-10.2">
+          <p id="section-abstract-10.2.1">This document recommends ("Operation Considerations") using HTTP(S) for
 fetching the zone. We still need to add text to cover priming and discuss the
 bootstrapping issue. In addition, we need to add text about loadbalancing and
 fetching from multiple sources. Much of the premise behind RFC8806 is that it
 doesn't matter where you fetch the zone from, as long as you validate it, and
 use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.
-*/<a href="#section-abstract-6.2.1" class="pilcrow">¶</a></p>
+*/<a href="#section-abstract-10.2.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 </section>
@@ -1196,7 +1227,7 @@ use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</spa
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1241,44 +1272,61 @@ use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</spa
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-applicability" class="internal xref">Applicability</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-operational-considerations" class="internal xref">Operational Considerations</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-resolver-requirements" class="internal xref">Resolver Requirements</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-functionality-of-a-localroo" class="internal xref">Functionality of a LocalRoot enabled resolver</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-consulting-the-list-of-iana" class="internal xref">Consulting the list of IANA DNS root data publication points</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-protocol-steps" class="internal xref">Protocol steps</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-integrating-root-zone-data-" class="internal xref">Integrating root zone data into the resolution process</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-operational-considerations" class="internal xref">Operational Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-appendix-a-example-configur" class="internal xref">Appendix A: Example Configurations</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
-                <p id="section-toc.1-1.11.2.1.1"><a href="#appendix-B.1" class="auto internal xref"></a><a href="#name-isc-bind-914-and-above" class="internal xref">ISC BIND 9.14 and above</a></p>
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
-                <p id="section-toc.1-1.11.2.2.1"><a href="#appendix-B.2" class="auto internal xref"></a><a href="#name-knot-resolver" class="internal xref">Knot Resolver</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
-                <p id="section-toc.1-1.11.2.3.1"><a href="#appendix-B.3" class="auto internal xref"></a><a href="#name-unbound-19-and-above" class="internal xref">Unbound 1.9 and above</a></p>
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-appendix-a-example-configur" class="internal xref">Appendix A: Example Configurations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-B.1" class="auto internal xref"></a><a href="#name-isc-bind-914-and-above" class="internal xref">ISC BIND 9.14 and above</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-B.2" class="auto internal xref"></a><a href="#name-knot-resolver" class="internal xref">Knot Resolver</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
+                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-B.3" class="auto internal xref"></a><a href="#name-unbound-19-and-above" class="internal xref">Unbound 1.9 and above</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1289,22 +1337,45 @@ use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</spa
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1"><span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> provides "a method for the operator of a recursive resolver to have
-a complete root zone locally, and to hide queries for the root zone from
-outsiders.  The basic idea is to create an up-to-date root zone service on the
-same host as the recursive server, and use that service when the recursive
-resolver looks up root information."<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">While <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> behavior can be achieved by "manually" configuring software
-that acts as a secondary server for the root-zone (see <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> Section B.1.
-Example Configuration: BIND 9.12 and Section B.2 Example Configuration: Unbound
-1.8), most resolver implementations now support simpler, and more robust,
-configuration mechanisms to enable this support. For example, ISC BIND 9.14 and
-above supports "mirror" zones, Unbound 1.9 supports "auth-zone", and Knot
-Resolver uses its "prefill" module to load the root zone information. See
-Appendix A for configuration details. In addition to providing simpler
-configuration of the LocalRoot mechanism, these mechanisms support "falling
-back" to querying the root-servers directly if they are unable to fetch the
-entire root zone.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-1">DNS recursive resolvers have to provide answers to all queries from
+their clients, even those for domain names that do not exist.  For
+each queried name that is within a top-level domain (TLD) that is not
+in the recursive resolver's cache, the resolver must send a query to
+a root server to get the information for that TLD or to find out that
+the TLD does not exist.  Research shows that the vast majority of
+queries going to the root are for names that do not exist in the root
+zone.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Many of the queries from recursive resolvers to root servers get
+answers that are referrals to other servers.  Malicious third parties
+might be able to observe that traffic on the network between the
+recursive resolver and root servers.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3"></p>
+<p id="section-1-4">Caching the root zone data locally, commonly referred to as
+"LocalRoot", provides "a method for the operator of a recursive
+resolver to have a complete IANA root zone locally, and to hide
+queries for the IANA root zone from outsiders.  The basic idea of a
+LocalRoot resolver is to create and maintain an up-to-date IANA root
+zone cache, and use that information when the recursive resolver looks
+up root information.  This can be implemented using a number of
+different techniques, but the net effect is the same: few, if any,
+queries are sent to the actual DNS root zone.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Note that enabling LocalRoot in a resolver will probably have little
+effect on getting faster responses to the stub resolver for good
+queries on TLDs, because the TTL for most TLDs is usually long-lived
+(on the order of a day or two) and thus are usually already in the
+resolver's cache.  Negative answers from the root servers are also
+cached in a similar fashion, though potentially for a shorter time.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">Two potential mechanisms are documented herein for achieving LocalRoot
+functionality: having the resolver pre-fetch the root zone at regular
+intervals and pre-populate its cache with information, or by running
+an authoritative server in parallel and pointing the recursive
+resolver at this server's IP address as the source of root zone data.
+The net effect of using either of these techniques should be nearly
+indistinguishable to that of a non-Localroot resolver to a client.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-7">A different approach to partially mitigating some of the problems that
+a LocalRoot resolver solves can be achieved using "Aggressive Use of
+DNSSEC-Validated Cache" <span>[<a href="#RFC8198" class="cite xref">RFC8198</a>]</span> functionality.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-8">Readers are expected to be familiar with <span>[<a href="#RFC8499" class="cite xref">RFC8499</a>]</span>.<a href="#section-1-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="definitions">
@@ -1325,7 +1396,12 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       </h2>
 <p id="section-3-1"><span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> is an Informational document that describes a mechanism that
 resolver operators can use to improve the performance, reliability, and privacy
-of their resolvers.<a href="#section-3-1" class="pilcrow">¶</a></p>
+of their resolvers.  This document concludes the experiment
+<span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> was a success.  The reality is that secure DNS resolution
+using a local copy of the IANA root zone is possible because
+technologies like DNSSEC and ZONEMD <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> allow for the contents
+to be fetched from any location and subsequently verified and used
+within validating resolvers.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">This document:<a href="#section-3-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3-3">
 <li id="section-3-3.1">
@@ -1339,8 +1415,14 @@ option to enable or disable functionality, and<a href="#section-3-3.2.1" class="
           <p id="section-3-3.3.1">RECOMMENDS that resolver implementations enable this behavior by default. and<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-3-3.4">
-          <p id="section-3-3.4.1">REQUIRES that <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> be used to validate the zone information
+          <p id="section-3-3.4.1">REQUIRES that <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> be used to validate the IANA root zone information
 before loading it.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-3.5">
+          <p id="section-3-3.5.1">Adds a mechanism for priming the list of places for fetching root zone data.<a href="#section-3-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-3.6">
+          <p id="section-3-3.6.1">Adds protocol steps for ensuring resolution stability and resiliency.<a href="#section-3-3.6.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 </section>
@@ -1388,46 +1470,200 @@ zone without modification.<a href="#section-4-3" class="pilcrow">¶</a></p>
 the public Internet.<a href="#section-5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="operational-considerations">
+<div id="resolver-requirements">
 <section id="section-6">
-      <h2 id="name-operational-considerations">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
+      <h2 id="name-resolver-requirements">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-resolver-requirements" class="section-name selfRef">Resolver Requirements</a>
       </h2>
-<p id="section-6-1">In order for the <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> mechanism to be effective, a resolver
-must be able to fetch and redistribute the records from the entire root
-zone.  This is currently usually performed through AXFR
-(<span>[<a href="#RFC5936" class="cite xref">RFC5936</a>]</span>). In order for AXFR to work, the resolver must be able to
-use TCP (which is already required by <span>[<a href="#RFC7766" class="cite xref">RFC7766</a>]</span>).<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">Resolvers <span class="bcp14">MAY</span> allow fetching this information via HTTPS. Where possible, HTTPS
-should be preferred as it will allow for compression as well as the possibility
-of using low-cost, well-distributed CDNs to distribute the zone files.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">/* ED (WH): I don't think we can get away without describing how/where to pull
+<p id="section-6-1">In order to implement the mechanism described in this document:<a href="#section-6-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6-2.1">
+          <p id="section-6-2.1.1">The system <span class="bcp14">MUST</span> be able to validate the contents of the root zone
+using ZONEMD <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>, which also requires supporting
+DNSSEC for verifying the root zone's ZONEMD record.<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.2">
+          <p id="section-6-2.2.1">The system <span class="bcp14">MUST</span> have an up-to-date copy of the public part of the
+Key Signing Key (KSK) <span>[<a href="#RFC4033" class="cite xref">RFC4033</a>]</span> used to sign the DNS root.<a href="#section-6-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.3">
+          <p id="section-6-2.3.1">The system <span class="bcp14">MUST</span> be able to retrieve a copy of the entire root zone
+(including all DNSSEC-related records) <a href="#protocol-steps" class="auto internal xref">Section 7.2</a>.<a href="#section-6-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.4">
+          <p id="section-6-2.4.1">The system <span class="bcp14">MUST</span> be able to fall back to querying the authoritative
+root servers whenever the local copy of the root zone
+data is unavailable or has been deemed stale <a href="#protocol-steps" class="auto internal xref">Section 7.2</a>.<a href="#section-6-2.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-6-3">A corollary of the above list is that a resolver running LocalRoot
+<span class="bcp14">MUST</span> return equivalent answers about the DNS root or any other part of
+the DNS as if it was not operating as a LocalRoot.<a href="#section-6-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="functionality-of-a-localroot-enabled-resolver">
+<section id="section-7">
+      <h2 id="name-functionality-of-a-localroo">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-functionality-of-a-localroo" class="section-name selfRef">Functionality of a LocalRoot enabled resolver</a>
+      </h2>
+<p id="section-7-1">The functionality of LocalRoot enabled resolver includes:<a href="#section-7-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7-2">
+<li id="section-7-2.1">
+          <p id="section-7-2.1.1">Consulting the list of publication points for DNS root zone data
+<a href="#iana-root-zone-list" class="auto internal xref">Section 7.1</a>.<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-7-2.2">
+          <p id="section-7-2.2.1">Downloading and refreshing the root zone data from a publication
+point <a href="#protocol-steps" class="auto internal xref">Section 7.2</a>.<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-7-2.3">
+          <p id="section-7-2.3.1">Integrating and serving the data while performing DNS resolutions
+<a href="#integrating-root-zone-data" class="auto internal xref">Section 8</a><a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<div id="iana-root-zone-list">
+<section id="section-7.1">
+        <h3 id="name-consulting-the-list-of-iana">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-consulting-the-list-of-iana" class="section-name selfRef">Consulting the list of IANA DNS root data publication points</a>
+        </h3>
+<p id="section-7.1-1">In order for the <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> mechanism to be effective, a resolver must be
+able to fetch the contents of the entire IANA root zone.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">IANA will maintain and publish a list of IANA DNS root zone sources at
+TBD-URL.  This list of "IANA root zone data publication points" may be
+used when downloading and refreshing the root zone data, as described
+in <a href="#protocol-steps" class="auto internal xref">Section 7.2</a>.  Specifically, the IANA DNS root zone
+publication list can be used by the resolver software directly, by the
+operating system, by a network operator when configuring a resolver.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">The contents of the IANA DNS root publication points file <span class="bcp14">MUST</span> be
+verified as to its integrity as having come from IANA and <span class="bcp14">MUST</span> be
+verified as complete.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-4">The format of the IANA root zone data publication points list will be
+a newline delimited file of URLs <span>[<a href="#RFC2056" class="cite xref">RFC2056</a>]</span>.  URLs in the list may
+include any protocol capable of transferring DNS zone data, including
+AXFR <span>[<a href="#RFC5936" class="cite xref">RFC5936</a>]</span>, HTTPS <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, etc.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
+<p id="section-7.1-5">Any URLs that reference an unknown transfer protocol <span class="bcp14">SHOULD</span> be
+discarded.  If after filtering the list there are no acceptable list
+elements left, the resolver <span class="bcp14">MUST</span> revert to using regular DNS queries
+to the IANA root zone instead of operating as a LocalRoot.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
+<p id="section-7.1-6">(ED: likely drop or move ) This is currently usually performed through
+AXFR (<span>[<a href="#RFC5936" class="cite xref">RFC5936</a>]</span>) and <span class="bcp14">MAY</span> continue doing so.  Resolvers also <span class="bcp14">MAY</span>
+allow fetching this information via HTTPS. Where possible, HTTPS
+should be preferred as it allows for compression negotiation as well
+as the possibility of using low-cost, well-distributed CDNs to
+distribute the zone files.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="protocol-steps">
+<section id="section-7.2">
+        <h3 id="name-protocol-steps">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-protocol-steps" class="section-name selfRef">Protocol steps</a>
+        </h3>
+<p id="section-7.2-1">When initializing a resolvers' <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> mechanism, the following
+steps <span class="bcp14">MAY</span> be used to implement the LocalRoot functionality.  Note that
+as long as the desired effect of performing normal DNS resolution
+remains stable when combined with LocalRoot functionality, other
+implementations <span class="bcp14">MAY</span> be used.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7.2-2">
+<li id="section-7.2-2.1">
+            <p id="section-7.2-2.1.1">The resolver should use one of the following sources to obtain a
+list of locations where the current IANA root zone may be available
+from:<a href="#section-7.2-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-7.2-2.1.2">
+a. Use a locally configured list of sources from which to fetch a
+    copy of the IANA root zone.
+ b. Use a list of sources distributed with the resolver software itself.
+ c. Download a copy of available sources from the IANA using the
+    sources describe in <a href="#iana-root-zone-list" class="auto internal xref">Section 7.1</a>.<a href="#section-7.2-2.1.2" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-7.2-2.2">
+            <p id="section-7.2-2.2.1">The resolver <span class="bcp14">MUST</span> select one of the available sources from step 1,
+and from it retrieve a current copy of the IANA root zone.<a href="#section-7.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-7.2-2.3">
+            <p id="section-7.2-2.3.1">If the resolver failed to retrieve the IANA root zone content in step 2,
+and there are other available sources from available sources from
+step 1, it <span class="bcp14">SHOULD</span> attempt to retrieve the IANA root zone from that list.
+If the resolver has exhausted the list of sources, it <span class="bcp14">SHOULD</span> stop
+attempting to download the IANA root zone and <span class="bcp14">MUST</span> fall back to using
+regular DNS mechanisms for performing DNS resolutions.  Upon a
+failure, but before exhausting the list of available IANA root zone
+sources, the resolver <span class="bcp14">MAY</span> choose to cease attempting download the
+IANA root zone and if so it <span class="bcp14">MUST</span> fall back to using regular DNS
+mechanisms for performing DNS resolutions.<a href="#section-7.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-7.2-2.4">
+            <p id="section-7.2-2.4.1">Having successfully downloaded a copy of the IANA root zone, the
+resolver <span class="bcp14">MUST</span> verify the contents of the IANA root zone using the ZONEMD
+<span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> record contained within it.  Note that this REQUIRES
+verification of the ZONEMD record using DNSSEC  <span>[<a href="#BCP237" class="cite xref">BCP237</a>]</span> and the
+configured root key trust anchor.  Once the zone data has been
+verified as being the IANA root zone, the resolver can begin
+operation using the steps defined in <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> can be followed.
+The contents of the fetched zone <span class="bcp14">MUST NOT</span> be used until after
+ZONEMD verification is complete and successful.<a href="#section-7.2-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-7.2-3">/* ED(WH): I think this must be a biz and actually replace 8806,
+   because other 8806 is an experimental protocol still */<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7.2-4">
+<li id="section-7.2-4.1">
+            <p id="section-7.2-4.1.1">The resolver <span class="bcp14">MUST</span> check the sources in step 1 at a regular interval
+to identify when a new copy of the IANA root zone is available.  This
+internal <span class="bcp14">MAY</span> be configurable and <span class="bcp14">SHOULD</span> default to 1 hour. When a
+resolver has detected that a new copy of the IANA root zone is
+available, the resolver should consider its copy stale and <span class="bcp14">MUST</span>
+start at step 1 to obtain a new zone.  Resolvers <span class="bcp14">MAY</span> check multiple
+sources to ensure one source has not fallen significantly behind in
+its copy of the IANA root zone.  Resolvers <span class="bcp14">MUST</span> have an upper limit
+beyond which if a new copy is not available it will revert to using
+regular DNS queries to the IANA root zone instead of continuing to use
+the previously downloaded copy.  This upper limit stale value <span class="bcp14">MAY</span>
+be configurable and <span class="bcp14">SHOULD</span> default to 1 day.  Once the stale timer
+has been reached, the resolver may resume <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> operations
+once a fresh copy can be obtained after restarting at step 1.<a href="#section-7.2-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
+<div id="integrating-root-zone-data-into-the-resolution-process">
+<section id="section-7.3">
+        <h3 id="name-integrating-root-zone-data-">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-integrating-root-zone-data-" class="section-name selfRef">Integrating root zone data into the resolution process</a>
+      </h3>
+</section>
+</div>
+</section>
+</div>
+<div id="integrating-root-zone-data">
+<section id="section-8">
+      <h2 id="name-operational-considerations">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
+      </h2>
+<p id="section-8-1">/* ED (WH): I don't think we can get away without describing how/where to pull
 this information from at some point.  The ICANN https servers are one source,
-or should resolver code bases use their own defined CDNs?<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">(WK): 100% agree. I personally think that this should be hosted on multiple
+or should resolver code bases use their own defined CDNs?<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">(WK): 100% agree. I personally think that this should be hosted on multiple
 CDNs, and that expecting a single server or service to always be available
 would be a massive mistake. But, I also don't think that resolvers should pull
 from their own CDNs
 - I don't want Acme Anvil and Resolvers (or their CDN!)  go out of business,
 and have Acme Resolvers fail. This is (I believe) a sufficiently small amount
 of data that hosting it on multiple CDNs should be trivial.... but, I also
-believe that this topic should be discussed with the WG. */<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">Resolvers <span class="bcp14">MUST</span> validate the contents of the zone before using it, including
-validating the ZONEMD record, using the mechanism in <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.<a href="#section-6-5" class="pilcrow">¶</a></p>
-<p id="section-6-6">/* Ed (WK): We might want to add some more discussions around failure handling,
+believe that this topic should be discussed with the WG. */<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">/* Ed (WK): We might want to add some more discussions around failure handling,
 but, 1:  <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> already covers much of this and 2: "don't teach your
 grandmother to suck eggs" - implementations already handle this, so let's not
-try to overspecify or over-constrain what they do. */<a href="#section-6-6" class="pilcrow">¶</a></p>
+try to overspecify or over-constrain what they do. */<a href="#section-8-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-7">
+<section id="section-9">
       <h2 id="name-security-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">There are areas of potential concern that are mitigated to some extent
-by using this mechanism.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">The issue of leakage of potentially sensitive information
+<p id="section-9-1">There are areas of potential concern that are mitigated to some extent
+by using this mechanism.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">The issue of leakage of potentially sensitive information
 that may be contained in the query name used in DNS queries. Most root
 servers (except b.root-servers.net) do not currently support queries
 over encrypted transports, resulting in query names that are visible
@@ -1442,63 +1678,79 @@ with Query Name Minimization, queries for non-existent names
 additional privacy leaks.  <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> eliminates the need for the
 resolver to perform specific queries to any root nameserver, and
 obviates any such consideration of query name leakage
-<span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">The final issue solved with LocalRoot is that when information is
+<span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-9-2" class="pilcrow">¶</a></p>
+<p id="section-9-3">The final issue solved with LocalRoot is that when information is
 always available locally, usage of it is no longer subject to DDoS
 attacks against the remote servers.  By having the answers effectively
 permanently in cache, no queries to the upstream service provider
 (such as root servers) are needed since <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> resolvers
 effectively always have a cached set of data that is considered fresh
 longer than the typical TTL records within the zone <span>[<a href="#CACHEME" class="cite xref">CACHEME</a>]</span>
-        <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
+        <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-9-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-8">
+<section id="section-10">
       <h2 id="name-iana-considerations">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">This document has no IANA actions.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-10-1">This document has no IANA actions.<a href="#section-10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-9">
+<section id="section-11">
       <h2 id="name-references">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-9.1">
+<section id="section-11.1">
         <h3 id="name-normative-references">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
+<dt id="BCP237">[BCP237]</dt>
+        <dd>
+<div class="refInstance">Best Current Practice 237, <span>&lt;<a href="https://www.rfc-editor.org/info/bcp237">https://www.rfc-editor.org/info/bcp237</a>&gt;</span>.<br><span>At the time of writing, this BCP comprises the following:</span>
+</div>
+<div class="refInstance" id="RFC9364">
+            <span class="refAuthor">Hoffman, P.</span>, <span class="refTitle">"DNS Security Extensions (DNSSEC)"</span>, <span class="seriesInfo">BCP 237</span>, <span class="seriesInfo">RFC 9364</span>, <span class="seriesInfo">DOI 10.17487/RFC9364</span>, <time datetime="2023-02" class="refDate">February 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9364">https://www.rfc-editor.org/info/rfc9364</a>&gt;</span>. </div>
+</dd>
+<dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC4033">[RFC4033]</dt>
+        <dd>
+<span class="refAuthor">Arends, R.</span>, <span class="refAuthor">Austein, R.</span>, <span class="refAuthor">Larson, M.</span>, <span class="refAuthor">Massey, D.</span>, and <span class="refAuthor">S. Rose</span>, <span class="refTitle">"DNS Security Introduction and Requirements"</span>, <span class="seriesInfo">RFC 4033</span>, <span class="seriesInfo">DOI 10.17487/RFC4033</span>, <time datetime="2005-03" class="refDate">March 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4033">https://www.rfc-editor.org/rfc/rfc4033</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8198">[RFC8198]</dt>
+        <dd>
+<span class="refAuthor">Fujiwara, K.</span>, <span class="refAuthor">Kato, A.</span>, and <span class="refAuthor">W. Kumari</span>, <span class="refTitle">"Aggressive Use of DNSSEC-Validated Cache"</span>, <span class="seriesInfo">RFC 8198</span>, <span class="seriesInfo">DOI 10.17487/RFC8198</span>, <time datetime="2017-07" class="refDate">July 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8198">https://www.rfc-editor.org/rfc/rfc8198</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8499">[RFC8499]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span>, <span class="refAuthor">Sullivan, A.</span>, and <span class="refAuthor">K. Fujiwara</span>, <span class="refTitle">"DNS Terminology"</span>, <span class="seriesInfo">RFC 8499</span>, <span class="seriesInfo">DOI 10.17487/RFC8499</span>, <time datetime="2019-01" class="refDate">January 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8499">https://www.rfc-editor.org/rfc/rfc8499</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8806">[RFC8806]</dt>
         <dd>
 <span class="refAuthor">Kumari, W.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Running a Root Server Local to a Resolver"</span>, <span class="seriesInfo">RFC 8806</span>, <span class="seriesInfo">DOI 10.17487/RFC8806</span>, <time datetime="2020-06" class="refDate">June 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8806">https://www.rfc-editor.org/rfc/rfc8806</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8976">[RFC8976]</dt>
-        <dd>
-<span class="refAuthor">Wessels, D.</span>, <span class="refAuthor">Barber, P.</span>, <span class="refAuthor">Weinberg, M.</span>, <span class="refAuthor">Kumari, W.</span>, and <span class="refAuthor">W. Hardaker</span>, <span class="refTitle">"Message Digest for DNS Zones"</span>, <span class="seriesInfo">RFC 8976</span>, <span class="seriesInfo">DOI 10.17487/RFC8976</span>, <time datetime="2021-02" class="refDate">February 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8976">https://www.rfc-editor.org/rfc/rfc8976</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9364">[RFC9364]</dt>
       <dd>
-<span class="refAuthor">Hoffman, P.</span>, <span class="refTitle">"DNS Security Extensions (DNSSEC)"</span>, <span class="seriesInfo">BCP 237</span>, <span class="seriesInfo">RFC 9364</span>, <span class="seriesInfo">DOI 10.17487/RFC9364</span>, <time datetime="2023-02" class="refDate">February 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9364">https://www.rfc-editor.org/rfc/rfc9364</a>&gt;</span>. </dd>
+<span class="refAuthor">Wessels, D.</span>, <span class="refAuthor">Barber, P.</span>, <span class="refAuthor">Weinberg, M.</span>, <span class="refAuthor">Kumari, W.</span>, and <span class="refAuthor">W. Hardaker</span>, <span class="refTitle">"Message Digest for DNS Zones"</span>, <span class="seriesInfo">RFC 8976</span>, <span class="seriesInfo">DOI 10.17487/RFC8976</span>, <time datetime="2021-02" class="refDate">February 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8976">https://www.rfc-editor.org/rfc/rfc8976</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-9.2">
+<section id="section-11.2">
         <h3 id="name-informative-references">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="BIND-MIRROR">[BIND-MIRROR]</dt>
@@ -1521,6 +1773,10 @@ longer than the typical TTL records within the zone <span>[<a href="#CACHEME" cl
         <dd>
 <span class="refTitle">"DNS Query Privacy"</span>, <span>n.d.</span>, <span>&lt;<a href="https://www.potaroo.net/ispcol/2019-08/qmin.html">https://www.potaroo.net/ispcol/2019-08/qmin.html</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC2056">[RFC2056]</dt>
+        <dd>
+<span class="refAuthor">Denenberg, R.</span>, <span class="refAuthor">Kunze, J.</span>, and <span class="refAuthor">D. Lynch</span>, <span class="refTitle">"Uniform Resource Locators for Z39.50"</span>, <span class="seriesInfo">RFC 2056</span>, <span class="seriesInfo">DOI 10.17487/RFC2056</span>, <time datetime="1996-11" class="refDate">November 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2056">https://www.rfc-editor.org/rfc/rfc2056</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC5936">[RFC5936]</dt>
         <dd>
 <span class="refAuthor">Lewis, E.</span> and <span class="refAuthor">A. Hoenes, Ed.</span>, <span class="refTitle">"DNS Zone Transfer Protocol (AXFR)"</span>, <span class="seriesInfo">RFC 5936</span>, <span class="seriesInfo">DOI 10.17487/RFC5936</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5936">https://www.rfc-editor.org/rfc/rfc5936</a>&gt;</span>. </dd>
@@ -1528,6 +1784,10 @@ longer than the typical TTL records within the zone <span>[<a href="#CACHEME" cl
 <dt id="RFC7766">[RFC7766]</dt>
         <dd>
 <span class="refAuthor">Dickinson, J.</span>, <span class="refAuthor">Dickinson, S.</span>, <span class="refAuthor">Bellis, R.</span>, <span class="refAuthor">Mankin, A.</span>, and <span class="refAuthor">D. Wessels</span>, <span class="refTitle">"DNS Transport over TCP - Implementation Requirements"</span>, <span class="seriesInfo">RFC 7766</span>, <span class="seriesInfo">DOI 10.17487/RFC7766</span>, <time datetime="2016-03" class="refDate">March 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7766">https://www.rfc-editor.org/rfc/rfc7766</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9110">[RFC9110]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9156">[RFC9156]</dt>
         <dd>
@@ -1554,9 +1814,11 @@ you, and you are not listed, please please let us know and we'll add you.<a href
 Paul Hoffman, Peter Koch, Matt Larson, Florian Obser, Swapneel Patnekar, Puneet
 Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and many many others for their
 comments, suggestions and input.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
-<p id="appendix-A-3">In addition, one of the authors would like to once again thank the bands
-"Infected Mushroom", "Kraftwerk", and "deadmau5" for providing the soundtrack
-to which this was written.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-3">In addition, one of the authors would like to once again thank the
+bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing
+the soundtrack to which this was written.  Another author recently
+discovered the band "Trampled by Turtles" and has submitted it as a
+nomination for the best-band-name-ever award.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="appendix-a-example-configurations">
@@ -1570,7 +1832,7 @@ exhaustive, and may not work with all versions of the software.<a href="#appendi
 <p id="appendix-B-2">/* Ed (WK): These examples are just to get started. We would appreciate
 contributions from the resolver operators.<a href="#appendix-B-2" class="pilcrow">¶</a></p>
 <p id="appendix-B-3">Yes, we are fully aware of the circular dependency of trying to resolve e.g
-www.internic.net when bootstrapping. More discussion on serving the root zone
+www.internic.net when bootstrapping. More discussion on serving the IANA root zone
 over HTTP by IP will be added later. */<a href="#appendix-B-3" class="pilcrow">¶</a></p>
 <div id="isc-bind-914-and-above">
 <section id="appendix-B.1">
@@ -1597,7 +1859,7 @@ zone "." {
 <p id="appendix-B.2-1">See the Knot Resolver <a href="https://knot-resolver.readthedocs.io/en/v5.0.1/modules-prefill.html?highlight=cache%20prefilling">Cache
 prefilling</a>
 documentation for more information.<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-2">The following example configuration will prefill the root zone using HTTPS:<a href="#appendix-B.2-2" class="pilcrow">¶</a></p>
+<p id="appendix-B.2-2">The following example configuration will prefill the IANA root zone using HTTPS:<a href="#appendix-B.2-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-B.2-3">
 <pre>
 modules.load('prefill')
@@ -1618,7 +1880,7 @@ prefill.config({
 <a href="#name-unbound-19-and-above" class="section-name selfRef">Unbound 1.9 and above</a>
         </h3>
 <p id="appendix-B.3-1">See the Unbound documentation for <a href="https://unbound.docs.nlnetlabs.nl/en/latest/manpages/unbound.conf.html#unbound-conf-auth-url">Authority Zone Options</a> configuration.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
-<p id="appendix-B.3-2">The following example configuration will prefill the root zone using HTTPS:<a href="#appendix-B.3-2" class="pilcrow">¶</a></p>
+<p id="appendix-B.3-2">The following example configuration will prefill the IANA root zone using HTTPS:<a href="#appendix-B.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-B.3-3">
 <pre>
 auth-zone:
