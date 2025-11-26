@@ -177,6 +177,10 @@ Readers are expected to be familiar with {{RFC8499}}.
 
 # Making RFC8806 behavior be a Best Current Practice
 
+Note: DNSOP needs to discuss whether to publish this as a BCP or as a
+bis-document and making LocalRoot a proposed standard (RFC8806 is
+informational)
+
 {{RFC8806}} is an Informational document that describes a mechanism that
 resolver operators can use to improve the performance, reliability, and privacy
 of their resolvers.  This document concludes the experiment
