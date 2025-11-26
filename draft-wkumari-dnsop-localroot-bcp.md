@@ -108,26 +108,6 @@ resiliency, privacy and efficiency of DNS resolver services.
 
 This document obsoletes RFC 8806.
 
-/* OLD abstract:
-RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
-resolver can fetch the contents of an entire IANA root zone and place this information
-into the resolver's cache.
-
-This has several benefits, including increased reliability, increased
-performance, improved privacy, and decreased or mitigation of the effect of
-some types of DoS attacks.
-
-While the majority of DNS resolver implementations natively support RFC 8806,
-it remains tricky to configure and maintain. This document recommends that DNS
-resolver software simplify this configuration, and further suggests that
-configuration becomes the default.
-
-This document updates Section 2 of RFC8806 by relaxing the requirement that
-implementations MUST run an authoritative service.
-
-*/
-
-
 /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):
 
 1. I started writing this as rfc8806-bis, but as I did so I realized that it is
@@ -161,34 +141,33 @@ recursive resolver and root servers.
 
 ------
 
-Caching the root zone data locally, commonly referred to as
-"LocalRoot", provides "a method for the operator of a recursive
-resolver to have a complete IANA root zone locally, and to hide
-queries for the IANA root zone from outsiders.  The basic idea of a
-LocalRoot resolver is to create and maintain an up-to-date IANA root
-zone cache, and use that information when the recursive resolver looks
-up root information.  This can be implemented using a number of
-different techniques, but the net effect is the same: few, if any,
-queries are sent to the actual DNS root zone.
+Caching the root zone data locally, commonly referred to as running a
+"LocalRoot" instance, provides a method for the operator of a
+recursive resolver to have a complete copy of the IANA root zone
+locally rather than sending requests for it to the Root Server System
+(RSS).  This can be implemented using a number of different
+implementation techniques, but the net effect is the same: few, if
+any, queries are sent to the actual RSS.
 
-Note that enabling LocalRoot in a resolver will probably have little
-effect on getting faster responses to the stub resolver for good
-queries on TLDs, because the TTL for most TLDs is usually long-lived
-(on the order of a day or two) and thus are usually already in the
-resolver's cache.  Negative answers from the root servers are also
-cached in a similar fashion, though potentially for a shorter time.
+Note that enabling LocalRoot functionality in a resolver will probably
+have little effect on improving resolver speed to a stub resolver for
+good queries under Top Level Domains (TLDs), as the TTL for most TLDs
+is already long-lived (two days in the current root zone). Thus the
+data is typically already in a resolver's cache.  Negative answers
+from the root servers are also cached in a similar fashion, though
+potentially for a shorter time based on the SOA negative cache timing.
 
-Two potential mechanisms are documented herein for achieving LocalRoot
-functionality: having the resolver pre-fetch the root zone at regular
-intervals and pre-populate its cache with information, or by running
-an authoritative server in parallel and pointing the recursive
-resolver at this server's IP address as the source of root zone data.
-The net effect of using either of these techniques should be nearly
-indistinguishable to that of a non-Localroot resolver to a client.
+Two potential implementation mechanisms are documented herein for
+achieving LocalRoot functionality: having the resolver pre-fetch the
+root zone at regular intervals and pre-populate its cache with
+information, or by running an authoritative server in parallel with
+the recursive resolver that acts as a locally authoritative root
+server.  To a client, the net effect of using any technique should be
+nearly indistinguishable to that of a non-Localroot resolver.
 
 A different approach to partially mitigating some of the problems that
-a LocalRoot resolver solves can be achieved using "Aggressive Use of
-DNSSEC-Validated Cache" {{RFC8198}} functionality.
+a LocalRoot enabled resolver solves can be achieved using "Aggressive
+Use of DNSSEC-Validated Cache" {{RFC8198}} functionality.
 
 Readers are expected to be familiar with {{RFC8499}}.
 
