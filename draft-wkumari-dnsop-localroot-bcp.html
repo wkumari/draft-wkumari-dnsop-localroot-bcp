@@ -25,20 +25,6 @@ zone, how to detect if it becomes stale, and mechanisms for handling
 error states.  This specification is designed to increase the
 resiliency, privacy and efficiency of DNS resolver services. 
        This document obsoletes RFC 8806. 
-       /* OLD abstract:
-RFC 8806 (often called &quot;LocalRoot&quot;) defines a mechanism whereby a recursive
-resolver can fetch the contents of an entire IANA root zone and place this information
-into the resolver's cache. 
-       This has several benefits, including increased reliability, increased
-performance, improved privacy, and decreased or mitigation of the effect of
-some types of DoS attacks. 
-       While the majority of DNS resolver implementations natively support RFC 8806,
-it remains tricky to configure and maintain. This document recommends that DNS
-resolver software simplify this configuration, and further suggests that
-configuration becomes the default. 
-       This document updates Section 2 of RFC8806 by relaxing the requirement that
-implementations  MUST  run an authoritative service. 
-       */ 
        /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication): 
        
            I started writing this as rfc8806-bis, but as I did so I realized that it is
@@ -1097,7 +1083,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 21 May 2026</td>
+<td class="center">Expires 30 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1113,12 +1099,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-17" class="published">17 November 2025</time>
+<time datetime="2025-11-26" class="published">26 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-21">21 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-30">30 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1161,34 +1147,20 @@ zone, how to detect if it becomes stale, and mechanisms for handling
 error states.  This specification is designed to increase the
 resiliency, privacy and efficiency of DNS resolver services.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This document obsoletes RFC 8806.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
-<p id="section-abstract-4">/* OLD abstract:
-RFC 8806 (often called "LocalRoot") defines a mechanism whereby a recursive
-resolver can fetch the contents of an entire IANA root zone and place this information
-into the resolver's cache.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
-<p id="section-abstract-5">This has several benefits, including increased reliability, increased
-performance, improved privacy, and decreased or mitigation of the effect of
-some types of DoS attacks.<a href="#section-abstract-5" class="pilcrow">¶</a></p>
-<p id="section-abstract-6">While the majority of DNS resolver implementations natively support RFC 8806,
-it remains tricky to configure and maintain. This document recommends that DNS
-resolver software simplify this configuration, and further suggests that
-configuration becomes the default.<a href="#section-abstract-6" class="pilcrow">¶</a></p>
-<p id="section-abstract-7">This document updates Section 2 of RFC8806 by relaxing the requirement that
-implementations <span class="bcp14">MUST</span> run an authoritative service.<a href="#section-abstract-7" class="pilcrow">¶</a></p>
-<p id="section-abstract-8">*/<a href="#section-abstract-8" class="pilcrow">¶</a></p>
-<p id="section-abstract-9">/* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):<a href="#section-abstract-9" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-abstract-10">
-<li id="section-abstract-10.1">
-          <p id="section-abstract-10.1.1">I started writing this as rfc8806-bis, but as I did so I realized that it is
-likely better as a standalone document.<a href="#section-abstract-10.1.1" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">/* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):<a href="#section-abstract-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-abstract-5">
+<li id="section-abstract-5.1">
+          <p id="section-abstract-5.1.1">I started writing this as rfc8806-bis, but as I did so I realized that it is
+likely better as a standalone document.<a href="#section-abstract-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-abstract-10.2">
-          <p id="section-abstract-10.2.1">This document recommends ("Operation Considerations") using HTTP(S) for
+        <li id="section-abstract-5.2">
+          <p id="section-abstract-5.2.1">This document recommends ("Operation Considerations") using HTTP(S) for
 fetching the zone. We still need to add text to cover priming and discuss the
 bootstrapping issue. In addition, we need to add text about loadbalancing and
 fetching from multiple sources. Much of the premise behind RFC8806 is that it
 doesn't matter where you fetch the zone from, as long as you validate it, and
 use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.
-*/<a href="#section-abstract-10.2.1" class="pilcrow">¶</a></p>
+*/<a href="#section-abstract-5.2.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 </section>
@@ -1227,7 +1199,7 @@ use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</spa
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1350,31 +1322,30 @@ answers that are referrals to other servers.  Malicious third parties
 might be able to observe that traffic on the network between the
 recursive resolver and root servers.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3"></p>
-<p id="section-1-4">Caching the root zone data locally, commonly referred to as
-"LocalRoot", provides "a method for the operator of a recursive
-resolver to have a complete IANA root zone locally, and to hide
-queries for the IANA root zone from outsiders.  The basic idea of a
-LocalRoot resolver is to create and maintain an up-to-date IANA root
-zone cache, and use that information when the recursive resolver looks
-up root information.  This can be implemented using a number of
-different techniques, but the net effect is the same: few, if any,
-queries are sent to the actual DNS root zone.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">Note that enabling LocalRoot in a resolver will probably have little
-effect on getting faster responses to the stub resolver for good
-queries on TLDs, because the TTL for most TLDs is usually long-lived
-(on the order of a day or two) and thus are usually already in the
-resolver's cache.  Negative answers from the root servers are also
-cached in a similar fashion, though potentially for a shorter time.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">Two potential mechanisms are documented herein for achieving LocalRoot
-functionality: having the resolver pre-fetch the root zone at regular
-intervals and pre-populate its cache with information, or by running
-an authoritative server in parallel and pointing the recursive
-resolver at this server's IP address as the source of root zone data.
-The net effect of using either of these techniques should be nearly
-indistinguishable to that of a non-Localroot resolver to a client.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-4">Caching the root zone data locally, commonly referred to as running a
+"LocalRoot" instance, provides a method for the operator of a
+recursive resolver to have a complete copy of the IANA root zone
+locally rather than sending requests for it to the Root Server System
+(RSS).  This can be implemented using a number of different
+implementation techniques, but the net effect is the same: few, if
+any, queries are sent to the actual RSS.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Note that enabling LocalRoot functionality in a resolver will probably
+have little effect on improving resolver speed to a stub resolver for
+good queries under Top Level Domains (TLDs), as the TTL for most TLDs
+is already long-lived (two days in the current root zone). Thus the
+data is typically already in a resolver's cache.  Negative answers
+from the root servers are also cached in a similar fashion, though
+potentially for a shorter time based on the SOA negative cache timing.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">Two potential implementation mechanisms are documented herein for
+achieving LocalRoot functionality: having the resolver pre-fetch the
+root zone at regular intervals and pre-populate its cache with
+information, or by running an authoritative server in parallel with
+the recursive resolver that acts as a locally authoritative root
+server.  To a client, the net effect of using any technique should be
+nearly indistinguishable to that of a non-Localroot resolver.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <p id="section-1-7">A different approach to partially mitigating some of the problems that
-a LocalRoot resolver solves can be achieved using "Aggressive Use of
-DNSSEC-Validated Cache" <span>[<a href="#RFC8198" class="cite xref">RFC8198</a>]</span> functionality.<a href="#section-1-7" class="pilcrow">¶</a></p>
+a LocalRoot enabled resolver solves can be achieved using "Aggressive
+Use of DNSSEC-Validated Cache" <span>[<a href="#RFC8198" class="cite xref">RFC8198</a>]</span> functionality.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <p id="section-1-8">Readers are expected to be familiar with <span>[<a href="#RFC8499" class="cite xref">RFC8499</a>]</span>.<a href="#section-1-8" class="pilcrow">¶</a></p>
 </section>
 </div>
