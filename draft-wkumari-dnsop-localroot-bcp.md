@@ -201,7 +201,7 @@ This document:
 5. Adds a mechanism for priming the list of places for fetching root zone data.
 6. Adds protocol steps for ensuring resolution stability and resiliency.
 
-# Changes from RFC8806
+## Changes from RFC8806
 
 {{RFC8806}} Section 2 (Requirements) states that:
 
@@ -231,41 +231,42 @@ zone without modification.
 
 
 
-# Applicability
+## Applicability
 
 This behavior should apply to all general-purpose recursive resolvers used on
 the public Internet.
 
-# Resolver Requirements
+# LocalRoot enabled resolver requirements
 
 In order to implement the mechanism described in this document:
 
-- The system MUST be able to validate the contents of the root zone
+- The resolver system MUST be able to validate the contents of the root zone
   using ZONEMD {{RFC8976}}, which also requires supporting
   DNSSEC for verifying the root zone's ZONEMD record.
 
-- The system MUST have an up-to-date copy of the public part of the
-  Key Signing Key (KSK) {{RFC4033}} used to sign the DNS root.
+- The resolver system MUST have a configured DNSSEC trust anchor as an
+  up-to-date copy of the public part of the Key Signing Key (KSK)
+  {{RFC4033}} or used to sign the DNS root or its DS record.
 
-- The system MUST be able to retrieve a copy of the entire root zone
+- The resolver system MUST be able to retrieve a copy of the entire root zone
   (including all DNSSEC-related records) {{protocol-steps}}.
 
-- The system MUST be able to fall back to querying the authoritative
-  root servers whenever the local copy of the root zone
+- The resolver system MUST be able to fall back to querying the
+  authoritative RSS servers whenever the local copy of the root zone
   data is unavailable or has been deemed stale {{protocol-steps}}.
 
-A corollary of the above list is that a resolver running LocalRoot
-MUST return equivalent answers about the DNS root or any other part of
-the DNS as if it was not operating as a LocalRoot.
+A corollary of the above list is that a resolver operating as a
+LocalRoot MUST return equivalent answers about the DNS root or any
+other part of the DNS as if it was not operating as a LocalRoot.
 
 # Functionality of a LocalRoot enabled resolver
 
 The functionality of LocalRoot enabled resolver includes:
 
-1. Consulting the list of publication points for DNS root zone data
+1. Identifying locations from where root zone data can be obtained
    {{iana-root-zone-list}}.
-2. Downloading and refreshing the root zone data from a publication
-   point {{protocol-steps}}.
+2. Downloading and refreshing the root zone data from one of the
+   publication points {{protocol-steps}}.
 3. Integrating and serving the data while performing DNS resolutions
    {{integrating-root-zone-data}}
 
