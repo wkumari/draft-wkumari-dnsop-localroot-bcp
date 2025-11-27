@@ -290,15 +290,20 @@ including but not limited to:
 3. By downloading a copy of available sources from the IANA using the
    sources described in {{iana-root-zone-list}}.
    
+To support LocalRoot implementations, IANA will maintain and publish a
+list of IANA DNS root zone sources at *TBD-URL*
+{{iana-root-zone-list}}.  Guidance to IANA or for other entities
+wishing to collect and redistribute a list of sources for IANA root
+server data is discussed in RFCTBD.
+
 ### IANA maintained list of root zone publication points  {#iana-root-zone-list}
 
-To support LocalRoot implementations, IANA will maintain and publish a
-list of IANA DNS root zone sources at *TBD-URL*.  This list of "IANA
-root zone data publication points" may be used when downloading and
-refreshing the root zone data, as described in {{protocol-steps}}.
-Specifically, this IANA DNS root zone publication list MAY be used by
-the resolver software directly, or by the resolver's operating system,
-or by a network operator when configuring a resolver.
+This list of IANA root zone data publication points available at
+TBD-URL may be used when downloading and refreshing the root zone
+data, as described in {{protocol-steps}}.  Specifically, this IANA DNS
+root zone publication list MAY be used by the resolver software
+directly, or by the resolver's operating system, or by a network
+operator when configuring a resolver.
 
 The contents of the IANA DNS root publication points file MUST
 verified as to its integrity as having come from IANA and MUST be
