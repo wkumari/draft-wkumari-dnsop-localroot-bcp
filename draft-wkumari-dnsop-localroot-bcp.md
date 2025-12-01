@@ -276,7 +276,7 @@ The functionality of LocalRoot enabled resolver includes:
    {{integrating-root-zone-data}}
 
 
-## Identifying locations from where root zone data can be obtained {{root-zone-sourecs}}
+## Identifying locations from where root zone data can be obtained {{root-zone-sources}}
 
 In order for the LocalRoot functionality to be effective, an
 implementation must be able to fetch the contents of the entire IANA
@@ -368,32 +368,30 @@ MUST respond to client requests with a SERVFAIL response code.
 
 2. The resolver MUST select one of the available sources from step 1,
    and from it retrieve a current copy of the IANA root zone.
-   Resolvers SHOULD prioritize sources they can fetch over from most
-   efficiently.  When supported, HTTPS sources should be preferred as
-   it allows for compression negotiation as well as the possibility of
-   using low-cost, well-distributed CDNs to distribute the zone files.
-   When querying a source of IANA root zone data, the resolver SHOULD
-   minimize impact to the source by querying at a rate specified by
-   the SOA refresh timer and SHOULD use data freshness checks such as
-   the HEAD method {{RFC9110}} when using HTTP(s) or by querying the
-   root zone's SOA over DNS first when using AXFR, IXFR or XoT.  Once
-   fetched, an implementation MUST NOT make use of an obtained IANA
-   root zone with a SOA serial number less than any previously
-   obtained copy {{RFC1982}}.
+   Resolvers SHOULD prioritize sources they can fetch the most
+   efficiently.  For example, when supported, https sources should be
+   preferred as it allows for compression negotiation as well as the
+   possibility of using low-cost, well-distributed CDNs to distribute
+   the zone files.  When querying a source of IANA root zone data, the
+   resolver SHOULD minimize impact to the source by querying at a rate
+   no faster than specified by the SOA refresh timer and SHOULD use
+   data freshness protocol checks over downloading the entire contents
+   at each refresh (example checks include the HEAD method {{RFC9110}}
+   when using HTTP(s) or by querying the root zone's SOA over DNS
+   first when using AXFR, IXFR or XoT).  Once fetched, an
+   implementation MUST NOT make use of an obtained IANA root zone with
+   a SOA serial number less than any previously obtained copy
+   {{RFC1982}}.
 
 3. If the resolver failed to retrieve the IANA root zone content in
    step 2, or the zone content's serial number was deemed to be older
-   than an already cached copy, and there are other available sources
-   from available sources from step 1, it SHOULD attempt to retrieve
-   the IANA root zone from another source on that list.  If the
+   than an already cached copy then it SHOULD attempt to retrieve the
+   IANA root zone from another source on that list if there are other
+   available sources from available sources from step 1.  If the
    resolver has exhausted the list of sources, it SHOULD stop
-   attempting to download the IANA root zone and SHOULD fall back to
-   using regular DNS mechanisms for performing DNS resolutions.  Upon
-   a failure, but before exhausting the list of available IANA root
-   zone sources, the resolver MAY choose to cease attempting download
-   the IANA root zone and if so it SHOULD fall back to using regular DNS
-   mechanisms for performing DNS resolutions.
-
+   attempting to download the IANA root zone and wait another refresh
+   time length until retrying all of the sources again.
+   
 4. Having successfully downloaded a copy of the IANA root zone, the
    resolver MUST verify the contents of the IANA root zone using the
    ZONEMD {{RFC8976}} record contained within it.  Note that this
@@ -402,26 +400,28 @@ MUST respond to client requests with a SERVFAIL response code.
    the fetched zone MUST NOT be used until after ZONEMD verification
    is complete and successful.  Once the zone data has been verified
    as the IANA root zone, the resolver can begin LocalRoot enabled DNS
-   resolution, potentially using the steps
-   defined in {{integrating-root-zone-data}}.  
+   resolution, potentially using the steps defined in
+   {{integrating-root-zone-data}}.
 
 5. The resolver MUST check the sources in step 1 at a regular interval
    to identify when a new copy of the IANA root zone is available.
    This internal MAY be configurable and SHOULD default to the IANA
    root zone's current SOA refresh value. When a resolver has detected
    that a new copy of the IANA root zone is available, the resolver
-   should consider its copy stale and MUST start at step 1 to obtain a
-   new zone.  Resolvers MAY check multiple sources to ensure one
-   source has not fallen significantly behind in its copy of the IANA
-   root zone.  Resolvers MUST have an upper limit beyond which if a
-   new copy is not available it will revert to using regular DNS
-   queries to the IANA root zone instead of continuing to use the
-   previously downloaded copy.  This upper limit stale value MAY be
-   configurable and SHOULD default to the root zone's current SOA
-   expiry value.  Once the LocalRoot implementation's copy of the IANA
-   root zone is no longer considered stale after a fresh copy has been
-   obtained, the resolver may resume LocalRoot enabled resolution
-   operations.
+   SHOULD start at step 1 to obtain a new zone.  Resolvers MAY check
+   multiple sources to ensure one source has not fallen significantly
+   behind in its copy of the IANA root zone.  
+
+Resolvers MUST have an upper limit beyond which if a new copy is not
+available it will revert to using regular DNS queries to the IANA root
+zone instead of continuing to use the previously downloaded copy.  If
+at any point this upper limit has been reached, the resolver SHOULD
+fall back to using regular DNS mechanisms for performing DNS
+resolutions on behalf of its clients.  This upper limit value MAY be
+configurable and SHOULD default to the root zone's current SOA expiry
+value.  Once the LocalRoot implementation's copy of the IANA root zone
+has been successfully refreshed and is no longer considered expired,
+the resolver may resume LocalRoot enabled resolution operations.
 
 ## Integrating root zone data into the resolution process
 
