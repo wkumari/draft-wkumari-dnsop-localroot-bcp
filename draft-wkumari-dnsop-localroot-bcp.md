@@ -426,7 +426,37 @@ the resolver may resume LocalRoot enabled resolution operations.
 
 {: #integrating-root-zone-data }
 
+Any mechanism that a recursive resolver can use to serve the data
+obtained in {{protocol-steps}} in such a way that it is functionally
+indishinguishable to a client from having followed regular DNS
+resolution processes should be considered an acceptable
+implementation.  Two example implementation descriptions are included
+in the following two subsections.
+
+### Pre-caching the root zone data
+
+Once the root zone data has been collected and verified as complete
+and correct ({{protocol-steps}}), a resolver MAY simply update its
+cache with the newly obtained values.  This functionally entirely
+alleviates the need for sending any (other) DNS requests to the RSS.
+
+### Running a local authoratative copy of the root zone in parallel
+
+{{RFC8806}} described an implementation mechanism where a copy of the
+root zone could be run in an authoratative server running in parallel
+to the recursive resolver.  The recursive resolver could then be
+configured to simply point at this parallel server for obtaining data
+related to the root zone instead of the RSS itself.  Note that
+{{RFC8806}} required that the parallel server be running on a loopback
+address and this specification removes that requirement and allows the
+parallel service to run on any address it can legitimately be used on.
+Note that the server MUST NOT use an address of one of the official
+root server addresses in the root zone.
+
 # Operational Considerations
+
+/* TOP POSTING ED (WH): I believe we can delete the following
+discussion, but didn't want to do so without chatting with WK first. */
 
 /* ED (WH): I don't think we can get away without describing how/where to pull
 this information from at some point.  The ICANN https servers are one source,
@@ -451,26 +481,30 @@ try to overspecify or over-constrain what they do. */
 There are areas of potential concern that are mitigated to some extent
 by using this mechanism.
 
-The issue of leakage of potentially sensitive information
-that may be contained in the query name used in DNS queries. Most root
-servers (except b.root-servers.net) do not currently support queries
-over encrypted transports, resulting in query names that are visible
-to on-the-wire eavesdroppers, and may also be held in any operational
-logs maintained by root server operators. Such concerns may be
-mitigated by Query Name Minimization {{RFC9156}}, but common
-implementations of this mechanism appear to only minimize query names
-of four or fewer labels, and the uptake rate of query name
-minimization appears to be quite low {{QNAMEMIN}}. Furthermore, even
-with Query Name Minimization, queries for non-existent names
-(generated from keyword searches and mis-configurations) can cause
-additional privacy leaks.  {{RFC8806}} eliminates the need for the
-resolver to perform specific queries to any root nameserver, and
-obviates any such consideration of query name leakage
-{{LOCALROOTPRIVACY}}.
+## Leakage of potentially sensitive information
 
-The final issue solved with LocalRoot is that when information is
-always available locally, usage of it is no longer subject to DDoS
-attacks against the remote servers.  By having the answers effectively
+One privacy concern with the use of DNS is the leakage of potentially
+sensitive information that may be contained in the query name used in
+DNS queries. Most root servers (except b.root-servers.net) do not
+currently support queries over encrypted transports, resulting in
+query names that are visible to on-the-wire eavesdroppers, and may
+also be held in any operational logs maintained by root server
+operators. Such concerns may be mitigated by Query Name Minimization
+{{RFC9156}}, but common implementations of this mechanism appear to
+only minimize query names of four or fewer labels, and the uptake rate
+of query name minimization appears to be quite low
+{{QNAMEMIN}}. Furthermore, even with Query Name Minimization, queries
+for non-existent names (generated from keyword searches and
+mis-configurations) can cause additional privacy leaks.  {{RFC8806}}
+eliminates the need for the resolver to perform specific queries to
+any root nameserver, and obviates any such consideration of query name
+leakage {{LOCALROOTPRIVACY}}.
+
+## Local resiliency of the DNS
+
+Another issue solved with LocalRoot is that when information is always
+available locally, usage of it is no longer subject to DDoS attacks
+against the remote servers.  By having the answers effectively
 permanently in cache, no queries to the upstream service provider
 (such as root servers) are needed since {{RFC8806}} resolvers
 effectively always have a cached set of data that is considered fresh
@@ -480,8 +514,8 @@ longer than the typical TTL records within the zone {{CACHEME}}
 
 # IANA Considerations
 
-This document has no IANA actions.
-
+TBD: describe the request for IANA to support a list of root server
+publication points at TBD-URL.
 
 --- back
 
