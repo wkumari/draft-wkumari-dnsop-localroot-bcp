@@ -89,6 +89,9 @@ informative:
   XFRSCHEME:
     title: The DNS XFR URI Schemes
     target: draft-hardaker-dnsop-dns-xfr-scheme
+  NOROOTS:
+    title: On Eliminating Root Nameservers from the DNS
+    target: https://www.icir.org/mallman/pubs/All19b/All19b.pdf
 
 --- abstract
 
@@ -489,6 +492,11 @@ This document has no IANA actions.
 The authors have discussed this idea with many people, and have likely
 forgotten to acknowledge and credit many of them. If we discussed this with
 you, and you are not listed, please please let us know and we'll add you.
+
+This work has been founded upon previous documents.  These include
+{{RFC7706}} and {{RFC8806}} authored by Warren Kumari and Paul Hoffman
+and "On Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark
+Allman.
 
 The authors would like to thank Joe Abley, Vint Cerf, John Crain, Marco Davids,
 Paul Hoffman, Peter Koch, Matt Larson, Florian Obser, Swapneel Patnekar, Puneet
