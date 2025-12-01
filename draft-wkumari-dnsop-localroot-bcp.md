@@ -532,14 +532,16 @@ This work has been founded upon previous documents.  These include
 and "On Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark
 Allman.
 
-The authors would like to thank Joe Abley, Vint Cerf, John Crain, Marco Davids,
-Peter Koch, Matt Larson, Florian Obser, Swapneel Patnekar, Puneet
-Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and many many others for their
-comments, suggestions and input.
+The authors would like to thank Joe Abley, Vint Cerf, John Crain,
+Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
+Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and
+many many others for their comments, suggestions and input to both
+past and current versions of this document.
 
 In addition, one of the authors would like to once again thank the
 bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing
 the soundtrack to which this was written.  Another author recently
-discovered the band "Trampled by Turtles" and has submitted it as a
-nomination for the best-band-name-ever award.
+discovered the band "Trampled by Turtles" while working on this
+document and is submitting it as a nomination for the
+best-band-name-ever award.
 
