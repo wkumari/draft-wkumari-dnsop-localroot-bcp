@@ -290,8 +290,8 @@ including but not limited to:
 3. By downloading a copy of available sources from the IANA using the
    sources described in {{iana-root-zone-list}}.
    
-To support LocalRoot implementations, IANA will maintain and publish a
-list of IANA DNS root zone sources at *TBD-URL*
+To support LocalRoot implementations, IANA will aggregate, publish and
+maintain a list of IANA DNS root zone sources at *TBD-URL*
 {{iana-root-zone-list}}.  Guidance to IANA or for other entities
 wishing to collect and redistribute a list of sources for IANA root
 server data is discussed in RFCTBD.
@@ -314,7 +314,9 @@ consist of two parts, separated by a line containing four dashes and a
 newline ("----\\n").  The top section of the file contain a newline
 delimited list of URLs {{?RFC2056}}.  The second section, following
 the line containing four dashes, will contain a cryptographic checksum
-or signature.
+or signature.  Note that the format of this file applies to the IANA
+maintained list of root zone publication points, but may or may not be
+a format used by other publication point aggregation lists.
 
 URLs in the list may include any protocol capable of transferring DNS
 zone data, including HTTPS {{RFC9110}}, AXFR
