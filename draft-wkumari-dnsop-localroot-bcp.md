@@ -302,17 +302,23 @@ This list of IANA root zone data publication points available at
 TBD-URL may be used when downloading and refreshing the root zone
 data, as described in {{protocol-steps}}.  Specifically, this IANA DNS
 root zone publication list MAY be used by the resolver software
-directly, or by the resolver's operating system, or by a network
-operator when configuring a resolver.
+directly, or by the operating system a resolver is deployed on, or by
+a network operator when configuring a resolver.
 
 The contents of the IANA DNS root publication points file MUST
 verified as to its integrity as having come from IANA and MUST be
 verified as complete.
 
-The format of the IANA root zone data publication points list will be
-a newline delimited file of URLs {{?RFC2056}}.  URLs in the list may
-include any protocol capable of transferring DNS zone data, including
-HTTPS {{RFC9110}}, AXFR {{draft-hardaker-dnsop-dns-xfr-scheme}}, XoT
+The format of the IANA root zone data publication points file will
+consist of two parts, separated by a line containing four dashes and a
+newline ("----\\n").  The top section of the file contain a newline
+delimited list of URLs {{?RFC2056}}.  The second section, following
+the line containing four dashes, will contain a cryptographic checksum
+or signature.
+
+URLs in the list may include any protocol capable of transferring DNS
+zone data, including HTTPS {{RFC9110}}, AXFR
+{{draft-hardaker-dnsop-dns-xfr-scheme}}, XoT
 {{draft-hardaker-dnsop-dns-xfr-scheme}}, etc.
 
 Any URLs that reference an unknown transfer protocol SHOULD be
@@ -320,12 +326,26 @@ discarded.  If after filtering the list there are no acceptable list
 elements left, the resolver MUST revert to using regular DNS queries
 to the IANA root zone instead of operating as a LocalRoot.
 
+The first line of the cryptograhpic checksum section will contain a
+checksum or signature type string specifying what the remaining lines
+in the checksum or signature section will contain.
+
+An minimal example publication point file, containing only a single
+AXFR publication point of b.root-servers.net:
+
+~~~~
+axfr:b.root-servers.net/.
+----
+SHA256
+67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
+~~~~
+
+#### Publication point operational considerations
+
 Implementations SHOULD optimize retrieval to minimize impacts on the
 server.  Because the list is not expected to change frequently,
 implementations SHOULD refrain from querying the IANA source more than
 once a week.
-
-
 
 ## Protocol steps {#protocol-steps}
 
