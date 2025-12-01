@@ -533,7 +533,7 @@ and "On Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark
 Allman.
 
 The authors would like to thank Joe Abley, Vint Cerf, John Crain, Marco Davids,
-Paul Hoffman, Peter Koch, Matt Larson, Florian Obser, Swapneel Patnekar, Puneet
+Peter Koch, Matt Larson, Florian Obser, Swapneel Patnekar, Puneet
 Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and many many others for their
 comments, suggestions and input.
 
