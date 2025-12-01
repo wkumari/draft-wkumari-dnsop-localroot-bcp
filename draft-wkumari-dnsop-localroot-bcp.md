@@ -51,10 +51,6 @@ author:
     city: South Brisbane
     code: QLD 4101
     country: Australia
-  -
-    fullname: David Conrad
-    organization: Layer 9 Technologies, LLC.
-    email: david.conrad@layer9.tech
 
 normative:
   BCP237:
