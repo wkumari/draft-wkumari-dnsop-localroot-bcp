@@ -6,13 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Best Current Practice          USC/ISI and Google, Inc.
-Expires: 30 May 2026                                             J. Reid
+Expires: 4 June 2026                                             J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                               D. Conrad
-                                              Layer 9 Technologies, LLC.
-                                                        26 November 2025
+                                                         1 December 2025
 
 
                Running a Root Server Local to a Resolver
@@ -84,7 +82,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 May 2026.
+   This Internet-Draft will expire on 4 June 2026.
 
 Copyright Notice
 
@@ -109,21 +107,23 @@ Table of Contents
      3.2.  Applicability
    4.  LocalRoot enabled resolver requirements
    5.  Functionality of a LocalRoot enabled resolver
-     5.1.  Consulting the list of IANA DNS root data publication
-           points
+     5.1.  Identifying locations from where root zone data can be
+           obtained
+       5.1.1.  IANA maintained list of root zone publication points
      5.2.  Protocol steps
      5.3.  Integrating root zone data into the resolution process
+       5.3.1.  Pre-caching the root zone data
+       5.3.2.  Running a local authoratative copy of the root zone in
+               parallel
    6.  Operational Considerations
    7.  Security Considerations
+     7.1.  Leakage of potentially sensitive information
+     7.2.  Local resiliency of the DNS
    8.  IANA Considerations
    9.  References
      9.1.  Normative References
      9.2.  Informative References
    Acknowledgments
-   Appendix A: Example Configurations
-     ISC BIND 9.14 and above
-     Knot Resolver
-     Unbound 1.9 and above
    Authors' Addresses
 
 1.  Introduction
@@ -283,107 +283,191 @@ Table of Contents
        publication points Section 5.2.
 
    3.  Integrating and serving the data while performing DNS resolutions
-       Section 6
+       Section 5.3, Paragraph 1
 
-5.1.  Consulting the list of IANA DNS root data publication points
+5.1.  Identifying locations from where root zone data can be obtained
 
-   In order for the [RFC8806] mechanism to be effective, a resolver must
-   be able to fetch the contents of the entire IANA root zone.
+   In order for the LocalRoot functionality to be effective, an
+   implementation must be able to fetch the contents of the entire IANA
+   root zone.  Implementations can find sources in a number of ways,
+   including but not limited to:
 
-   IANA will maintain and publish a list of IANA DNS root zone sources
-   at TBD-URL.  This list of "IANA root zone data publication points"
-   may be used when downloading and refreshing the root zone data, as
-   described in Section 5.2.  Specifically, the IANA DNS root zone
-   publication list can be used by the resolver software directly, by
-   the operating system, by a network operator when configuring a
-   resolver.
+   1.  Using a locally configured list of sources from which to fetch a
+       copy of the IANA root zone.
 
-   The contents of the IANA DNS root publication points file MUST be
+   2.  Using a list of sources distributed with the resolver software
+       itself.
+
+   3.  By downloading a copy of available sources from the IANA using
+       the sources described in Section 5.1.1.
+
+   To support LocalRoot implementations, IANA will aggregate, publish
+   and maintain a list of IANA DNS root zone sources at _TBD-URL_
+   Section 5.1.1.  Guidance to IANA or for other entities wishing to
+   collect and redistribute a list of sources for IANA root server data
+   is discussed in RFCTBD.
+
+5.1.1.  IANA maintained list of root zone publication points
+
+   This list of IANA root zone data publication points available at TBD-
+   URL may be used when downloading and refreshing the root zone data,
+   as described in Section 5.2.  Specifically, this IANA DNS root zone
+   publication list MAY be used by the resolver software directly, or by
+   the operating system a resolver is deployed on, or by a network
+   operator when configuring a resolver.
+
+   The contents of the IANA DNS root publication points file MUST
    verified as to its integrity as having come from IANA and MUST be
    verified as complete.
 
-   The format of the IANA root zone data publication points list will be
-   a newline delimited file of URLs [RFC2056].  URLs in the list may
-   include any protocol capable of transferring DNS zone data, including
-   AXFR [RFC5936], HTTPS [RFC9110], etc.
+   The format of the IANA root zone data publication points file will
+   consist of two parts, separated by a line containing four dashes and
+   a newline ("----\n").  The top section of the file contain a newline
+   delimited list of URLs [RFC2056].  The second section, following the
+   line containing four dashes, will contain a cryptographic checksum or
+   signature.  Note that the format of this file applies to the IANA
+   maintained list of root zone publication points, but may or may not
+   be a format used by other publication point aggregation lists.
+
+   URLs in the list may include any protocol capable of transferring DNS
+   zone data, including HTTPS [RFC9110], AXFR
+   [draft-hardaker-dnsop-dns-xfr-scheme], XoT
+   [draft-hardaker-dnsop-dns-xfr-scheme], etc.
 
    Any URLs that reference an unknown transfer protocol SHOULD be
    discarded.  If after filtering the list there are no acceptable list
    elements left, the resolver MUST revert to using regular DNS queries
    to the IANA root zone instead of operating as a LocalRoot.
 
-   (ED: likely drop or move ) This is currently usually performed
-   through AXFR ([RFC5936]) and MAY continue doing so.  Resolvers also
-   MAY allow fetching this information via HTTPS.  Where possible, HTTPS
-   should be preferred as it allows for compression negotiation as well
-   as the possibility of using low-cost, well-distributed CDNs to
-   distribute the zone files.
+   The first line of the cryptograhpic checksum section will contain a
+   checksum or signature type string specifying what the remaining lines
+   in the checksum or signature section will contain.
+
+   An minimal example publication point file, containing only a single
+   AXFR publication point of b.root-servers.net:
+
+   axfr:b.root-servers.net/.
+   ----
+   SHA256
+   67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
+
+5.1.1.1.  Publication point operational considerations
+
+   Implementations SHOULD optimize retrieval to minimize impacts on the
+   server.  Because the list is not expected to change frequently,
+   implementations SHOULD refrain from querying the IANA source more
+   than once a week.
 
 5.2.  Protocol steps
 
-   When initializing a resolvers' [RFC8806] mechanism, the following
-   steps MAY be used to implement the LocalRoot functionality.  Note
-   that as long as the desired effect of performing normal DNS
+   When initializing an implementation's LocalRoot mechanism, the
+   following steps MAY be used to implement the LocalRoot functionality.
+   Note that as long as the desired effect of performing normal DNS
    resolution remains stable when combined with LocalRoot functionality,
    other implementations MAY be used.
 
-   1.  The resolver should use one of the following sources to obtain a
-       list of locations where the current IANA root zone may be
-       available from:
+   If local root zone data is unavailable at any point in these steps,
+   resolvers SHOULD fall back to performing DNS resolution by issuing
+   queries to the RSS as needed.  If a resolver is unable to do so, it
+   MUST respond to client requests with a SERVFAIL response code.
 
-       a.  Use a locally configured list of sources from which to fetch
-       a copy of the IANA root zone.  b.  Use a list of sources
-       distributed with the resolver software itself.  c.  Download a
-       copy of available sources from the IANA using the sources
-       describe in Section 5.1.
+   1.  The resolver SHOULD use a list of root zone sources identified in
+       Section 5.1 for obtaining a copy of the IANA root zone.
 
    2.  The resolver MUST select one of the available sources from step
        1, and from it retrieve a current copy of the IANA root zone.
+       Resolvers SHOULD prioritize sources they can fetch the most
+       efficiently.  For example, when supported, https sources should
+       be preferred as it allows for compression negotiation as well as
+       the possibility of using low-cost, well-distributed CDNs to
+       distribute the zone files.  When querying a source of IANA root
+       zone data, the resolver SHOULD minimize impact to the source by
+       querying at a rate no faster than specified by the SOA refresh
+       timer and SHOULD use data freshness protocol checks over
+       downloading the entire contents at each refresh (example checks
+       include the HEAD method [RFC9110] when using HTTP(s) or by
+       querying the root zone's SOA over DNS first when using AXFR, IXFR
+       or XoT).  Once fetched, an implementation MUST NOT make use of an
+       obtained IANA root zone with a SOA serial number less than any
+       previously obtained copy [RFC1982].
 
    3.  If the resolver failed to retrieve the IANA root zone content in
-       step 2, and there are other available sources from available
-       sources from step 1, it SHOULD attempt to retrieve the IANA root
-       zone from that list.  If the resolver has exhausted the list of
-       sources, it SHOULD stop attempting to download the IANA root zone
-       and MUST fall back to using regular DNS mechanisms for performing
-       DNS resolutions.  Upon a failure, but before exhausting the list
-       of available IANA root zone sources, the resolver MAY choose to
-       cease attempting download the IANA root zone and if so it MUST
-       fall back to using regular DNS mechanisms for performing DNS
-       resolutions.
+       step 2, or the zone content's serial number was deemed to be
+       older than an already cached copy then it SHOULD attempt to
+       retrieve the IANA root zone from another source on that list if
+       there are other available sources from available sources from
+       step 1.  If the resolver has exhausted the list of sources, it
+       SHOULD stop attempting to download the IANA root zone and wait
+       another refresh time length until retrying all of the sources
+       again.
 
    4.  Having successfully downloaded a copy of the IANA root zone, the
        resolver MUST verify the contents of the IANA root zone using the
        ZONEMD [RFC8976] record contained within it.  Note that this
        REQUIRES verification of the ZONEMD record using DNSSEC [BCP237]
-       and the configured root key trust anchor.  Once the zone data has
-       been verified as being the IANA root zone, the resolver can begin
-       operation using the steps defined in [RFC8806] can be followed.
-       The contents of the fetched zone MUST NOT be used until after
-       ZONEMD verification is complete and successful.
+       and the configured IANA root zone trust anchor.  The contents of
+       the fetched zone MUST NOT be used until after ZONEMD verification
+       is complete and successful.  Once the zone data has been verified
+       as the IANA root zone, the resolver can begin LocalRoot enabled
+       DNS resolution, potentially using the steps defined in
+       Section 5.3, Paragraph 1.
 
-   /* ED(WH): I think this must be a biz and actually replace 8806,
-   because other 8806 is an experimental protocol still */
-
-   1.  The resolver MUST check the sources in step 1 at a regular
+   5.  The resolver MUST check the sources in step 1 at a regular
        interval to identify when a new copy of the IANA root zone is
        available.  This internal MAY be configurable and SHOULD default
-       to 1 hour.  When a resolver has detected that a new copy of the
-       IANA root zone is available, the resolver should consider its
-       copy stale and MUST start at step 1 to obtain a new zone.
-       Resolvers MAY check multiple sources to ensure one source has not
-       fallen significantly behind in its copy of the IANA root zone.
-       Resolvers MUST have an upper limit beyond which if a new copy is
-       not available it will revert to using regular DNS queries to the
-       IANA root zone instead of continuing to use the previously
-       downloaded copy.  This upper limit stale value MAY be
-       configurable and SHOULD default to 1 day.  Once the stale timer
-       has been reached, the resolver may resume [RFC8806] operations
-       once a fresh copy can be obtained after restarting at step 1.
+       to the IANA root zone's current SOA refresh value.  When a
+       resolver has detected that a new copy of the IANA root zone is
+       available, the resolver SHOULD start at step 1 to obtain a new
+       zone.  Resolvers MAY check multiple sources to ensure one source
+       has not fallen significantly behind in its copy of the IANA root
+       zone.
+
+   Resolvers MUST have an upper limit beyond which if a new copy is not
+   available it will revert to using regular DNS queries to the IANA
+   root zone instead of continuing to use the previously downloaded
+   copy.  If at any point this upper limit has been reached, the
+   resolver SHOULD fall back to using regular DNS mechanisms for
+   performing DNS resolutions on behalf of its clients.  This upper
+   limit value MAY be configurable and SHOULD default to the root zone's
+   current SOA expiry value.  Once the LocalRoot implementation's copy
+   of the IANA root zone has been successfully refreshed and is no
+   longer considered expired, the resolver may resume LocalRoot enabled
+   resolution operations.
 
 5.3.  Integrating root zone data into the resolution process
 
+   Any mechanism that a recursive resolver can use to serve the data
+   obtained in Section 5.2 in such a way that it is functionally
+   indishinguishable to a client from having followed regular DNS
+   resolution processes should be considered an acceptable
+   implementation.  Two example implementation descriptions are included
+   in the following two subsections.
+
+5.3.1.  Pre-caching the root zone data
+
+   Once the root zone data has been collected and verified as complete
+   and correct (Section 5.2), a resolver MAY simply update its cache
+   with the newly obtained values.  This functionally entirely
+   alleviates the need for sending any (other) DNS requests to the RSS.
+
+5.3.2.  Running a local authoratative copy of the root zone in parallel
+
+   [RFC8806] described an implementation mechanism where a copy of the
+   root zone could be run in an authoratative server running in parallel
+   to the recursive resolver.  The recursive resolver could then be
+   configured to simply point at this parallel server for obtaining data
+   related to the root zone instead of the RSS itself.  Note that
+   [RFC8806] required that the parallel server be running on a loopback
+   address and this specification removes that requirement and allows
+   the parallel service to run on any address it can legitimately be
+   used on.  Note that the server MUST NOT use an address of one of the
+   official root server addresses in the root zone.
+
 6.  Operational Considerations
+
+   /* TOP POSTING ED (WH): I believe we can delete the following
+   discussion, but didn't want to do so without chatting with WK first.
+   */
 
    /* ED (WH): I don't think we can get away without describing how/
    where to pull this information from at some point.  The ICANN https
@@ -410,24 +494,28 @@ Table of Contents
    There are areas of potential concern that are mitigated to some
    extent by using this mechanism.
 
-   The issue of leakage of potentially sensitive information that may be
-   contained in the query name used in DNS queries.  Most root servers
-   (except b.root-servers.net) do not currently support queries over
-   encrypted transports, resulting in query names that are visible to
-   on-the-wire eavesdroppers, and may also be held in any operational
-   logs maintained by root server operators.  Such concerns may be
-   mitigated by Query Name Minimization [RFC9156], but common
-   implementations of this mechanism appear to only minimize query names
-   of four or fewer labels, and the uptake rate of query name
-   minimization appears to be quite low [QNAMEMIN].  Furthermore, even
-   with Query Name Minimization, queries for non-existent names
-   (generated from keyword searches and mis-configurations) can cause
-   additional privacy leaks.  [RFC8806] eliminates the need for the
-   resolver to perform specific queries to any root nameserver, and
-   obviates any such consideration of query name leakage
-   [LOCALROOTPRIVACY].
+7.1.  Leakage of potentially sensitive information
 
-   The final issue solved with LocalRoot is that when information is
+   One privacy concern with the use of DNS is the leakage of potentially
+   sensitive information that may be contained in the query name used in
+   DNS queries.  Most root servers (except b.root-servers.net) do not
+   currently support queries over encrypted transports, resulting in
+   query names that are visible to on-the-wire eavesdroppers, and may
+   also be held in any operational logs maintained by root server
+   operators.  Such concerns may be mitigated by Query Name Minimization
+   [RFC9156], but common implementations of this mechanism appear to
+   only minimize query names of four or fewer labels, and the uptake
+   rate of query name minimization appears to be quite low [QNAMEMIN].
+   Furthermore, even with Query Name Minimization, queries for non-
+   existent names (generated from keyword searches and mis-
+   configurations) can cause additional privacy leaks.  [RFC8806]
+   eliminates the need for the resolver to perform specific queries to
+   any root nameserver, and obviates any such consideration of query
+   name leakage [LOCALROOTPRIVACY].
+
+7.2.  Local resiliency of the DNS
+
+   Another issue solved with LocalRoot is that when information is
    always available locally, usage of it is no longer subject to DDoS
    attacks against the remote servers.  By having the answers
    effectively permanently in cache, no queries to the upstream service
@@ -438,7 +526,8 @@ Table of Contents
 
 8.  IANA Considerations
 
-   This document has no IANA actions.
+   TBD: describe the request for IANA to support a list of root server
+   publication points at TBD-URL.
 
 9.  References
 
@@ -451,6 +540,10 @@ Table of Contents
               Hoffman, P., "DNS Security Extensions (DNSSEC)", BCP 237,
               RFC 9364, DOI 10.17487/RFC9364, February 2023,
               <https://www.rfc-editor.org/info/rfc9364>.
+
+   [RFC1982]  Elz, R. and R. Bush, "Serial Number Arithmetic", RFC 1982,
+              DOI 10.17487/RFC1982, August 1996,
+              <https://www.rfc-editor.org/rfc/rfc1982>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -493,6 +586,10 @@ Table of Contents
    [CACHEME]  "Cache Me If You Can: Effects of DNS Time-to-Live", n.d.,
               <https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf>.
 
+   [draft-hardaker-dnsop-dns-xfr-scheme]
+              "The DNS XFR URI Schemes", n.d., <draft-hardaker-dnsop-
+              dns-xfr-scheme>.
+
    [KNOT-PREFILL]
               "Knot Resolver Prefill", n.d., <https://knot-
               resolver.readthedocs.io/en/stable/modules-prefill.html>.
@@ -501,6 +598,9 @@ Table of Contents
               "Analyzing and mitigating privacy with the DNS root
               service", n.d., <http://ant.isi.edu/~hardaker/
               papers/2018-02-ndss-analyzing-root-privacy.pdf>.
+
+   [NOROOTS]  "On Eliminating Root Nameservers from the DNS", n.d.,
+              <https://www.icir.org/mallman/pubs/All19b/All19b.pdf>.
 
    [QNAMEMIN] "DNS Query Privacy", n.d.,
               <https://www.potaroo.net/ispcol/2019-08/qmin.html>.
@@ -512,6 +612,11 @@ Table of Contents
    [RFC5936]  Lewis, E. and A. Hoenes, Ed., "DNS Zone Transfer Protocol
               (AXFR)", RFC 5936, DOI 10.17487/RFC5936, June 2010,
               <https://www.rfc-editor.org/rfc/rfc5936>.
+
+   [RFC7706]  Kumari, W. and P. Hoffman, "Decreasing Access Time to Root
+              Servers by Running One on Loopback", RFC 7706,
+              DOI 10.17487/RFC7706, November 2015,
+              <https://www.rfc-editor.org/rfc/rfc7706>.
 
    [RFC7766]  Dickinson, J., Dickinson, S., Bellis, R., Mankin, A., and
               D. Wessels, "DNS Transport over TCP - Implementation
@@ -539,80 +644,23 @@ Acknowledgments
    discussed this with you, and you are not listed, please please let us
    know and we'll add you.
 
+   This work has been founded upon previous documents.  These include
+   [RFC7706] and [RFC8806] authored by Warren Kumari and Paul Hoffman
+   and "On Eliminating Root Nameservers from the DNS" [NOROOTS] by Mark
+   Allman.
+
    The authors would like to thank Joe Abley, Vint Cerf, John Crain,
-   Marco Davids, Paul Hoffman, Peter Koch, Matt Larson, Florian Obser,
-   Swapneel Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne
-   Woolf, and many many others for their comments, suggestions and
-   input.
+   Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
+   Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and
+   many many others for their comments, suggestions and input to both
+   past and current versions of this document.
 
    In addition, one of the authors would like to once again thank the
    bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing
    the soundtrack to which this was written.  Another author recently
-   discovered the band "Trampled by Turtles" and has submitted it as a
-   nomination for the best-band-name-ever award.
-
-Appendix A: Example Configurations
-
-   These examples are provided to show how the LocalRoot mechanism can
-   be configured in various resolver implementations.  They are not
-   intended to be exhaustive, and may not work with all versions of the
-   software.
-
-   /* Ed (WK): These examples are just to get started.  We would
-   appreciate contributions from the resolver operators.
-
-   Yes, we are fully aware of the circular dependency of trying to
-   resolve e.g www.internic.net when bootstrapping.  More discussion on
-   serving the IANA root zone over HTTP by IP will be added later. */
-
-ISC BIND 9.14 and above
-
-   See the BIND documentation for mirror zones
-   (https://bind9.readthedocs.io/en/stable/reference.html#namedconf-
-   statement-type%20mirror).
-
-   Example configuration using a "mirror" zone:
-
-   zone "." {
-       type mirror;
-   };
-
-Knot Resolver
-
-   See the Knot Resolver Cache prefilling (https://knot-
-   resolver.readthedocs.io/en/v5.0.1/modules-
-   prefill.html?highlight=cache%20prefilling) documentation for more
-   information.
-
-   The following example configuration will prefill the IANA root zone
-   using HTTPS:
-
- modules.load('prefill')
- prefill.config({
-       ['.'] = {
-               url = 'https://www.internic.net/domain/root.zone',
-               interval = 86400  -- seconds
-               ca_file = '/etc/pki/tls/certs/ca-bundle.crt', -- optional
-       }
- })
-
-Unbound 1.9 and above
-
-   See the Unbound documentation for Authority Zone Options
-   (https://unbound.docs.nlnetlabs.nl/en/latest/manpages/
-   unbound.conf.html#unbound-conf-auth-url) configuration.
-
-   The following example configuration will prefill the IANA root zone
-   using HTTPS:
-
-   auth-zone:
-       name: "."
-       url: "https://www.internic.net/domain/root.zone"
-       zonefile: "root.zone"
-       fallback-enabled: yes
-       for-downstream: no
-       for-upstream: yes
-       zonefile: "root.zone"
+   discovered the band "Trampled by Turtles" while working on this
+   document and is submitting it as a nomination for the best-band-name-
+   ever award.
 
 Authors' Addresses
 
@@ -641,8 +689,3 @@ Authors' Addresses
    South Brisbane  QLD 4101
    Australia
    Email: gih@apnic.net
-
-
-   David Conrad
-   Layer 9 Technologies, LLC.
-   Email: david.conrad@layer9.tech
