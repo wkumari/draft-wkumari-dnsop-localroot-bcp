@@ -54,19 +54,19 @@ author:
 
 normative:
   BCP237:
-  RFC1982:  # SOA math 
+  RFC1982:  # SOA math
   RFC4033:  # DNSSEC
   RFC8198:
   RFC8499:
   RFC8806:
   RFC8976:
-  RFC9110:  # HTTP methods
 
 informative:
   RFC5936:  # DNS Zone Transfer
   RFC7766:  # DNS Transport over TCP
+  RFC7706:
   RFC9156:  # QNAME Minimisation
-  RFC9110:  # HTTP Semantics
+  RFC9110:  # HTTP Semantics and Methods
 
   BIND-MIRROR:
     title: "BIND 9 Mirror Zones"
@@ -86,7 +86,7 @@ informative:
   CACHEME:
     title: "Cache Me If You Can: Effects of DNS Time-to-Live"
     target: https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf
-  XFRSCHEME:
+  draft-hardaker-dnsop-dns-xfr-scheme:
     title: The DNS XFR URI Schemes
     target: draft-hardaker-dnsop-dns-xfr-scheme
   NOROOTS:
@@ -275,7 +275,7 @@ The functionality of LocalRoot enabled resolver includes:
    {{integrating-root-zone-data}}
 
 
-## Identifying locations from where root zone data can be obtained {{root-zone-sources}}
+## Identifying locations from where root zone data can be obtained {#root-zone-sources}
 
 In order for the LocalRoot functionality to be effective, an
 implementation must be able to fetch the contents of the entire IANA
@@ -288,7 +288,7 @@ including but not limited to:
    itself.
 3. By downloading a copy of available sources from the IANA using the
    sources described in {{iana-root-zone-list}}.
-   
+
 To support LocalRoot implementations, IANA will aggregate, publish and
 maintain a list of IANA DNS root zone sources at *TBD-URL*
 {{iana-root-zone-list}}.  Guidance to IANA or for other entities
@@ -390,7 +390,7 @@ MUST respond to client requests with a SERVFAIL response code.
    resolver has exhausted the list of sources, it SHOULD stop
    attempting to download the IANA root zone and wait another refresh
    time length until retrying all of the sources again.
-   
+
 4. Having successfully downloaded a copy of the IANA root zone, the
    resolver MUST verify the contents of the IANA root zone using the
    ZONEMD {{RFC8976}} record contained within it.  Note that this
@@ -409,7 +409,7 @@ MUST respond to client requests with a SERVFAIL response code.
    that a new copy of the IANA root zone is available, the resolver
    SHOULD start at step 1 to obtain a new zone.  Resolvers MAY check
    multiple sources to ensure one source has not fallen significantly
-   behind in its copy of the IANA root zone.  
+   behind in its copy of the IANA root zone.
 
 Resolvers MUST have an upper limit beyond which if a new copy is not
 available it will revert to using regular DNS queries to the IANA root
@@ -544,4 +544,3 @@ the soundtrack to which this was written.  Another author recently
 discovered the band "Trampled by Turtles" while working on this
 document and is submitting it as a nomination for the
 best-band-name-ever award.
-
