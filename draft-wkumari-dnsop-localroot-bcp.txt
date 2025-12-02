@@ -305,7 +305,8 @@ Table of Contents
    and maintain a list of IANA DNS root zone sources at _TBD-URL_
    Section 5.1.1.  Guidance to IANA or for other entities wishing to
    collect and redistribute a list of sources for IANA root server data
-   is discussed in RFCTBD.
+   is discussed in
+   [draft-hardaker-dnsop-root-zone-publication-list-guidelines].
 
 5.1.1.  IANA maintained list of root zone publication points
 
