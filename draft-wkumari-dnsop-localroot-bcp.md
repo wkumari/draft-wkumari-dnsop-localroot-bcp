@@ -88,7 +88,10 @@ informative:
     target: https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf
   draft-hardaker-dnsop-dns-xfr-scheme:
     title: The DNS XFR URI Schemes
-    target: draft-hardaker-dnsop-dns-xfr-scheme
+    target: https://datatracker.ietf.org/doc/draft-hardaker-dnsop-dns-xfr-scheme/
+  draft-hardaker-dnsop-root-zone-publication-list-guidelines:
+    title: Guidelines for IANA DNS Root Zone Publication List Providers
+    target: https://raw.githubusercontent.com/hardaker/draft-hardaker-dnsop-root-zone-publication-list-guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-publication-list-guidelines.md
   NOROOTS:
     title: On Eliminating Root Nameservers from the DNS
     target: https://www.icir.org/mallman/pubs/All19b/All19b.pdf
