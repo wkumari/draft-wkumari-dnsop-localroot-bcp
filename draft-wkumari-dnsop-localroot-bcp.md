@@ -296,7 +296,8 @@ To support LocalRoot implementations, IANA will aggregate, publish and
 maintain a list of IANA DNS root zone sources at *TBD-URL*
 {{iana-root-zone-list}}.  Guidance to IANA or for other entities
 wishing to collect and redistribute a list of sources for IANA root
-server data is discussed in RFCTBD.
+server data is discussed in
+{{draft-hardaker-dnsop-root-zone-publication-list-guidelines}}.
 
 ### IANA maintained list of root zone publication points  {#iana-root-zone-list}
 
