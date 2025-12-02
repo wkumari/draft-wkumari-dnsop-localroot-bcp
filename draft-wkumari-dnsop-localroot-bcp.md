@@ -113,7 +113,7 @@ zone, how to detect if it becomes stale, and mechanisms for handling
 error states.  This specification is designed to increase the
 resiliency, privacy and efficiency of DNS resolver services.
 
-This document obsoletes RFC 8806.
+This document obsoletes {{RFC8806}}.
 
 /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):
 
