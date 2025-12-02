@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Best Current Practice          USC/ISI and Google, Inc.
-Expires: 4 June 2026                                             J. Reid
+Expires: 5 June 2026                                             J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                         1 December 2025
+                                                         2 December 2025
 
 
                Running a Root Server Local to a Resolver
@@ -82,7 +82,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 June 2026.
+   This Internet-Draft will expire on 5 June 2026.
 
 Copyright Notice
 
@@ -587,8 +587,17 @@ Table of Contents
               <https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf>.
 
    [draft-hardaker-dnsop-dns-xfr-scheme]
-              "The DNS XFR URI Schemes", n.d., <draft-hardaker-dnsop-
-              dns-xfr-scheme>.
+              "The DNS XFR URI Schemes", n.d.,
+              <https://datatracker.ietf.org/doc/draft-hardaker-dnsop-
+              dns-xfr-scheme/>.
+
+   [draft-hardaker-dnsop-root-zone-publication-list-guidelines]
+              "Guidelines for IANA DNS Root Zone Publication List
+              Providers", n.d.,
+              <https://raw.githubusercontent.com/hardaker/draft-
+              hardaker-dnsop-root-zone-publication-list-
+              guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-
+              publication-list-guidelines.md>.
 
    [KNOT-PREFILL]
               "Knot Resolver Prefill", n.d., <https://knot-
