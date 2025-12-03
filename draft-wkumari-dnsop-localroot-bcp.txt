@@ -292,8 +292,8 @@ Table of Contents
    root zone.  Implementations can find sources in a number of ways,
    including but not limited to:
 
-   1.  Using a locally configured list of sources from which to fetch a
-       copy of the IANA root zone.
+   1.  Using a locally configured list of sources (for example a file or
+       URLs) from which to fetch a copy of the IANA root zone.
 
    2.  Using a list of sources distributed with the resolver software
        itself.
