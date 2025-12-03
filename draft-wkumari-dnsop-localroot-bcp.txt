@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Best Current Practice          USC/ISI and Google, Inc.
-Expires: 5 June 2026                                             J. Reid
+Expires: 6 June 2026                                             J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                         2 December 2025
+                                                         3 December 2025
 
 
                Running a Root Server Local to a Resolver
@@ -82,7 +82,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 June 2026.
+   This Internet-Draft will expire on 6 June 2026.
 
 Copyright Notice
 
@@ -321,6 +321,13 @@ Table of Contents
    verified as to its integrity as having come from IANA and MUST be
    verified as complete.
 
+5.1.1.1.  root zone publication points
+
+   NOTE: this is but an example format that is expected to spur
+   discussions within IETF working groups like DNSOP.  Whether this is a
+   list in a simple line-delimited format like below or signed JSON or
+   signed PGP or ... is subject to debate.
+
    The format of the IANA root zone data publication points file will
    consist of two parts, separated by a line containing four dashes and
    a newline ("----\n").  The top section of the file contain a newline
@@ -352,7 +359,7 @@ Table of Contents
    SHA256
    67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
 
-5.1.1.1.  Publication point operational considerations
+5.1.1.2.  Publication point operational considerations
 
    Implementations SHOULD optimize retrieval to minimize impacts on the
    server.  Because the list is not expected to change frequently,

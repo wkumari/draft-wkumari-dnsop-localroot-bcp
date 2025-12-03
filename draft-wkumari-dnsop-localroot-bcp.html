@@ -1082,7 +1082,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 5 June 2026</td>
+<td class="center">Expires 6 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1098,12 +1098,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-02" class="published">2 December 2025</time>
+<time datetime="2025-12-03" class="published">3 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-05">5 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-06">6 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1194,7 +1194,7 @@ use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</spa
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1543,44 +1543,55 @@ a network operator when configuring a resolver.<a href="#section-5.1.1-1" class=
 <p id="section-5.1.1-2">The contents of the IANA DNS root publication points file <span class="bcp14">MUST</span>
 verified as to its integrity as having come from IANA and <span class="bcp14">MUST</span> be
 verified as complete.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-3">The format of the IANA root zone data publication points file will
+<div id="root-zone-publication-points">
+<section id="section-5.1.1.1">
+            <h5 id="name-root-zone-publication-point">
+<a href="#section-5.1.1.1" class="section-number selfRef">5.1.1.1. </a><a href="#name-root-zone-publication-point" class="section-name selfRef">root zone publication points</a>
+            </h5>
+<p id="section-5.1.1.1-1">NOTE: this is but an example format that is expected to spur
+discussions within IETF working groups like DNSOP.  Whether this is a
+list in a simple line-delimited format like below or signed JSON or
+signed PGP or ... is subject to debate.<a href="#section-5.1.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.1.1-2">The format of the IANA root zone data publication points file will
 consist of two parts, separated by a line containing four dashes and a
 newline ("----\n").  The top section of the file contain a newline
 delimited list of URLs <span>[<a href="#RFC2056" class="cite xref">RFC2056</a>]</span>.  The second section, following
 the line containing four dashes, will contain a cryptographic checksum
 or signature.  Note that the format of this file applies to the IANA
 maintained list of root zone publication points, but may or may not be
-a format used by other publication point aggregation lists.<a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-4">URLs in the list may include any protocol capable of transferring DNS
+a format used by other publication point aggregation lists.<a href="#section-5.1.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.1.1-3">URLs in the list may include any protocol capable of transferring DNS
 zone data, including HTTPS <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, AXFR
 <span>[<a href="#draft-hardaker-dnsop-dns-xfr-scheme" class="cite xref">draft-hardaker-dnsop-dns-xfr-scheme</a>]</span>, XoT
-<span>[<a href="#draft-hardaker-dnsop-dns-xfr-scheme" class="cite xref">draft-hardaker-dnsop-dns-xfr-scheme</a>]</span>, etc.<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-5">Any URLs that reference an unknown transfer protocol <span class="bcp14">SHOULD</span> be
+<span>[<a href="#draft-hardaker-dnsop-dns-xfr-scheme" class="cite xref">draft-hardaker-dnsop-dns-xfr-scheme</a>]</span>, etc.<a href="#section-5.1.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1.1.1-4">Any URLs that reference an unknown transfer protocol <span class="bcp14">SHOULD</span> be
 discarded.  If after filtering the list there are no acceptable list
 elements left, the resolver <span class="bcp14">MUST</span> revert to using regular DNS queries
-to the IANA root zone instead of operating as a LocalRoot.<a href="#section-5.1.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-6">The first line of the cryptograhpic checksum section will contain a
+to the IANA root zone instead of operating as a LocalRoot.<a href="#section-5.1.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1.1.1-5">The first line of the cryptograhpic checksum section will contain a
 checksum or signature type string specifying what the remaining lines
-in the checksum or signature section will contain.<a href="#section-5.1.1-6" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-7">An minimal example publication point file, containing only a single
-AXFR publication point of b.root-servers.net:<a href="#section-5.1.1-7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.1.1-8">
+in the checksum or signature section will contain.<a href="#section-5.1.1.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1.1.1-6">An minimal example publication point file, containing only a single
+AXFR publication point of b.root-servers.net:<a href="#section-5.1.1.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1.1.1-7">
 <pre>
 axfr:b.root-servers.net/.
 ----
 SHA256
 67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
-</pre><a href="#section-5.1.1-8" class="pilcrow">¶</a>
+</pre><a href="#section-5.1.1.1-7" class="pilcrow">¶</a>
+</div>
+</section>
 </div>
 <div id="publication-point-operational-considerations">
-<section id="section-5.1.1.1">
+<section id="section-5.1.1.2">
             <h5 id="name-publication-point-operation">
-<a href="#section-5.1.1.1" class="section-number selfRef">5.1.1.1. </a><a href="#name-publication-point-operation" class="section-name selfRef">Publication point operational considerations</a>
+<a href="#section-5.1.1.2" class="section-number selfRef">5.1.1.2. </a><a href="#name-publication-point-operation" class="section-name selfRef">Publication point operational considerations</a>
             </h5>
-<p id="section-5.1.1.1-1">Implementations <span class="bcp14">SHOULD</span> optimize retrieval to minimize impacts on the
+<p id="section-5.1.1.2-1">Implementations <span class="bcp14">SHOULD</span> optimize retrieval to minimize impacts on the
 server.  Because the list is not expected to change frequently,
 implementations <span class="bcp14">SHOULD</span> refrain from querying the IANA source more than
-once a week.<a href="#section-5.1.1.1-1" class="pilcrow">¶</a></p>
+once a week.<a href="#section-5.1.1.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
