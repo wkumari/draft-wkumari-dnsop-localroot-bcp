@@ -285,8 +285,8 @@ implementation must be able to fetch the contents of the entire IANA
 root zone.  Implementations can find sources in a number of ways,
 including but not limited to:
 
-1. Using a locally configured list of sources from which to fetch a
-   copy of the IANA root zone.
+1. Using a locally configured list of sources (for example a file or
+   URLs) from which to fetch a copy of the IANA root zone.
 2. Using a list of sources distributed with the resolver software
    itself.
 3. By downloading a copy of available sources from the IANA using the
