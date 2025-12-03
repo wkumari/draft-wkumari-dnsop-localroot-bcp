@@ -312,6 +312,13 @@ The contents of the IANA DNS root publication points file MUST
 verified as to its integrity as having come from IANA and MUST be
 verified as complete.
 
+#### root zone publication points
+
+NOTE: this is but an example format that is expected to spur
+discussions within IETF working groups like DNSOP.  Whether this is a
+list in a simple line-delimited format like below or signed JSON or
+signed PGP or ... is subject to debate.
+
 The format of the IANA root zone data publication points file will
 consist of two parts, separated by a line containing four dashes and a
 newline ("----\\n").  The top section of the file contain a newline
