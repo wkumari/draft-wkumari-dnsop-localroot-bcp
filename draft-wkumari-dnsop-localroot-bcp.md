@@ -466,26 +466,7 @@ root server addresses in the root zone.
 
 # Operational Considerations
 
-/* TOP POSTING ED (WH): I believe we can delete the following
-discussion, but didn't want to do so without chatting with WK first. */
-
-/* ED (WH): I don't think we can get away without describing how/where to pull
-this information from at some point.  The ICANN https servers are one source,
-or should resolver code bases use their own defined CDNs?
-
-(WK): 100% agree. I personally think that this should be hosted on multiple
-CDNs, and that expecting a single server or service to always be available
-would be a massive mistake. But, I also don't think that resolvers should pull
-from their own CDNs
-- I don't want Acme Anvil and Resolvers (or their CDN!)  go out of business,
-and have Acme Resolvers fail. This is (I believe) a sufficiently small amount
-of data that hosting it on multiple CDNs should be trivial.... but, I also
-believe that this topic should be discussed with the WG. */
-
-/* Ed (WK): We might want to add some more discussions around failure handling,
-but, 1:  {{RFC8806}} already covers much of this and 2: "don't teach your
-grandmother to suck eggs" - implementations already handle this, so let's not
-try to overspecify or over-constrain what they do. */
+TBD
 
 # Security Considerations
 
