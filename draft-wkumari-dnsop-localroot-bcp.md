@@ -95,6 +95,9 @@ informative:
   NOROOTS:
     title: On Eliminating Root Nameservers from the DNS
     target: https://www.icir.org/mallman/pubs/All19b/All19b.pdf
+  DNEROOTNAMES:
+    title: NoError vs NxDomain by-week
+    target: https://rssac002.root-servers.org/rcode_0_v_3.html
 
 --- abstract
 
@@ -139,7 +142,7 @@ in the recursive resolver's cache, the resolver must send a query to
 a root server to get the information for that TLD or to find out that
 the TLD does not exist.  Research shows that the vast majority of
 queries going to the root are for names that do not exist in the root
-zone.
+zone {{DNEROOTNAMES}}.
 
 Many of the queries from recursive resolvers to root servers get
 answers that are referrals to other servers.  Malicious third parties
