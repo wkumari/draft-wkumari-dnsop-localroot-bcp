@@ -158,7 +158,7 @@ any, queries are sent to the actual RSS.
 
 Note that enabling LocalRoot functionality in a resolver will probably
 have little effect on improving resolver speed to a stub resolver for
-good queries under Top Level Domains (TLDs), as the TTL for most TLDs
+queries under Top Level Domains (TLDs), as the TTL for most TLDs
 is already long-lived (two days in the current root zone). Thus the
 data is typically already in a resolver's cache.  Negative answers
 from the root servers are also cached in a similar fashion, though
@@ -166,7 +166,7 @@ potentially for a shorter time based on the SOA negative cache timing.
 
 Two potential implementation mechanisms are documented herein for
 achieving LocalRoot functionality: having the resolver pre-fetch the
-root zone at regular intervals and pre-populate its cache with
+root zone at regular intervals and populate its cache with
 information, or by running an authoritative server in parallel with
 the recursive resolver that acts as a locally authoritative root
 server.  To a client, the net effect of using any technique should be
@@ -188,25 +188,33 @@ Note: DNSOP needs to discuss whether to publish this as a BCP or as a
 bis-document and making LocalRoot a proposed standard (RFC8806 is
 informational)
 
-{{RFC8806}} is an Informational document that describes a mechanism that
-resolver operators can use to improve the performance, reliability, and privacy
-of their resolvers.  This document concludes the experiment
-{{RFC8806}} was a success.  The reality is that secure DNS resolution
-using a local copy of the IANA root zone is possible because
-technologies like DNSSEC and ZONEMD {{RFC8976}} allow for the contents
-to be fetched from any location and subsequently verified and used
-within validating resolvers.
+{{RFC8806}} is an Informational document that describes a mechanism
+that resolver operators can use to improve the performance,
+reliability, and privacy of their resolvers.  This document concludes
+the experiment {{RFC8806}} was a success.  The reality is that secure
+DNS resolution using a local copy of the IANA root zone is possible
+because becuase the use of ZONEMD {{RFC8976}} allows for the entire
+zone to be fetched from and location and and subsequently verified and
+used within validating resolvers. Also, DNSSEC provides the same
+assurance for individual signed resource records sourced from the root
+zone.
 
 This document:
 
-1. promotes the behavior in {{RFC8806}} to be a Best Current Practice.
+1. promotes the behavior in {{RFC8806}} to be either a Proposed
+   standard or a Best Current Practice, depending on what the WG
+   decides.
 2. RECOMMENDS that resolver implementations provide a simple configuration
    option to enable or disable functionality, and
-3. RECOMMENDS that resolver implementations enable this behavior by default. and
+3. RECOMMENDS that resolver implementations enable this behavior by default, and
 4. REQUIRES that {{RFC8976}} be used to validate the IANA root zone information
    before loading it.
 5. Adds a mechanism for priming the list of places for fetching root zone data.
 6. Adds protocol steps for ensuring resolution stability and resiliency.
+
+(ed note: should we require checking the SOA serial number for
+increasing values in #4, and down below in localroot enabled resolver
+requirements)
 
 ## Changes from RFC8806
 
@@ -240,7 +248,7 @@ zone without modification.
 
 ## Applicability
 
-This behavior should apply to all general-purpose recursive resolvers used on
+This behavior SHOULD apply to all general-purpose recursive resolvers used on
 the public Internet.
 
 # LocalRoot enabled resolver requirements
@@ -255,16 +263,17 @@ In order to implement the mechanism described in this document:
   up-to-date copy of the public part of the Key Signing Key (KSK)
   {{RFC4033}} or used to sign the DNS root or its DS record.
 
-- The resolver system MUST be able to retrieve a copy of the entire root zone
-  (including all DNSSEC-related records) {{protocol-steps}}.
+- The resolver system MUST retrieve or be provisioned with a copy of
+  the entire current root zone (including all DNSSEC-related records)
+  (see {{protocol-steps}}).
 
 - The resolver system MUST be able to fall back to querying the
   authoritative RSS servers whenever the local copy of the root zone
-  data is unavailable or has been deemed stale {{protocol-steps}}.
+  data is unavailable or has been deemed stale (see {{protocol-steps}}).
 
-A corollary of the above list is that a resolver operating as a
-LocalRoot MUST return equivalent answers about the DNS root or any
-other part of the DNS as if it was not operating as a LocalRoot.
+A resolver operating as a LocalRoot MUST return identical answers
+about the DNS root or any other part of the DNS as if it was not
+operating as a LocalRoot.
 
 # Functionality of a LocalRoot enabled resolver
 
