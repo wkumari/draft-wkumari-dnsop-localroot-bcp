@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Best Current Practice          USC/ISI and Google, Inc.
-Expires: 12 July 2026                                            J. Reid
+Expires: 13 July 2026                                            J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                          8 January 2026
+                                                          9 January 2026
 
 
                Running a Root Server Local to a Resolver
@@ -82,7 +82,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 July 2026.
+   This Internet-Draft will expire on 13 July 2026.
 
 Copyright Notice
 
@@ -135,7 +135,7 @@ Table of Contents
    a root server to get the information for that TLD or to find out that
    the TLD does not exist.  Research shows that the vast majority of
    queries going to the root are for names that do not exist in the root
-   zone.
+   zone [DNEROOTNAMES].
 
    Many of the queries from recursive resolvers to root servers get
    answers that are referrals to other servers.  Malicious third parties
@@ -153,16 +153,16 @@ Table of Contents
 
    Note that enabling LocalRoot functionality in a resolver will
    probably have little effect on improving resolver speed to a stub
-   resolver for good queries under Top Level Domains (TLDs), as the TTL
-   for most TLDs is already long-lived (two days in the current root
-   zone).  Thus the data is typically already in a resolver's cache.
-   Negative answers from the root servers are also cached in a similar
-   fashion, though potentially for a shorter time based on the SOA
-   negative cache timing.
+   resolver for queries under Top Level Domains (TLDs), as the TTL for
+   most TLDs is already long-lived (two days in the current root zone).
+   Thus the data is typically already in a resolver's cache.  Negative
+   answers from the root servers are also cached in a similar fashion,
+   though potentially for a shorter time based on the SOA negative cache
+   timing.
 
    Two potential implementation mechanisms are documented herein for
    achieving LocalRoot functionality: having the resolver pre-fetch the
-   root zone at regular intervals and pre-populate its cache with
+   root zone at regular intervals and populate its cache with
    information, or by running an authoritative server in parallel with
    the recursive resolver that acts as a locally authoritative root
    server.  To a client, the net effect of using any technique should be
@@ -193,19 +193,23 @@ Table of Contents
    reliability, and privacy of their resolvers.  This document concludes
    the experiment [RFC8806] was a success.  The reality is that secure
    DNS resolution using a local copy of the IANA root zone is possible
-   because technologies like DNSSEC and ZONEMD [RFC8976] allow for the
-   contents to be fetched from any location and subsequently verified
-   and used within validating resolvers.
+   because becuase the use of ZONEMD [RFC8976] allows for the entire
+   zone to be fetched from and location and and subsequently verified
+   and used within validating resolvers.  Also, DNSSEC provides the same
+   assurance for individual signed resource records sourced from the
+   root zone.
 
    This document:
 
-   1.  promotes the behavior in [RFC8806] to be a Best Current Practice.
+   1.  promotes the behavior in [RFC8806] to be either a Proposed
+       standard or a Best Current Practice, depending on what the WG
+       decides.
 
    2.  RECOMMENDS that resolver implementations provide a simple
        configuration option to enable or disable functionality, and
 
    3.  RECOMMENDS that resolver implementations enable this behavior by
-       default. and
+       default, and
 
    4.  REQUIRES that [RFC8976] be used to validate the IANA root zone
        information before loading it.
@@ -215,6 +219,10 @@ Table of Contents
 
    6.  Adds protocol steps for ensuring resolution stability and
        resiliency.
+
+   (ed note: should we require checking the SOA serial number for
+   increasing values in #4, and down below in localroot enabled resolver
+   requirements)
 
 3.1.  Changes from RFC8806
 
@@ -246,7 +254,7 @@ Table of Contents
 
 3.2.  Applicability
 
-   This behavior should apply to all general-purpose recursive resolvers
+   This behavior SHOULD apply to all general-purpose recursive resolvers
    used on the public Internet.
 
 4.  LocalRoot enabled resolver requirements
@@ -261,16 +269,17 @@ Table of Contents
       an up-to-date copy of the public part of the Key Signing Key (KSK)
       [RFC4033] or used to sign the DNS root or its DS record.
 
-   *  The resolver system MUST be able to retrieve a copy of the entire
-      root zone (including all DNSSEC-related records) Section 5.2.
+   *  The resolver system MUST retrieve or be provisioned with a copy of
+      the entire current root zone (including all DNSSEC-related
+      records) (see Section 5.2).
 
    *  The resolver system MUST be able to fall back to querying the
       authoritative RSS servers whenever the local copy of the root zone
-      data is unavailable or has been deemed stale Section 5.2.
+      data is unavailable or has been deemed stale (see Section 5.2).
 
-   A corollary of the above list is that a resolver operating as a
-   LocalRoot MUST return equivalent answers about the DNS root or any
-   other part of the DNS as if it was not operating as a LocalRoot.
+   A resolver operating as a LocalRoot MUST return identical answers
+   about the DNS root or any other part of the DNS as if it was not
+   operating as a LocalRoot.
 
 5.  Functionality of a LocalRoot enabled resolver
 
@@ -571,6 +580,10 @@ Table of Contents
 
    [CACHEME]  "Cache Me If You Can: Effects of DNS Time-to-Live", n.d.,
               <https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf>.
+
+   [DNEROOTNAMES]
+              "NoError vs NxDomain by-week", n.d.,
+              <https://rssac002.root-servers.org/rcode_0_v_3.html>.
 
    [draft-hardaker-dnsop-dns-xfr-scheme]
               "The DNS XFR URI Schemes", n.d.,
