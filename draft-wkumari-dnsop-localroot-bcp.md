@@ -1,7 +1,7 @@
 ---
-title: "Running a Root Server Local to a Resolver"
-#abbrev: "TODO - Abbreviation"
-category: bcp
+title: "Populating resolvers with the root zone."
+abbrev: "LocalRoot"
+category: std
 
 docname: draft-wkumari-dnsop-localroot-bcp-latest
 submissiontype: IETF
