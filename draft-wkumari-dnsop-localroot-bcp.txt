@@ -5,15 +5,15 @@
 Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
-Intended status: Best Current Practice          USC/ISI and Google, Inc.
-Expires: 13 July 2026                                            J. Reid
+Intended status: Standards Track                USC/ISI and Google, Inc.
+Expires: 16 July 2026                                            J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                          9 January 2026
+                                                         12 January 2026
 
 
-               Running a Root Server Local to a Resolver
+                Populating resolvers with the root zone.
                 draft-wkumari-dnsop-localroot-bcp-latest
 
 Abstract
@@ -82,7 +82,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 July 2026.
+   This Internet-Draft will expire on 16 July 2026.
 
 Copyright Notice
 
