@@ -222,11 +222,9 @@ This document:
 increasing values in #4, and down below in localroot enabled resolver
 requirements?)
 
-## Changes from RFC8806
+# LocalRoot enabled resolver requirements
 
-(Ed: this section is badly incomplete, as this document is nearly a
-complete rewrite and suggests different techniques for implementation
-as well as further techniques about interacting with upstreams)
+## Important change from RFC8806
 
 {{RFC8806}} Section 2 (Requirements) states that:
 
@@ -243,42 +241,45 @@ as well as further techniques about interacting with upstreams)
 This document relaxes this requirement. Resolver implementations can
 achieve the desired behavior of directly serving the contents of the
 root zone via multiple implementation choices, beyond those listed in
-{{RFC8806}}.  This can include what is described in RFC8806, but this
-document allows for implementations to select any mechanism for
-fetching and re-distributing the contents of the root zone on their
-resolver service addresses. For example, this can be done by simply
-"prefilling" the resolver's cache with the contents of the root
-zone. As the resulting behavior is (essentially) indistinguishable
-from the mechanism defined in RFC8806, this is viewed as being an
-acceptable implementation decision.  In the end, the fundamental
-requirement is simply: resolvers MUST return the records from the root
-zone without modification.
+{{RFC8806}}.  This can include the implementation guidance described
+in RFC8806, but this document allows for implementations to select any
+mechanism for fetching and re-distributing the contents of the root
+zone on their resolver service addresses as long as the other
+requirements specified in this document are still followed (see
+{{requirements}}).
 
+For example, an implementation can simply "prefill" the resolver's
+cache with the current contents of the root zone. As the resulting
+behavior is (essentially) indistinguishable from the mechanism defined
+in RFC8806, this is viewed as being an acceptable implementation
+decision.
 
-
-# LocalRoot enabled resolver requirements
+## LocalRoot enabled resolver requirements {#requirements}
 
 In order to implement the mechanism described in this document:
 
-- The resolver system MUST be able to validate the contents of the root zone
-  using ZONEMD {{RFC8976}}, which also requires supporting
-  DNSSEC for verifying the root zone's ZONEMD record.
+- A LocalRoot implementation MUST have a configured DNSSEC trust
+  anchor as an up-to-date copy of the public part of the Key Signing
+  Key (KSK) {{RFC4033}} or used to sign the DNS root or its DS record.
 
-- The resolver system MUST have a configured DNSSEC trust anchor as an
-  up-to-date copy of the public part of the Key Signing Key (KSK)
-  {{RFC4033}} or used to sign the DNS root or its DS record.
+- A LocalRoot implementation MUST validate the contents of the root zone using
+  ZONEMD {{RFC8976}}, and MUST check the validity of the ZONEMD record
+  using DNSSEC.
 
-- The resolver system MUST retrieve or be provisioned with a copy of
-  the entire current root zone (including all DNSSEC-related records)
-  (see {{protocol-steps}}).
+- A LocalRoot implementation MUST retrieve or be provisioned with a
+  copy of the entire current root zone (including all DNSSEC-related
+  records) (see {{protocol-steps}}).
 
-- The resolver system MUST be able to fall back to querying the
+- A LocalRoot implementation MUST be able to fall back to querying the
   authoritative RSS servers whenever the local copy of the root zone
   data is unavailable or has been deemed stale (see {{protocol-steps}}).
 
-A resolver operating as a LocalRoot MUST return identical answers
-about the DNS root or any other part of the DNS as if it was not
-operating as a LocalRoot.
+- A LocalRoot implementation MUST return records from the root zone
+  without modification.
+
+- A LocalRoot enabled resolver return identical answer content about
+  the DNS root (or any other part of the DNS) as if it would if it
+  were not operating as a LocalRoot enabled resolver.
 
 # Functionality of a LocalRoot enabled resolver
 
