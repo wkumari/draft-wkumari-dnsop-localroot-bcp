@@ -339,7 +339,7 @@ discussed separately in
 {{draft-hardaker-dnsop-root-zone-publication-list-guidelines}}.
 
 
-## Protocol steps {#protocol-steps}
+## Downloading and refreshing root zone data {#protocol-steps}
 
 When retrieving a copy of the IANA root zone from a list of IANA root
 zone publication points, a LocalRoot enabled implementation MAY be use
@@ -413,7 +413,7 @@ value.  Once the LocalRoot implementation's copy of the IANA root zone
 has been successfully refreshed and is no longer considered expired,
 the resolver may resume LocalRoot enabled resolution operations.
 
-## Integrating root zone data into the resolution process
+## Integrating and serving root zone data during resolution
 
 {: #integrating-root-zone-data }
 
