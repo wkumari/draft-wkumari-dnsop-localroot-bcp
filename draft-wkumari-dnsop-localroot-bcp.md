@@ -188,19 +188,21 @@ Readers are expected to be familiar with {{RFC8499}}.
 # Making RFC8806 behavior be a Best Current Practice
 
 Note: DNSOP needs to discuss whether to publish this as a BCP or as a
-bis-document and making LocalRoot a proposed standard (RFC8806 is
-informational)
+proposed standard.
 
 {{RFC8806}} is an Informational document that describes a mechanism
 that resolver operators can use to improve the performance,
 reliability, and privacy of their resolvers.  This document concludes
-the experiment {{RFC8806}} was a success.  The reality is that secure
-DNS resolution using a local copy of the IANA root zone is possible
-because becuase the use of ZONEMD {{RFC8976}} allows for the entire
-zone to be fetched from and location and and subsequently verified and
-used within validating resolvers. Also, DNSSEC provides the same
-assurance for individual signed resource records sourced from the root
-zone.
+the concept of {{RFC8806}} was a success, but that actual
+implementation of it has varied according to the needs of various code
+bases and operational environments.
+
+The reality is that secure DNS resolution using a local copy of the
+IANA root zone is possible because becuase the use of ZONEMD
+{{RFC8976}} allows for the entire zone to be fetched from and location
+and and subsequently verified and used within validating
+resolvers. Also, DNSSEC provides the same assurance for individual
+signed resource records sourced from the root zone.
 
 This document:
 
@@ -279,6 +281,8 @@ about the DNS root or any other part of the DNS as if it was not
 operating as a LocalRoot.
 
 # Functionality of a LocalRoot enabled resolver
+
+A LocalRoot enabled resolver
 
 The functionality of LocalRoot enabled resolver includes:
 
