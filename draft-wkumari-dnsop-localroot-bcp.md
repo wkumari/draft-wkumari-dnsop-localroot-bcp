@@ -124,26 +124,26 @@ This document obsoletes {{RFC8806}}.
 DNS recursive resolvers have to provide answers to all queries from
 their clients, even those for domain names that do not exist.  For
 each queried name that is within a top-level domain (TLD) that is not
-in the recursive resolver's cache, the resolver must send a query to
-a root server to get the information for that TLD or to find out that
-the TLD does not exist.  Research shows that the vast majority of
-queries going to the root are for names that do not exist in the root
-zone {{DNEROOTNAMES}}.
+in the recursive resolver's cache, the resolver must send a query to a
+root server to get the information for that TLD or to find out that
+the TLD does not exist.  Many of the queries from recursive resolvers
+to root servers get answers that are referrals to other servers.  But,
+research shows that the vast majority of queries going to the root are
+for names that do not exist in the root zone {{DNEROOTNAMES}}.  There
+are privacy implications for queries that can be observed by malicious
+third parties for both the queries for names that do exist and for the
+names that do not exist.
 
-Many of the queries from recursive resolvers to root servers get
-answers that are referrals to other servers.  Malicious third parties
-might be able to observe that traffic on the network between the
-recursive resolver and root servers.
-
-------
+## Local Caching of Root Server Data
 
 Caching the root zone data locally, commonly referred to as running a
 "LocalRoot" instance, provides a method for the operator of a
-recursive resolver to have a complete copy of the IANA root zone
-locally rather than sending requests for it to the Root Server System
-(RSS).  This can be implemented using a number of different
-implementation techniques, but the net effect is the same: few, if
-any, queries are sent to the actual RSS.
+recursive resolver to use a complete copy of the IANA root zone
+locally instead of sending requests to the Root Server System (RSS).
+This technique can be implemented using a number of different
+implementation techniques, including as described in this document,
+but the net effect is the same: few, if any, queries should be sent to
+the actual RSS.
 
 Note that enabling LocalRoot functionality in a resolver will probably
 have little effect on improving resolver speed to a stub resolver for
