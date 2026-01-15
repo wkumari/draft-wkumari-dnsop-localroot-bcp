@@ -222,7 +222,32 @@ This document:
 increasing values in #4, and down below in localroot enabled resolver
 requirements?)
 
-# LocalRoot enabled resolver requirements
+# LocalRoot enabled resolver requirements {#requirements}
+
+In order to implement the functionality described in this document:
+
+- A LocalRoot implementation MUST have a configured DNSSEC trust
+  anchor as an up-to-date copy of the public part of the Key Signing
+  Key (KSK) {{RFC4033}} or used to sign the DNS root or its DS record.
+
+- A LocalRoot implementation MUST validate the contents of the root zone using
+  ZONEMD {{RFC8976}}, and MUST check the validity of the ZONEMD record
+  using DNSSEC.
+
+- A LocalRoot implementation MUST retrieve or be provisioned with a
+  copy of the entire current root zone (including all DNSSEC-related
+  records) (see {{protocol-steps}}).
+
+- A LocalRoot implementation MUST be able to fall back to querying the
+  authoritative RSS servers whenever the local copy of the root zone
+  data is unavailable or has been deemed stale (see {{protocol-steps}}).
+
+- A LocalRoot implementation MUST return records from the root zone
+  without modification.
+
+- A LocalRoot enabled resolver return identical answer content about
+  the DNS root (or any other part of the DNS) as if it would if it
+  were not operating as a LocalRoot enabled resolver.
 
 ## Important change from RFC8806
 
@@ -254,46 +279,22 @@ behavior is (essentially) indistinguishable from the mechanism defined
 in RFC8806, this is viewed as being an acceptable implementation
 decision.
 
-## LocalRoot enabled resolver requirements {#requirements}
-
-In order to implement the mechanism described in this document:
-
-- A LocalRoot implementation MUST have a configured DNSSEC trust
-  anchor as an up-to-date copy of the public part of the Key Signing
-  Key (KSK) {{RFC4033}} or used to sign the DNS root or its DS record.
-
-- A LocalRoot implementation MUST validate the contents of the root zone using
-  ZONEMD {{RFC8976}}, and MUST check the validity of the ZONEMD record
-  using DNSSEC.
-
-- A LocalRoot implementation MUST retrieve or be provisioned with a
-  copy of the entire current root zone (including all DNSSEC-related
-  records) (see {{protocol-steps}}).
-
-- A LocalRoot implementation MUST be able to fall back to querying the
-  authoritative RSS servers whenever the local copy of the root zone
-  data is unavailable or has been deemed stale (see {{protocol-steps}}).
-
-- A LocalRoot implementation MUST return records from the root zone
-  without modification.
-
-- A LocalRoot enabled resolver return identical answer content about
-  the DNS root (or any other part of the DNS) as if it would if it
-  were not operating as a LocalRoot enabled resolver.
-
 # Functionality of a LocalRoot enabled resolver
 
-A LocalRoot enabled resolver
+To implement the goals described in {{goals}} and meet the
+requirements described in {{requirements}}, a LocalRoot enabled
+resolver will need to perform three fundamental tasks:
 
-The functionality of LocalRoot enabled resolver includes:
-
-1. Identifying locations from where root zone data can be obtained
+1. Identify locations from where root zone data can be obtained
    {{root-zone-sources}}.
 2. Downloading and refreshing the root zone data from one of the
    publication points {{protocol-steps}}.
 3. Integrating and serving the data while performing DNS resolutions
    {{integrating-root-zone-data}}
 
+Each of these are described in the subsections below.  Note that
+implementations may vary significantly in how these tasks are
+performed, ranging from static configuration to more active systems.
 
 ## Identifying locations from where root zone data can be obtained {#root-zone-sources}
 
