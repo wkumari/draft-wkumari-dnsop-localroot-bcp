@@ -134,7 +134,7 @@ are privacy implications for queries that can be observed by malicious
 third parties for both the queries for names that do exist and for the
 names that do not exist.
 
-## Local Caching of Root Server Data
+## Local Caching of Root Server Data {#goals}
 
 Caching the root zone data locally, commonly referred to as running a
 "LocalRoot" instance, provides a method for the operator of a
@@ -145,27 +145,31 @@ implementation techniques, including as described in this document,
 but the net effect is the same: few, if any, queries should be sent to
 the actual RSS.
 
-Note that enabling LocalRoot functionality in a resolver will probably
-have little effect on improving resolver speed to a stub resolver for
-queries under Top Level Domains (TLDs), as the TTL for most TLDs
-is already long-lived (two days in the current root zone). Thus the
-data is typically already in a resolver's cache.  Negative answers
-from the root servers are also cached in a similar fashion, though
-potentially for a shorter time based on the SOA negative cache timing.
-
 Two potential implementation mechanisms are documented herein for
-achieving LocalRoot functionality: having the resolver pre-fetch the
-root zone at regular intervals and populate its cache with
+achieving LocalRoot functionality: by having the resolver pre-fetch
+the root zone at regular intervals and populate its cache with
 information, or by running an authoritative server in parallel with
-the recursive resolver that acts as a locally authoritative root
-server.  To a client, the net effect of using any technique should be
-nearly indistinguishable to that of a non-Localroot resolver.
+the recursive resolver that acts as a local authoritative root server.
+Other mechanisms for implementing LocalRoot functionality MAY be used.
+To a client, the net effect of using any technique SHOULD be nearly
+indistinguishable to that of a non-Localroot resolver.
 
-A different approach to partially mitigating some of the problems that
-a LocalRoot enabled resolver solves can be achieved using "Aggressive
-Use of DNSSEC-Validated Cache" {{RFC8198}} functionality.
+Note that enabling LocalRoot functionality in a resolver should have
+little effect on improving resolver speed to its stub resolver clients
+for queries under Top Level Domains (TLDs), as the TTL for most TLDs
+is long-lived (two days in the current root zone). Thus, most TLD
+nameserver and address records are typically already in a resolver's
+cache.  Negative answers from the root servers are also cached in a
+similar fashion, though potentially for a shorter time based on the
+SOA negative cache timing (one day in the current root zone).
 
-Readers are expected to be familiar with {{RFC8499}}.
+Also note that a different approach to partially mitigating some of
+the privacy problems that a LocalRoot enabled resolver solves can be
+achieved using the "Aggressive Use of DNSSEC-Validated Cache"
+{{RFC8198}} functionality.
+
+Readers are expected to be familiar with the terminology defined in
+{{RFC8499}}.
 
 # Conventions and Definitions {#definitions}
 
