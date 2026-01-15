@@ -183,7 +183,9 @@ publication, with the possible exception of the list of differences
 between this document and RFC8806)
 
 Note: DNSOP needs to discuss whether to publish this as a BCP or as a
-proposed standard.
+proposed standard.  Currently this is listed as STD track based on a
+number of preliminary conversations the authors had with both
+operators and IETF participants.
 
 {{RFC8806}} is an Informational document that describes a mechanism
 that resolver operators can use to improve the performance,
