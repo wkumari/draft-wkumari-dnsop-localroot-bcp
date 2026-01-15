@@ -1192,6 +1192,11 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-local-caching-of-root-serve" class="internal xref">Local Caching of Root Server Data</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
@@ -1200,7 +1205,7 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-making-rfc8806-behavior-be-" class="internal xref">Making RFC8806 behavior be a Best Current Practice</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-changes-from-rfc8806" class="internal xref">Changes from RFC8806</a></p>
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-changes-from-rfc8806" class="internal xref">Changes from RFC8806</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-applicability" class="internal xref">Applicability</a></p>
@@ -1283,41 +1288,52 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
 <p id="section-1-1">DNS recursive resolvers have to provide answers to all queries from
 their clients, even those for domain names that do not exist.  For
 each queried name that is within a top-level domain (TLD) that is not
-in the recursive resolver's cache, the resolver must send a query to
-a root server to get the information for that TLD or to find out that
-the TLD does not exist.  Research shows that the vast majority of
-queries going to the root are for names that do not exist in the root
-zone <span>[<a href="#DNEROOTNAMES" class="cite xref">DNEROOTNAMES</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Many of the queries from recursive resolvers to root servers get
-answers that are referrals to other servers.  Malicious third parties
-might be able to observe that traffic on the network between the
-recursive resolver and root servers.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3"></p>
-<p id="section-1-4">Caching the root zone data locally, commonly referred to as running a
+in the recursive resolver's cache, the resolver must send a query to a
+root server to get the information for that TLD or to find out that
+the TLD does not exist.  Many of the queries from recursive resolvers
+to root servers get answers that are referrals to other servers.  But,
+research shows that the vast majority of queries going to the root are
+for names that do not exist in the root zone <span>[<a href="#DNEROOTNAMES" class="cite xref">DNEROOTNAMES</a>]</span>.  There
+are privacy implications for queries that can be observed by malicious
+third parties for both the queries for names that do exist and for the
+names that do not exist.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<div id="goals">
+<section id="section-1.1">
+        <h3 id="name-local-caching-of-root-serve">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-local-caching-of-root-serve" class="section-name selfRef">Local Caching of Root Server Data</a>
+        </h3>
+<p id="section-1.1-1">Caching the root zone data locally, commonly referred to as running a
 "LocalRoot" instance, provides a method for the operator of a
-recursive resolver to have a complete copy of the IANA root zone
-locally rather than sending requests for it to the Root Server System
-(RSS).  This can be implemented using a number of different
-implementation techniques, but the net effect is the same: few, if
-any, queries are sent to the actual RSS.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">Note that enabling LocalRoot functionality in a resolver will probably
-have little effect on improving resolver speed to a stub resolver for
-queries under Top Level Domains (TLDs), as the TTL for most TLDs
-is already long-lived (two days in the current root zone). Thus the
-data is typically already in a resolver's cache.  Negative answers
-from the root servers are also cached in a similar fashion, though
-potentially for a shorter time based on the SOA negative cache timing.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">Two potential implementation mechanisms are documented herein for
-achieving LocalRoot functionality: having the resolver pre-fetch the
-root zone at regular intervals and populate its cache with
+recursive resolver to use a complete copy of the IANA root zone
+locally instead of sending requests to the Root Server System (RSS).
+This technique can be implemented using a number of different
+implementation techniques, including as described in this document,
+but the net effect is the same: few, if any, queries should be sent to
+the actual RSS.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">Two potential implementation mechanisms are documented herein for
+achieving LocalRoot functionality: by having the resolver pre-fetch
+the root zone at regular intervals and populate its cache with
 information, or by running an authoritative server in parallel with
-the recursive resolver that acts as a locally authoritative root
-server.  To a client, the net effect of using any technique should be
-nearly indistinguishable to that of a non-Localroot resolver.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">A different approach to partially mitigating some of the problems that
-a LocalRoot enabled resolver solves can be achieved using "Aggressive
-Use of DNSSEC-Validated Cache" <span>[<a href="#RFC8198" class="cite xref">RFC8198</a>]</span> functionality.<a href="#section-1-7" class="pilcrow">¶</a></p>
-<p id="section-1-8">Readers are expected to be familiar with <span>[<a href="#RFC8499" class="cite xref">RFC8499</a>]</span>.<a href="#section-1-8" class="pilcrow">¶</a></p>
+the recursive resolver that acts as a local authoritative root server.
+Other mechanisms for implementing LocalRoot functionality <span class="bcp14">MAY</span> be used.
+To a client, the net effect of using any technique <span class="bcp14">SHOULD</span> be nearly
+indistinguishable to that of a non-Localroot resolver.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">Note that enabling LocalRoot functionality in a resolver should have
+little effect on improving resolver speed to its stub resolver clients
+for queries under Top Level Domains (TLDs), as the TTL for most TLDs
+is long-lived (two days in the current root zone). Thus, most TLD
+nameserver and address records are typically already in a resolver's
+cache.  Negative answers from the root servers are also cached in a
+similar fashion, though potentially for a shorter time based on the
+SOA negative cache timing (one day in the current root zone).<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">Also note that a different approach to partially mitigating some of
+the privacy problems that a LocalRoot enabled resolver solves can be
+achieved using the "Aggressive Use of DNSSEC-Validated Cache"
+<span>[<a href="#RFC8198" class="cite xref">RFC8198</a>]</span> functionality.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<p id="section-1.1-5">Readers are expected to be familiar with the terminology defined in
+<span>[<a href="#RFC8499" class="cite xref">RFC8499</a>]</span>.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="definitions">

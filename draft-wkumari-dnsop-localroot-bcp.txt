@@ -87,6 +87,7 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
+     1.1.  Local Caching of Root Server Data
    2.  Conventions and Definitions
    3.  Making RFC8806 behavior be a Best Current Practice
      3.1.  Changes from RFC8806
@@ -119,46 +120,52 @@ Table of Contents
    each queried name that is within a top-level domain (TLD) that is not
    in the recursive resolver's cache, the resolver must send a query to
    a root server to get the information for that TLD or to find out that
-   the TLD does not exist.  Research shows that the vast majority of
-   queries going to the root are for names that do not exist in the root
-   zone [DNEROOTNAMES].
+   the TLD does not exist.  Many of the queries from recursive resolvers
+   to root servers get answers that are referrals to other servers.
+   But, research shows that the vast majority of queries going to the
+   root are for names that do not exist in the root zone [DNEROOTNAMES].
+   There are privacy implications for queries that can be observed by
+   malicious third parties for both the queries for names that do exist
+   and for the names that do not exist.
 
-   Many of the queries from recursive resolvers to root servers get
-   answers that are referrals to other servers.  Malicious third parties
-   might be able to observe that traffic on the network between the
-   recursive resolver and root servers.
-
+1.1.  Local Caching of Root Server Data
 
    Caching the root zone data locally, commonly referred to as running a
    "LocalRoot" instance, provides a method for the operator of a
-   recursive resolver to have a complete copy of the IANA root zone
-   locally rather than sending requests for it to the Root Server System
-   (RSS).  This can be implemented using a number of different
-   implementation techniques, but the net effect is the same: few, if
-   any, queries are sent to the actual RSS.
-
-   Note that enabling LocalRoot functionality in a resolver will
-   probably have little effect on improving resolver speed to a stub
-   resolver for queries under Top Level Domains (TLDs), as the TTL for
-   most TLDs is already long-lived (two days in the current root zone).
-   Thus the data is typically already in a resolver's cache.  Negative
-   answers from the root servers are also cached in a similar fashion,
-   though potentially for a shorter time based on the SOA negative cache
-   timing.
+   recursive resolver to use a complete copy of the IANA root zone
+   locally instead of sending requests to the Root Server System (RSS).
+   This technique can be implemented using a number of different
+   implementation techniques, including as described in this document,
+   but the net effect is the same: few, if any, queries should be sent
+   to the actual RSS.
 
    Two potential implementation mechanisms are documented herein for
-   achieving LocalRoot functionality: having the resolver pre-fetch the
-   root zone at regular intervals and populate its cache with
+   achieving LocalRoot functionality: by having the resolver pre-fetch
+   the root zone at regular intervals and populate its cache with
    information, or by running an authoritative server in parallel with
-   the recursive resolver that acts as a locally authoritative root
-   server.  To a client, the net effect of using any technique should be
-   nearly indistinguishable to that of a non-Localroot resolver.
+   the recursive resolver that acts as a local authoritative root
+   server.  Other mechanisms for implementing LocalRoot functionality
+   MAY be used.  To a client, the net effect of using any technique
+   SHOULD be nearly indistinguishable to that of a non-Localroot
+   resolver.
 
-   A different approach to partially mitigating some of the problems
-   that a LocalRoot enabled resolver solves can be achieved using
-   "Aggressive Use of DNSSEC-Validated Cache" [RFC8198] functionality.
+   Note that enabling LocalRoot functionality in a resolver should have
+   little effect on improving resolver speed to its stub resolver
+   clients for queries under Top Level Domains (TLDs), as the TTL for
+   most TLDs is long-lived (two days in the current root zone).  Thus,
+   most TLD nameserver and address records are typically already in a
+   resolver's cache.  Negative answers from the root servers are also
+   cached in a similar fashion, though potentially for a shorter time
+   based on the SOA negative cache timing (one day in the current root
+   zone).
 
-   Readers are expected to be familiar with [RFC8499].
+   Also note that a different approach to partially mitigating some of
+   the privacy problems that a LocalRoot enabled resolver solves can be
+   achieved using the "Aggressive Use of DNSSEC-Validated Cache"
+   [RFC8198] functionality.
+
+   Readers are expected to be familiar with the terminology defined in
+   [RFC8499].
 
 2.  Conventions and Definitions
 
