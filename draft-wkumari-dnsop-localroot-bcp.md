@@ -175,7 +175,12 @@ Readers are expected to be familiar with the terminology defined in
 
 {::boilerplate bcp14-tagged}
 
-# Making RFC8806 behavior be a Best Current Practice
+## Making LocalRoot functionality the recommended practice
+
+(Ed: this section is primarily here to drive discussion within IETF
+WGs of interest and will be removed (or its text moved) prior to
+publication, with the possible exception of the list of differences
+between this document and RFC8806)
 
 Note: DNSOP needs to discuss whether to publish this as a BCP or as a
 proposed standard.
@@ -187,12 +192,13 @@ the concept of {{RFC8806}} was a success, but that actual
 implementation of it has varied according to the needs of various code
 bases and operational environments.
 
-The reality is that secure DNS resolution using a local copy of the
-IANA root zone is possible because becuase the use of ZONEMD
-{{RFC8976}} allows for the entire zone to be fetched from and location
-and and subsequently verified and used within validating
-resolvers. Also, DNSSEC provides the same assurance for individual
-signed resource records sourced from the root zone.
+Secure DNS verification of an obtained copy of the IANA root zone is
+possible because of the use of the RSS's ZONEMD {{RFC8976}} record.
+This allows for the entire zone to be fetched and subsequently
+verified before being used within recursive resolvers resolvers.
+DNSSEC provides the same assurance for individual signed resource
+records sourced from the root zone, including of the ZONEMD record
+itself.
 
 This document:
 
@@ -209,7 +215,7 @@ This document:
 
 (ed note: should we require checking the SOA serial number for
 increasing values in #4, and down below in localroot enabled resolver
-requirements)
+requirements?)
 
 ## Changes from RFC8806
 
