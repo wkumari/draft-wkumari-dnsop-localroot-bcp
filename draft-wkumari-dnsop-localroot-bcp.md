@@ -298,26 +298,33 @@ performed, ranging from static configuration to more active systems.
 
 ## Identifying locations from where root zone data can be obtained {#root-zone-sources}
 
-In order for the LocalRoot functionality to be effective, an
+For a LocalRoot enabled resolver to serve up to date data, an
 implementation must be able to fetch the contents of the entire IANA
-root zone.  Implementations can find sources in a number of ways,
-including but not limited to:
+root zone on a regular basis from at least one publication source.
+Implementations can find sources of root zone data in a number of
+ways, including but not limited to:
 
-1. Using a locally configured list of sources (for example a file or
-   URLs) from which to fetch a copy of the IANA root zone.
-2. Using a list of sources distributed with the resolver software
-   itself.
-3. By downloading a copy of available sources from the IANA using the
+1. An operationally configured list of sources (for example a
+   file of URLs) that can be used to fetch a copy of the IANA root
+   zone.
+2. A list of sources distributed with the resolver software itself,
+   (akin to how the root hints file is distributed with many resolvers
+   today).
+3. Downloading a list of available sources from the IANA using the
    sources described in {{iana-root-zone-list}}.
 
 To support LocalRoot implementations, IANA will aggregate, publish and
 maintain a list of IANA DNS root zone sources at *TBD-URL*
-{{iana-root-zone-list}}.  Guidance to IANA or for other entities
-wishing to collect and redistribute a list of sources for IANA root
-server data is discussed in
+{{iana-root-zone-list}}.  Guidance to IANA (or for other entities
+wishing to collect and redistribute a list of sources) for how to
+collect and maintain a list of IANA root data publication sources is
+discussed separately in
 {{draft-hardaker-dnsop-root-zone-publication-list-guidelines}}.
 
+
 ### IANA maintained list of root zone publication points  {#iana-root-zone-list}
+
+WJH:TODO
 
 This list of IANA root zone data publication points available at
 TBD-URL may be used when downloading and refreshing the root zone
@@ -379,17 +386,17 @@ once a week.
 
 ## Protocol steps {#protocol-steps}
 
-When initializing an implementation's LocalRoot mechanism, the following
-steps MAY be used to implement the LocalRoot functionality.  Note that
-as long as the desired effect of performing normal DNS resolution
-remains stable when combined with LocalRoot functionality, other
-implementations MAY be used.
+When retrieving a copy of the IANA root zone from a list of IANA root
+zone publication points, a LocalRoot enabled implementation MAY be use
+the following steps.  Note that as long as the desired effect of
+performing normal DNS resolution remains stable when combined with
+LocalRoot functionality, other implementations MAY be used.
 
-If local root zone data is unavailable at any point in these steps,
-resolvers SHOULD fall back to performing DNS resolution by issuing
-queries to the RSS as needed.  If a resolver is unable to do so, it
-MUST respond to client requests with a SERVFAIL response code.
-
+If a local copy of the IANA root zone data is unavailable for use in
+DNS resolution at any point in these steps, resolvers SHOULD fall back
+to performing DNS resolution by issuing queries directly to the RSS
+instead.  If a resolver is unable to do so, it MUST respond to client
+requests with a SERVFAIL response code.
 
 1. The resolver SHOULD use a list of root zone sources identified in
    {{root-zone-sources}} for obtaining a copy of the IANA root zone.
