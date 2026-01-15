@@ -10,35 +10,19 @@
 <meta content="Jim Reid" name="author">
 <meta content="Geoff Huston" name="author">
 <meta content="
-       Many DNS recursive resolver operators wish to prevent snooping by
-third parties of requests sent to DNS root servers.  In addition, some
-DNS recursive resolvers have longer-than-desired round-trip times to
-the closest DNS root server; those resolvers may have difficulty
-getting responses from the root servers, such as during a network
-attack.  Resolvers can solve both of these issues by serving or
-pre-caching a copy of the full root zone on the same server or within
-the resolver
-software. 
-       This document shows how to fetch, cache and maintain such a copy of the root
-zone, how to detect if it becomes stale, and mechanisms for handling
-error states.  This specification is designed to increase the
-resiliency, privacy and efficiency of DNS resolver services. 
+       DNS recursive resolver operators need to provide the best service
+possible for their users, which includes providing an operationally
+robust and privacy protecting service.  Challenges to these deployment
+goals include difficulty of getting responses from the root servers
+(such as during a network attack), longer-than-desired round-trip
+times to the closest DNS root server, and privacy issues relating to
+queries sent to the DNS root servers.  Resolvers can solve all of
+these issues by simply serving an already cached a copy of the full
+root zone. 
+       This document shows how resolvers can fetch, cache and maintain a copy
+of the root zone, how to detect if the contents becomes stale, and
+procedures for handling error conditions. 
        This document obsoletes  . 
-       /* Ed (WK): Open questions / ToDo / Notes (to be removed before publication): 
-       
-           I started writing this as rfc8806-bis, but as I did so I realized that it is
-likely better as a standalone document. 
-         
-         
-           This document recommends (&quot;Operation Considerations&quot;) using HTTP(S) for
-fetching the zone. We still need to add text to cover priming and discuss the
-bootstrapping issue. In addition, we need to add text about loadbalancing and
-fetching from multiple sources. Much of the premise behind RFC8806 is that it
-doesn't matter where you fetch the zone from, as long as you validate it, and
-use zone checksums  .
-*/ 
-         
-       
     " name="description">
 <meta content="xml2rfc 3.31.0" name="generator">
 <meta content="DNS" name="keyword">
@@ -1128,36 +1112,19 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Populating resolvers with the root zone.</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">Many DNS recursive resolver operators wish to prevent snooping by
-third parties of requests sent to DNS root servers.  In addition, some
-DNS recursive resolvers have longer-than-desired round-trip times to
-the closest DNS root server; those resolvers may have difficulty
-getting responses from the root servers, such as during a network
-attack.  Resolvers can solve both of these issues by serving or
-pre-caching a copy of the full root zone on the same server or within
-the resolver
-software.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This document shows how to fetch, cache and maintain such a copy of the root
-zone, how to detect if it becomes stale, and mechanisms for handling
-error states.  This specification is designed to increase the
-resiliency, privacy and efficiency of DNS resolver services.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">DNS recursive resolver operators need to provide the best service
+possible for their users, which includes providing an operationally
+robust and privacy protecting service.  Challenges to these deployment
+goals include difficulty of getting responses from the root servers
+(such as during a network attack), longer-than-desired round-trip
+times to the closest DNS root server, and privacy issues relating to
+queries sent to the DNS root servers.  Resolvers can solve all of
+these issues by simply serving an already cached a copy of the full
+root zone.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document shows how resolvers can fetch, cache and maintain a copy
+of the root zone, how to detect if the contents becomes stale, and
+procedures for handling error conditions.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This document obsoletes <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
-<p id="section-abstract-4">/* Ed (WK): Open questions / ToDo / Notes (to be removed before publication):<a href="#section-abstract-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-abstract-5">
-<li id="section-abstract-5.1">
-          <p id="section-abstract-5.1.1">I started writing this as rfc8806-bis, but as I did so I realized that it is
-likely better as a standalone document.<a href="#section-abstract-5.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li id="section-abstract-5.2">
-          <p id="section-abstract-5.2.1">This document recommends ("Operation Considerations") using HTTP(S) for
-fetching the zone. We still need to add text to cover priming and discuss the
-bootstrapping issue. In addition, we need to add text about loadbalancing and
-fetching from multiple sources. Much of the premise behind RFC8806 is that it
-doesn't matter where you fetch the zone from, as long as you validate it, and
-use zone checksums <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span>.
-*/<a href="#section-abstract-5.2.1" class="pilcrow">¶</a></p>
-</li>
-      </ol>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">

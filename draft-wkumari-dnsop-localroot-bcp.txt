@@ -18,35 +18,21 @@ Expires: 19 July 2026                                            J. Reid
 
 Abstract
 
-   Many DNS recursive resolver operators wish to prevent snooping by
-   third parties of requests sent to DNS root servers.  In addition,
-   some DNS recursive resolvers have longer-than-desired round-trip
-   times to the closest DNS root server; those resolvers may have
-   difficulty getting responses from the root servers, such as during a
-   network attack.  Resolvers can solve both of these issues by serving
-   or pre-caching a copy of the full root zone on the same server or
-   within the resolver software.
+   DNS recursive resolver operators need to provide the best service
+   possible for their users, which includes providing an operationally
+   robust and privacy protecting service.  Challenges to these
+   deployment goals include difficulty of getting responses from the
+   root servers (such as during a network attack), longer-than-desired
+   round-trip times to the closest DNS root server, and privacy issues
+   relating to queries sent to the DNS root servers.  Resolvers can
+   solve all of these issues by simply serving an already cached a copy
+   of the full root zone.
 
-   This document shows how to fetch, cache and maintain such a copy of
-   the root zone, how to detect if it becomes stale, and mechanisms for
-   handling error states.  This specification is designed to increase
-   the resiliency, privacy and efficiency of DNS resolver services.
+   This document shows how resolvers can fetch, cache and maintain a
+   copy of the root zone, how to detect if the contents becomes stale,
+   and procedures for handling error conditions.
 
    This document obsoletes [RFC8806].
-
-   /* Ed (WK): Open questions / ToDo / Notes (to be removed before
-   publication):
-
-   1.  I started writing this as rfc8806-bis, but as I did so I realized
-       that it is likely better as a standalone document.
-
-   2.  This document recommends ("Operation Considerations") using
-       HTTP(S) for fetching the zone.  We still need to add text to
-       cover priming and discuss the bootstrapping issue.  In addition,
-       we need to add text about loadbalancing and fetching from
-       multiple sources.  Much of the premise behind RFC8806 is that it
-       doesn't matter where you fetch the zone from, as long as you
-       validate it, and use zone checksums [RFC8976]. */
 
 About This Document
 
