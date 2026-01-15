@@ -178,7 +178,24 @@ resolvers used on the public Internet.
 
 {::boilerplate bcp14-tagged}
 
-## Making LocalRoot functionality the recommended practice
+## Terminology used in this document
+
+* IANA root zone: the DNS root zone as published by IANA.  {{RFC8499}}
+  describes the same root zone as "The zone of a DNS-based tree whose
+  apex is the zero- length label.  Also sometimes called ''the DNS
+  root'."
+
+* A LocalRoot enabled resolver: a recursive resolver that makes use of
+  a local copy of the root zone data by any means possible.
+
+* A LocalRoot implementation: the software or system of software
+  responsible for implementing the functionality described in this
+  specification.  Note that this may be done in a single piece of
+  software, or a set of components, or even a set of systems as long
+  as the functionality of a LocalRoot implementation behaves
+  identically to a resolver that is not Localroot enabled.
+
+# Making LocalRoot functionality the recommended practice
 
 (Ed: this section is primarily here to drive discussion within IETF
 WGs of interest and will be removed (or its text moved) prior to
