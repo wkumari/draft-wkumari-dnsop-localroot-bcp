@@ -339,68 +339,6 @@ discussed separately in
 {{draft-hardaker-dnsop-root-zone-publication-list-guidelines}}.
 
 
-### IANA maintained list of root zone publication points  {#iana-root-zone-list}
-
-WJH:TODO
-
-This list of IANA root zone data publication points available at
-TBD-URL may be used when downloading and refreshing the root zone
-data, as described in {{protocol-steps}}.  Specifically, this IANA DNS
-root zone publication list MAY be used by the resolver software
-directly, or by the operating system a resolver is deployed on, or by
-a network operator when configuring a resolver.
-
-The contents of the IANA DNS root publication points file MUST
-verified as to its integrity as having come from IANA and MUST be
-verified as complete.
-
-#### root zone publication points
-
-NOTE: this is but an example format that is expected to spur
-discussions within IETF working groups like DNSOP.  Whether this is a
-list in a simple line-delimited format like below or signed JSON or
-signed PGP or ... is subject to debate.
-
-The format of the IANA root zone data publication points file will
-consist of two parts, separated by a line containing four dashes and a
-newline ("----\\n").  The top section of the file contain a newline
-delimited list of URLs {{?RFC2056}}.  The second section, following
-the line containing four dashes, will contain a cryptographic checksum
-or signature.  Note that the format of this file applies to the IANA
-maintained list of root zone publication points, but may or may not be
-a format used by other publication point aggregation lists.
-
-URLs in the list may include any protocol capable of transferring DNS
-zone data, including HTTPS {{RFC9110}}, AXFR
-{{draft-hardaker-dnsop-dns-xfr-scheme}}, XoT
-{{draft-hardaker-dnsop-dns-xfr-scheme}}, etc.
-
-Any URLs that reference an unknown transfer protocol SHOULD be
-discarded.  If after filtering the list there are no acceptable list
-elements left, the resolver MUST revert to using regular DNS queries
-to the IANA root zone instead of operating as a LocalRoot.
-
-The first line of the cryptograhpic checksum section will contain a
-checksum or signature type string specifying what the remaining lines
-in the checksum or signature section will contain.
-
-An minimal example publication point file, containing only a single
-AXFR publication point of b.root-servers.net:
-
-~~~~
-axfr:b.root-servers.net/.
-----
-SHA256
-67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
-~~~~
-
-#### Publication point operational considerations
-
-Implementations SHOULD optimize retrieval to minimize impacts on the
-server.  Because the list is not expected to change frequently,
-implementations SHOULD refrain from querying the IANA source more than
-once a week.
-
 ## Protocol steps {#protocol-steps}
 
 When retrieving a copy of the IANA root zone from a list of IANA root
@@ -505,6 +443,68 @@ address and this specification removes that requirement and allows the
 parallel service to run on any address it can legitimately be used on.
 Note that the server MUST NOT use an address of one of the official
 root server addresses in the root zone.
+
+# IANA maintained list of root zone publication points  {#iana-root-zone-list}
+
+WJH:TODO
+
+This list of IANA root zone data publication points available at
+TBD-URL may be used when downloading and refreshing the root zone
+data, as described in {{protocol-steps}}.  Specifically, this IANA DNS
+root zone publication list MAY be used by the resolver software
+directly, or by the operating system a resolver is deployed on, or by
+a network operator when configuring a resolver.
+
+The contents of the IANA DNS root publication points file MUST
+verified as to its integrity as having come from IANA and MUST be
+verified as complete.
+
+## root zone publication points
+
+NOTE: this is but an example format that is expected to spur
+discussions within IETF working groups like DNSOP.  Whether this is a
+list in a simple line-delimited format like below or signed JSON or
+signed PGP or ... is subject to debate.
+
+The format of the IANA root zone data publication points file will
+consist of two parts, separated by a line containing four dashes and a
+newline ("----\\n").  The top section of the file contain a newline
+delimited list of URLs {{?RFC2056}}.  The second section, following
+the line containing four dashes, will contain a cryptographic checksum
+or signature.  Note that the format of this file applies to the IANA
+maintained list of root zone publication points, but may or may not be
+a format used by other publication point aggregation lists.
+
+URLs in the list may include any protocol capable of transferring DNS
+zone data, including HTTPS {{RFC9110}}, AXFR
+{{draft-hardaker-dnsop-dns-xfr-scheme}}, XoT
+{{draft-hardaker-dnsop-dns-xfr-scheme}}, etc.
+
+Any URLs that reference an unknown transfer protocol SHOULD be
+discarded.  If after filtering the list there are no acceptable list
+elements left, the resolver MUST revert to using regular DNS queries
+to the IANA root zone instead of operating as a LocalRoot.
+
+The first line of the cryptograhpic checksum section will contain a
+checksum or signature type string specifying what the remaining lines
+in the checksum or signature section will contain.
+
+An minimal example publication point file, containing only a single
+AXFR publication point of b.root-servers.net:
+
+~~~~
+axfr:b.root-servers.net/.
+----
+SHA256
+67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
+~~~~
+
+## Publication point operational considerations
+
+Implementations SHOULD optimize retrieval to minimize impacts on the
+server.  Because the list is not expected to change frequently,
+implementations SHOULD refrain from querying the IANA source more than
+once a week.
 
 # Operational Considerations
 
