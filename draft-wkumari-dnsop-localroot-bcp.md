@@ -171,6 +171,9 @@ achieved using the "Aggressive Use of DNSSEC-Validated Cache"
 Readers are expected to be familiar with the terminology defined in
 {{RFC8499}}.
 
+This behavior SHOULD be used by all general-purpose recursive
+resolvers used on the public Internet.
+
 # Conventions and Definitions {#definitions}
 
 {::boilerplate bcp14-tagged}
@@ -221,6 +224,10 @@ requirements?)
 
 ## Changes from RFC8806
 
+(Ed: this section is badly incomplete, as this document is nearly a
+complete rewrite and suggests different techniques for implementation
+as well as further techniques about interacting with upstreams)
+
 {{RFC8806}} Section 2 (Requirements) states that:
 
   > The system MUST be able to run an authoritative service for the
@@ -248,11 +255,6 @@ requirement is simply: resolvers MUST return the records from the root
 zone without modification.
 
 
-
-## Applicability
-
-This behavior SHOULD apply to all general-purpose recursive resolvers used on
-the public Internet.
 
 # LocalRoot enabled resolver requirements
 
