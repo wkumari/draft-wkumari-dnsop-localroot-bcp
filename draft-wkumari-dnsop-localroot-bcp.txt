@@ -90,66 +90,64 @@ Table of Contents
      1.1.  Local Caching of Root Server Data
    2.  Conventions and Definitions
      2.1.  Terminology used in this document
-   3.  Making LocalRoot functionality the recommended practice
-   4.  LocalRoot enabled resolver requirements
-     4.1.  Important change from RFC8806
-   5.  Functionality components a LocalRoot enabled resolver
-     5.1.  Identifying locations from where root zone data can be
+   3.  Components of a LocalRoot enabled resolver
+     3.1.  Identifying locations from where root zone data can be
            obtained
-     5.2.  Downloading and refreshing root zone data
-     5.3.  Integrating and serving root zone data during resolution
-       5.3.1.  Pre-caching the root zone data
-       5.3.2.  Running a local authoratative copy of the root zone in
+     3.2.  Downloading and refreshing root zone data
+     3.3.  Integrating and serving root zone data during resolution
+       3.3.1.  Pre-caching the root zone data
+       3.3.2.  Running a local authoratative copy of the root zone in
                parallel
-   6.  IANA maintained list of root zone publication points
-     6.1.  root zone publication points
-     6.2.  Publication point operational considerations
-   7.  Operational Considerations
-   8.  Security Considerations
-     8.1.  Leakage of potentially sensitive information
-     8.2.  Local resiliency of the DNS
-   9.  IANA Considerations
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   4.  LocalRoot enabled resolver requirements
+   5.  Operational Considerations
+   6.  Security Considerations
+     6.1.  IANA root zone data security
+     6.2.  Leakage of potentially sensitive information
+     6.3.  Local resiliency of the DNS
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Acknowledgments
+   History of the LocalRoot concept
+     An important change from RFC8806
    Authors' Addresses
 
 1.  Introduction
 
-   DNS recursive resolvers have to provide answers to all queries from
+   DNS recursive resolvers have to provide responses to all queries from
    their clients, even those for domain names that do not exist.  For
    each queried name that is within a top-level domain (TLD) that is not
    in the recursive resolver's cache, the resolver must send a query to
    a root server to get the information for that TLD or to find out that
-   the TLD does not exist.  Many of the queries from recursive resolvers
-   to root servers get answers that are referrals to other servers.
-   But, research shows that the vast majority of queries going to the
-   root are for names that do not exist in the root zone [DNEROOTNAMES].
-   There are privacy implications for queries that can be observed by
-   malicious third parties for both the queries for names that do exist
-   and for the names that do not exist.
+   the TLD does not exist.  Many of the queries to root servers get
+   answers that are referrals to other servers.  But, research shows
+   that the vast majority of queries going to the root are for names
+   that do not exist in the root zone [DNEROOTNAMES].  Regardless of
+   whether the queries get positive or negative answers, there are
+   privacy implications related to the eavesdropping of these queries as
+   they are transmitted to the DNS root servers.
 
 1.1.  Local Caching of Root Server Data
 
-   Caching the root zone data locally, commonly referred to as running a
-   "LocalRoot" instance, provides a method for the operator of a
-   recursive resolver to use a complete copy of the IANA root zone
+   Caching the IANA root zone data locally, commonly referred to as
+   running a "LocalRoot" instance, provides a method for the operator of
+   a recursive resolver to use a complete copy of the IANA root zone
    locally instead of sending requests to the Root Server System (RSS).
-   This technique can be implemented using a number of different
+   This goal can be implemented using a number of different
    implementation techniques, including as described in this document,
    but the net effect is the same: few, if any, queries should be sent
    to the actual RSS.
 
-   Two potential implementation mechanisms are documented herein for
-   achieving LocalRoot functionality: by having the resolver pre-fetch
-   the root zone at regular intervals and populate its cache with
-   information, or by running an authoritative server in parallel with
-   the recursive resolver that acts as a local authoritative root
-   server.  Other mechanisms for implementing LocalRoot functionality
-   MAY be used.  To a client, the net effect of using any technique
-   SHOULD be nearly indistinguishable to that of a non-Localroot
-   resolver.
+   Implementation mechanisms are documented herein for achieving
+   LocalRoot functionality (see {#functionality}).  At a high level,
+   this involves the LocalRoot implementation pre-fetch the root zone at
+   regular intervals and populate its resolver's cache with information,
+   or by running an authoritative server in parallel that acts as a
+   local authoritative root server.  Other mechanisms for implementing
+   LocalRoot functionality MAY be used.  To a client, the net effect of
+   using any technique SHOULD be nearly indistinguishable to that of a
+   non-Localroot resolver.
 
    Note that enabling LocalRoot functionality in a resolver should have
    little effect on improving resolver speed to its stub resolver
@@ -161,6 +159,9 @@ Table of Contents
    based on the SOA negative cache timing (one day in the current root
    zone).
 
+   This behavior SHOULD be used by all general-purpose recursive
+   resolvers used on the public Internet.
+
    Also note that a different approach to partially mitigating some of
    the privacy problems that a LocalRoot enabled resolver solves can be
    achieved using the "Aggressive Use of DNSSEC-Validated Cache"
@@ -168,9 +169,6 @@ Table of Contents
 
    Readers are expected to be familiar with the terminology defined in
    [RFC8499].
-
-   This behavior SHOULD be used by all general-purpose recursive
-   resolvers used on the public Internet.
 
 2.  Conventions and Definitions
 
@@ -201,136 +199,34 @@ Table of Contents
       as the functionality of a LocalRoot implementation behaves
       identically to a resolver that is not Localroot enabled.
 
-3.  Making LocalRoot functionality the recommended practice
-
-   (Ed: this section is primarily here to drive discussion within IETF
-   WGs of interest and will be removed (or its text moved) prior to
-   publication, with the possible exception of the list of differences
-   between this document and RFC8806)
-
-   Note: DNSOP needs to discuss whether to publish this as a BCP or as a
-   proposed standard.  Currently this is listed as STD track based on a
-   number of preliminary conversations the authors had with both
-   operators and IETF participants.
-
-   [RFC8806] is an Informational document that describes a mechanism
-   that resolver operators can use to improve the performance,
-   reliability, and privacy of their resolvers.  This document concludes
-   the concept of [RFC8806] was a success, but that actual
-   implementation of it has varied according to the needs of various
-   code bases and operational environments.
-
-   Secure DNS verification of an obtained copy of the IANA root zone is
-   possible because of the use of the RSS's ZONEMD [RFC8976] record.
-   This allows for the entire zone to be fetched and subsequently
-   verified before being used within recursive resolvers resolvers.
-   DNSSEC provides the same assurance for individual signed resource
-   records sourced from the root zone, including of the ZONEMD record
-   itself.
-
-   This document:
-
-   1.  promotes the behavior in [RFC8806] to be either a Proposed
-       standard or a Best Current Practice, depending on what the WG
-       decides.
-
-   2.  RECOMMENDS that resolver implementations provide a simple
-       configuration option to enable or disable functionality, and
-
-   3.  RECOMMENDS that resolver implementations enable this behavior by
-       default, and
-
-   4.  REQUIRES that [RFC8976] be used to validate the IANA root zone
-       information before loading it.
-
-   5.  Adds a mechanism for priming the list of places for fetching root
-       zone data.
-
-   6.  Adds protocol steps for ensuring resolution stability and
-       resiliency.
-
-   (ed note: should we require checking the SOA serial number for
-   increasing values in #4, and down below in localroot enabled resolver
-   requirements?)
-
-4.  LocalRoot enabled resolver requirements
-
-   In order to implement the functionality described in this document:
-
-   *  A LocalRoot implementation MUST have a configured DNSSEC trust
-      anchor as an up-to-date copy of the public part of the Key Signing
-      Key (KSK) [RFC4033] or used to sign the DNS root or its DS record.
-
-   *  A LocalRoot implementation MUST validate the contents of the root
-      zone using ZONEMD [RFC8976], and MUST check the validity of the
-      ZONEMD record using DNSSEC.
-
-   *  A LocalRoot implementation MUST retrieve or be provisioned with a
-      copy of the entire current root zone (including all DNSSEC-related
-      records) (see Section 5.2).
-
-   *  A LocalRoot implementation MUST be able to fall back to querying
-      the authoritative RSS servers whenever the local copy of the root
-      zone data is unavailable or has been deemed stale (see
-      Section 5.2).
-
-   *  A LocalRoot implementation MUST return records from the root zone
-      without modification.
-
-   *  A LocalRoot enabled resolver return identical answer content about
-      the DNS root (or any other part of the DNS) as if it would if it
-      were not operating as a LocalRoot enabled resolver.
-
-4.1.  Important change from RFC8806
-
-   [RFC8806] Section 2 (Requirements) states that:
-
-      The system MUST be able to run an authoritative service for the
-      root zone on the same host.  The authoritative root service MUST
-      only respond to queries from the same host.  One way to assure not
-      responding to queries from other hosts is to run an authoritative
-      server for the root that responds only on one of the loopback
-      addresses (that is, an address in the range 127/8 for IPv4 or ::1
-      in IPv6).  Another method is to have the resolver software also
-      act as an authoritative server for the root zone, but only for
-      answering queries from itself.
-
-   This document relaxes this requirement.  Resolver implementations can
-   achieve the desired behavior of directly serving the contents of the
-   root zone via multiple implementation choices, beyond those listed in
-   [RFC8806].  This can include the implementation guidance described in
-   RFC8806, but this document allows for implementations to select any
-   mechanism for fetching and re-distributing the contents of the root
-   zone on their resolver service addresses as long as the other
-   requirements specified in this document are still followed (see
-   Section 4).
-
-   For example, an implementation can simply "prefill" the resolver's
-   cache with the current contents of the root zone.  As the resulting
-   behavior is (essentially) indistinguishable from the mechanism
-   defined in RFC8806, this is viewed as being an acceptable
-   implementation decision.
-
-5.  Functionality components a LocalRoot enabled resolver
+3.  Components of a LocalRoot enabled resolver
 
    To implement the goals described in Section 1.1 and meet the
    requirements described in Section 4, a LocalRoot enabled resolver
    will need to perform three fundamental tasks:
 
    1.  Identify locations from where root zone data can be obtained
-       Section 5.1.
+       Section 3.1.
 
    2.  Downloading and refreshing the root zone data from one of the
-       publication points Section 5.2.
+       publication points Section 3.2.
 
    3.  Integrating and serving the data while performing DNS resolutions
-       Section 5.3
+       Section 3.3
 
-   Each of these are described in the subsections below.  Note that
-   implementations may vary significantly in how these tasks are
-   performed, ranging from static configuration to more active systems.
+   This functionally entirely alleviates the need for sending any
+   (other) DNS requests to the RSS.
 
-5.1.  Identifying locations from where root zone data can be obtained
+   These steps may be implemented as a singular component within a
+   recursive resolver or within multiple components operating in
+   coordination.  Implementations may also vary significantly in how
+   these tasks are performed, ranging from static configuration to more
+   active systems.  We refer to this entire system, regardless of
+   implementation sytle, as a the LocalRoot implementation.
+
+   Each of these tasks are described in the subsections below.
+
+3.1.  Identifying locations from where root zone data can be obtained
 
    For a LocalRoot enabled resolver to serve up to date data, an
    implementation must be able to fetch the contents of the entire IANA
@@ -346,17 +242,19 @@ Table of Contents
        resolvers today).
 
    3.  Downloading a list of available sources from the IANA using the
-       sources described in Section 6.
+       sources described in
+       [draft-hardaker-dnsop-iana-root-zone-publication-points].
 
-   To support LocalRoot implementations, IANA will aggregate, publish
-   and maintain a list of IANA DNS root zone sources at _TBD-URL_
-   [draft-hardaker-dnsop-iana-root-zone-publication-points].  Guidance
+   To support LocalRoot implementations wishing to implement option 3
+   above, IANA will aggregate, publish and maintain a list of IANA DNS
+   root zone sources at _TBD-URL_ (see
+   [draft-hardaker-dnsop-iana-root-zone-publication-points]).  Guidance
    to IANA (or for other entities wishing to collect and redistribute a
    list of sources) for how to collect and maintain a list of IANA root
    data publication sources is discussed separately in
    [draft-hardaker-dnsop-root-zone-publication-list-guidelines].
 
-5.2.  Downloading and refreshing root zone data
+3.2.  Downloading and refreshing root zone data
 
    For retrieving a copy of the IANA root zone from a list of IANA root
    zone publication points, a LocalRoot enabled implementation MAY be
@@ -370,8 +268,11 @@ Table of Contents
    RSS instead.  If a resolver is unable to do so, it MUST respond to
    client requests with a SERVFAIL response code.
 
+   The following steps are one way to achieve a LocalRoot
+   implementation:
+
    1.  A LocalRoot implementation SHOULD use a list of root zone sources
-       identified in Section 5.1 for obtaining a copy of the IANA root
+       identified in Section 3.1 for obtaining a copy of the IANA root
        zone.
 
    2.  A LocalRoot implementation SHOULD select one of the available
@@ -412,7 +313,7 @@ Table of Contents
        complete and successful.  Once the IANA root zone data has been
        verified, the LocalRoot implementation can begin LocalRoot
        enabled DNS resolution, potentially using the steps defined in
-       Section 5.3.
+       Section 3.3.
 
    5.  The resolver MUST check at least one the sources in step 1 at a
        regular interval to identify when a new copy of the IANA root
@@ -424,113 +325,92 @@ Table of Contents
        check multiple sources to ensure one source has not fallen
        significantly behind in its copy of the IANA root zone.
 
-   Resolvers MUST have an upper limit beyond which if a new copy of the
-   IANA root zone data is not available it will revert to sending
-   regular DNS queries to the RSS for performing DNS resolutions on
-   behalf of its clients.  This upper limit value MAY be configurable
-   and SHOULD default to the root zone's current SOA expiry value.  Once
-   the LocalRoot implementation's copy of the IANA root zone has been
-   successfully refreshed and is no longer considered expired, the
-   resolver may resume LocalRoot enabled resolution operations.
+3.3.  Integrating and serving root zone data during resolution
 
-5.3.  Integrating and serving root zone data during resolution
+   Any mechanism a LocalRoot implementation uses to integrate the IANA
+   root zone obtained in Section 3.2 to perform DNS resolution tasks is
+   sufficient if it is virtually indistinguishable to the DNS resolver's
+   client.  Two example implementation strategies are included below.
 
-   Any mechanism that a LocalRoot implementation uses to integrate the
-   IANA root zone obtained in Section 5.2 when performing DNS resolution
-   tasks is sufficient, if it is virtually indistinguishable to a DNS
-   resolver's client.  Two example implementation strategies are
-   included below.
-
-5.3.1.  Pre-caching the root zone data
+3.3.1.  Pre-caching the root zone data
 
    Once the root zone data has been collected and verified as complete
-   and correct (Section 5.2), a resolver MAY simply update its cache
-   with the newly obtained values.  This functionally entirely
-   alleviates the need for sending any (other) DNS requests to the RSS.
+   and correct (Section 3.2), a resolver MAY simply update its cache
+   with the newly obtained data.
 
-5.3.2.  Running a local authoratative copy of the root zone in parallel
+3.3.2.  Running a local authoratative copy of the root zone in parallel
 
    [RFC8806] described an implementation mechanism where a copy of the
    root zone could be run in an authoratative server running in parallel
    to the recursive resolver.  The recursive resolver could then be
    configured to simply point at this parallel server for obtaining data
-   related to the root zone instead of the RSS itself.  Note that
-   [RFC8806] required that the parallel server be running on a loopback
-   address and this specification removes that requirement and allows
-   the parallel service to run on any address it can legitimately be
-   used on.  Note that the server MUST NOT use an address of one of the
-   official root server addresses in the root zone.
+   related to the root zone instead of the RSS itself.
 
-6.  IANA maintained list of root zone publication points
+   Note that [RFC8806] required that the parallel server be running on a
+   loopback address, but this specification removes that requirement and
+   allows the parallel service to run on any address it can legitimately
+   be used on within its regular IPv4 and IPv6 address.  Such a server
+   MUST NOT use an address of one of the official root server addresses
+   in the root zone.
 
-   WJH:TODO
+4.  LocalRoot enabled resolver requirements
 
-   This list of IANA root zone data publication points available at TBD-
-   URL may be used when downloading and refreshing the root zone data,
-   as described in Section 5.2.  Specifically, this IANA DNS root zone
-   publication list MAY be used by the resolver software directly, or by
-   the operating system a resolver is deployed on, or by a network
-   operator when configuring a resolver.
+   The following requirements are necessary when creating and/or
+   deploying a LocalRoot implementation:
 
-   The contents of the IANA DNS root publication points file MUST
-   verified as to its integrity as having come from IANA and MUST be
-   verified as complete.
+   *  A LocalRoot implementation MUST have a configured DNSSEC trust
+      anchor as an up-to-date copy of the public part of the Key Signing
+      Key (KSK) [RFC4033] or used to sign the DNS root or its DS record.
 
-6.1.  root zone publication points
+   *  A LocalRoot implementation MUST validate the contents of the root
+      zone using ZONEMD [RFC8976], and MUST check the validity of the
+      ZONEMD record using DNSSEC.
 
-   NOTE: this is but an example format that is expected to spur
-   discussions within IETF working groups like DNSOP.  Whether this is a
-   list in a simple line-delimited format like below or signed JSON or
-   signed PGP or ... is subject to debate.
+   *  A LocalRoot implementation MUST retrieve or be provisioned with a
+      copy of the entire current root zone (including all DNSSEC-related
+      records) (see Section 3.2).
 
-   The format of the IANA root zone data publication points file will
-   consist of two parts, separated by a line containing four dashes and
-   a newline ("----\n").  The top section of the file contain a newline
-   delimited list of URLs [RFC2056].  The second section, following the
-   line containing four dashes, will contain a cryptographic checksum or
-   signature.  Note that the format of this file applies to the IANA
-   maintained list of root zone publication points, but may or may not
-   be a format used by other publication point aggregation lists.
+   *  A LocalRoot implementation MUST be able to fall back to querying
+      the authoritative RSS servers whenever the local copy of the root
+      zone data is unavailable or has been deemed stale (see
+      Section 3.2).
 
-   URLs in the list may include any protocol capable of transferring DNS
-   zone data, including HTTPS [RFC9110], AXFR
-   [draft-hardaker-dnsop-dns-xfr-scheme], XoT
-   [draft-hardaker-dnsop-dns-xfr-scheme], etc.
+   *  A LocalRoot implementation MUST return records from the root zone
+      without modification.
 
-   Any URLs that reference an unknown transfer protocol SHOULD be
-   discarded.  If after filtering the list there are no acceptable list
-   elements left, the resolver MUST revert to using regular DNS queries
-   to the IANA root zone instead of operating as a LocalRoot.
+   *  A LocalRoot enabled resolver return identical answer content about
+      the DNS root (or any other part of the DNS) as if it would if it
+      were not operating as a LocalRoot enabled resolver.
 
-   The first line of the cryptograhpic checksum section will contain a
-   checksum or signature type string specifying what the remaining lines
-   in the checksum or signature section will contain.
+   *  Resolvers MUST have an upper limit beyond which if a new copy of
+      the IANA root zone data is not available it will revert to sending
+      regular DNS queries to the RSS for performing DNS resolutions on
+      behalf of its clients.  This upper limit value MAY be configurable
+      and SHOULD default to the root zone's current SOA expiry value.
+      Once the LocalRoot implementation's copy of the IANA root zone has
+      been successfully refreshed and is no longer considered expired,
+      the resolver may resume LocalRoot enabled resolution operations.
 
-   An minimal example publication point file, containing only a single
-   AXFR publication point of b.root-servers.net:
-
-   axfr:b.root-servers.net/.
-   ----
-   SHA256
-   67d687eb21e59321dbb8115c51d1b4ddbd6634362859d130ed77b47a4410656c
-
-6.2.  Publication point operational considerations
-
-   Implementations SHOULD optimize retrieval to minimize impacts on the
-   server.  Because the list is not expected to change frequently,
-   implementations SHOULD refrain from querying the IANA source more
-   than once a week.
-
-7.  Operational Considerations
+5.  Operational Considerations
 
    TBD
 
-8.  Security Considerations
+6.  Security Considerations
 
    There are areas of potential concern that are mitigated to some
    extent by using this mechanism.
 
-8.1.  Leakage of potentially sensitive information
+6.1.  IANA root zone data security
+
+   Secure DNS verification of an obtained copy of the IANA root zone is
+   possible because of the use of the RSS's ZONEMD [RFC8976] record.
+   This allows for the entire zone to be fetched and subsequently
+   verified before being used within recursive resolvers resolvers.
+   DNSSEC provides the same assurance for individual signed resource
+   records sourced from the root zone, including of the ZONEMD record
+   itself.
+
+6.2.  Leakage of potentially sensitive information
 
    One privacy concern with the use of DNS is the leakage of potentially
    sensitive information that may be contained in the query name used in
@@ -549,7 +429,7 @@ Table of Contents
    any root nameserver, and obviates any such consideration of query
    name leakage [LOCALROOTPRIVACY].
 
-8.2.  Local resiliency of the DNS
+6.3.  Local resiliency of the DNS
 
    Another issue solved with LocalRoot is that when information is
    always available locally, usage of it is no longer subject to DDoS
@@ -560,14 +440,14 @@ Table of Contents
    longer than the typical TTL records within the zone [CACHEME]
    [LOCALROOTPRIVACY].
 
-9.  IANA Considerations
+7.  IANA Considerations
 
    TBD: describe the request for IANA to support a list of root server
    publication points at TBD-URL.
 
-10.  References
+8.  References
 
-10.1.  Normative References
+8.1.  Normative References
 
    [BCP237]   Best Current Practice 237,
               <https://www.rfc-editor.org/info/bcp237>.
@@ -612,7 +492,7 @@ Table of Contents
               DOI 10.17487/RFC8976, February 2021,
               <https://www.rfc-editor.org/rfc/rfc8976>.
 
-10.2.  Informative References
+8.2.  Informative References
 
    [BIND-MIRROR]
               "BIND 9 Mirror Zones", n.d.,
@@ -658,10 +538,6 @@ Table of Contents
 
    [QNAMEMIN] "DNS Query Privacy", n.d.,
               <https://www.potaroo.net/ispcol/2019-08/qmin.html>.
-
-   [RFC2056]  Denenberg, R., Kunze, J., and D. Lynch, "Uniform Resource
-              Locators for Z39.50", RFC 2056, DOI 10.17487/RFC2056,
-              November 1996, <https://www.rfc-editor.org/rfc/rfc2056>.
 
    [RFC2826]  IAB, "IAB Technical Comment on the Unique DNS Root",
               RFC 2826, DOI 10.17487/RFC2826, May 2000,
@@ -724,6 +600,75 @@ Acknowledgments
    discovered the band "Trampled by Turtles" while working on this
    document and is submitting it as a nomination for the best-band-name-
    ever award.
+
+History of the LocalRoot concept
+
+   Note: DNSOP needs to discuss whether to publish this as a BCP or as a
+   proposed standard.  Currently this is listed as STD track based on a
+   number of preliminary conversations the authors had with both
+   operators and IETF participants.
+
+   [RFC8806] is an Informational document that describes a mechanism
+   that resolver operators can use to improve the performance,
+   reliability, and privacy of their resolvers.  This document concludes
+   the concept of [RFC8806] was a success, but that actual
+   implementation of it has varied according to the needs of various
+   code bases and operational environments.  Thus, this document houses
+   many of the original concepts of [RFC8806] but is largely a complete
+   rewrite to match modern expectations based on recent implementation
+   and deployment experiences.
+
+   This document differs in a number of critical ways (TBD: this list is
+   incomplete):
+
+   1.  promotes the behavior in [RFC8806] to be either a Proposed
+       standard or a Best Current Practice, depending on what the WG
+       decides.
+
+   2.  RECOMMENDS that resolver implementations provide a simple
+       configuration option to enable or disable functionality, and
+
+   3.  RECOMMENDS that resolver implementations enable this behavior by
+       default, and
+
+   4.  REQUIRES that [RFC8976] be used to validate the IANA root zone
+       information before loading it.
+
+   5.  Adds a mechanism for priming the list of places for fetching root
+       zone data.
+
+   6.  Adds protocol steps for ensuring resolution stability and
+       resiliency.
+
+An important change from RFC8806
+
+   [RFC8806] Section 2 (Requirements) states that:
+
+      The system MUST be able to run an authoritative service for the
+      root zone on the same host.  The authoritative root service MUST
+      only respond to queries from the same host.  One way to assure not
+      responding to queries from other hosts is to run an authoritative
+      server for the root that responds only on one of the loopback
+      addresses (that is, an address in the range 127/8 for IPv4 or ::1
+      in IPv6).  Another method is to have the resolver software also
+      act as an authoritative server for the root zone, but only for
+      answering queries from itself.
+
+   This document relaxes this requirement.  Resolver implementations can
+   achieve the desired behavior of directly serving the contents of the
+   root zone via multiple implementation choices, beyond those listed in
+   [RFC8806].  This can include the implementation guidance described in
+   RFC8806, but this document allows for implementations to select any
+   mechanism for fetching and re-distributing the contents of the root
+   zone on their resolver service addresses as long as the other
+   requirements specified in this document are still followed (see
+   Section 4).
+
+   For example, an implementation can simply "prefill" the resolver's
+   cache with the current contents of the root zone.  As the resulting
+   behavior is (essentially) indistinguishable from the mechanism
+   defined in RFC8806, this is viewed as being an acceptable
+   implementation decision.
 
 Authors' Addresses
 
