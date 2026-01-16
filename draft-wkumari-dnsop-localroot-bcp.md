@@ -65,7 +65,6 @@ informative:
   RFC2826:  # IANA global unique DNS root
   RFC5936:  # DNS Zone Transfer
   RFC7766:  # DNS Transport over TCP
-  RFC7706:
   RFC9156:  # QNAME Minimisation
   RFC9110:  # HTTP Semantics and Methods
 
@@ -460,10 +459,9 @@ The authors have discussed this idea with many people, and have likely
 forgotten to acknowledge and credit many of them. If we discussed this with
 you, and you are not listed, please please let us know and we'll add you.
 
-This work has been founded upon previous documents.  These include
-{{RFC7706}} and {{RFC8806}} authored by Warren Kumari and Paul Hoffman
-and "On Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark
-Allman.
+This work has been founded upon previous documents.  Most importantly,
+{{RFC8806}}, authored by Warren Kumari and Paul Hoffman, and "On
+Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark Allman.
 
 The authors would like to thank Joe Abley, Vint Cerf, John Crain,
 Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
