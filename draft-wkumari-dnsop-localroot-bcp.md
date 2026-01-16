@@ -62,7 +62,7 @@ normative:
   RFC8976:
 
 informative:
-  RFC2826:  # IANA global unique DNS root 
+  RFC2826:  # IANA global unique DNS root
   RFC5936:  # DNS Zone Transfer
   RFC7766:  # DNS Transport over TCP
   RFC7706:
@@ -343,7 +343,7 @@ ways, including but not limited to:
 
 To support LocalRoot implementations, IANA will aggregate, publish and
 maintain a list of IANA DNS root zone sources at *TBD-URL*
-{{/draft-hardaker-dnsop-iana-root-zone-publication-points}}.  Guidance to IANA (or for other entities
+{{draft-hardaker-dnsop-iana-root-zone-publication-points}}.  Guidance to IANA (or for other entities
 wishing to collect and redistribute a list of sources) for how to
 collect and maintain a list of IANA root data publication sources is
 discussed separately in
@@ -427,16 +427,13 @@ LocalRoot implementation's copy of the IANA root zone has been
 successfully refreshed and is no longer considered expired, the
 resolver may resume LocalRoot enabled resolution operations.
 
-## Integrating and serving root zone data during resolution
+## Integrating and serving root zone data during resolution {#integrating-root-zone-data}
 
-{: #integrating-root-zone-data }
-
-Any mechanism that a recursive resolver can use to serve the data
-obtained in {{protocol-steps}} in such a way that it is functionally
-indishinguishable to a client from having followed regular DNS
-resolution processes should be considered an acceptable
-implementation.  Two example implementation descriptions are included
-in the following two subsections.
+Any mechanism that a LocalRoot implementation uses to integrate the
+IANA root zone obtained in {{protocol-steps}} when performing DNS
+resolution tasks is sufficient, if it is virtually
+indistinguishable to a DNS resolver's client.  Two example
+implementation strategies are included below.
 
 ### Pre-caching the root zone data
 
