@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Populating resolvers with the root zone.</title>
+<title>Populating resolvers with the root zone</title>
 <meta content="Warren Kumari" name="author">
 <meta content="Wes Hardaker" name="author">
 <meta content="Jim Reid" name="author">
@@ -1066,7 +1066,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 19 July 2026</td>
+<td class="center">Expires 20 July 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1082,12 +1082,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-01-15" class="published">15 January 2026</time>
+<time datetime="2026-01-16" class="published">16 January 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-07-19">19 July 2026</time></dd>
+<dd class="expires"><time datetime="2026-07-20">20 July 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1109,7 +1109,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">Populating resolvers with the root zone.</h1>
+<h1 id="title">Populating resolvers with the root zone</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">DNS recursive resolver operators need to provide the best service
@@ -1161,7 +1161,7 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1218,7 +1218,7 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-functionality-of-a-localroo" class="internal xref">Functionality of a LocalRoot enabled resolver</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-functionality-components-a-" class="internal xref">Functionality components a LocalRoot enabled resolver</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-identifying-locations-from-" class="internal xref">Identifying locations from where root zone data can be obtained</a></p>
@@ -1362,22 +1362,27 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </h3>
 <ul class="normal">
 <li class="normal" id="section-2.1-1.1">
-            <p id="section-2.1-1.1.1">IANA root zone: the DNS root zone as published by IANA.  <span>[<a href="#RFC8499" class="cite xref">RFC8499</a>]</span>
-describes the same root zone as "The zone of a DNS-based tree whose
-apex is the zero- length label.  Also sometimes called ''the DNS
-root'."<a href="#section-2.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="section-2.1-1.1.1">IANA root zone: the Internet's unique DNS root zone as published by
+IANA <span>[<a href="#RFC2826" class="cite xref">RFC2826</a>]</span>.  This is the same source of root zone data used by
+the Root Server Operators <span>[<a href="#RSSAC055" class="cite xref">RSSAC055</a>]</span>. <span>[<a href="#RFC8499" class="cite xref">RFC8499</a>]</span> describes the
+same root zone as "The zone of a DNS-based tree whose apex is the
+zero- length label.  Also sometimes called ''the DNS root'."<a href="#section-2.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.1-1.2">
-            <p id="section-2.1-1.2.1">A LocalRoot enabled resolver: a recursive resolver that makes use of
-a local copy of the root zone data by any means possible.<a href="#section-2.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="section-2.1-1.2.1">IANA root zone data: the complete set of contents that makes up the
+IANA root zone.<a href="#section-2.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.1-1.3">
-            <p id="section-2.1-1.3.1">A LocalRoot implementation: the software or system of software
+            <p id="section-2.1-1.3.1">A LocalRoot enabled resolver: a recursive resolver that makes use of
+a local copy of the root zone data by any means possible.<a href="#section-2.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.1-1.4">
+            <p id="section-2.1-1.4.1">A LocalRoot implementation: the software or system of software
 responsible for implementing the functionality described in this
 specification.  Note that this may be done in a single piece of
 software, or a set of components, or even a set of systems as long
 as the functionality of a LocalRoot implementation behaves
-identically to a resolver that is not Localroot enabled.<a href="#section-2.1-1.3.1" class="pilcrow">¶</a></p>
+identically to a resolver that is not Localroot enabled.<a href="#section-2.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1514,10 +1519,10 @@ decision.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
 </div>
 </section>
 </div>
-<div id="functionality-of-a-localroot-enabled-resolver">
+<div id="functionality-components-a-localroot-enabled-resolver">
 <section id="section-5">
-      <h2 id="name-functionality-of-a-localroo">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-functionality-of-a-localroo" class="section-name selfRef">Functionality of a LocalRoot enabled resolver</a>
+      <h2 id="name-functionality-components-a-">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-functionality-components-a-" class="section-name selfRef">Functionality components a LocalRoot enabled resolver</a>
       </h2>
 <p id="section-5-1">To implement the goals described in <a href="#goals" class="auto internal xref">Section 1.1</a> and meet the
 requirements described in <a href="#requirements" class="auto internal xref">Section 4</a>, a LocalRoot enabled
@@ -1533,7 +1538,7 @@ publication points <a href="#protocol-steps" class="auto internal xref">Section 
 </li>
         <li id="section-5-2.3">
           <p id="section-5-2.3.1">Integrating and serving the data while performing DNS resolutions
-<a href="#integrating-root-zone-data" class="auto internal xref">Section 5.3, Paragraph 1</a><a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
+<a href="#integrating-root-zone-data" class="auto internal xref">Section 5.3</a><a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 <p id="section-5-3">Each of these are described in the subsections below.  Note that
@@ -1567,7 +1572,7 @@ sources described in <a href="#iana-root-zone-list" class="auto internal xref">S
         </ol>
 <p id="section-5.1-3">To support LocalRoot implementations, IANA will aggregate, publish and
 maintain a list of IANA DNS root zone sources at <em>TBD-URL</em>
-          <a href="#iana-root-zone-list" class="auto internal xref">Section 6</a>.  Guidance to IANA (or for other entities
+          <span>[<a href="#draft-hardaker-dnsop-iana-root-zone-publication-points" class="cite xref">draft-hardaker-dnsop-iana-root-zone-publication-points</a>]</span>.  Guidance to IANA (or for other entities
 wishing to collect and redistribute a list of sources) for how to
 collect and maintain a list of IANA root data publication sources is
 discussed separately in
@@ -1579,7 +1584,7 @@ discussed separately in
         <h3 id="name-downloading-and-refreshing-">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-downloading-and-refreshing-" class="section-name selfRef">Downloading and refreshing root zone data</a>
         </h3>
-<p id="section-5.2-1">When retrieving a copy of the IANA root zone from a list of IANA root
+<p id="section-5.2-1">For retrieving a copy of the IANA root zone from a list of IANA root
 zone publication points, a LocalRoot enabled implementation <span class="bcp14">MAY</span> be use
 the following steps.  Note that as long as the desired effect of
 performing normal DNS resolution remains stable when combined with
@@ -1591,85 +1596,85 @@ instead.  If a resolver is unable to do so, it <span class="bcp14">MUST</span> r
 requests with a SERVFAIL response code.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5.2-3">
 <li id="section-5.2-3.1">
-            <p id="section-5.2-3.1.1">The resolver <span class="bcp14">SHOULD</span> use a list of root zone sources identified in
-<a href="#root-zone-sources" class="auto internal xref">Section 5.1</a> for obtaining a copy of the IANA root zone.<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.1.1">A LocalRoot implementation <span class="bcp14">SHOULD</span> use a list of root zone sources
+identified in <a href="#root-zone-sources" class="auto internal xref">Section 5.1</a> for obtaining a copy of the
+IANA root zone.<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-3.2">
-            <p id="section-5.2-3.2.1">The resolver <span class="bcp14">MUST</span> select one of the available sources from step 1,
-and from it retrieve a current copy of the IANA root zone.
-Resolvers <span class="bcp14">SHOULD</span> prioritize sources they can fetch the most
-efficiently.  For example, when supported, https sources should be
-preferred as it allows for compression negotiation as well as the
-possibility of using low-cost, well-distributed CDNs to distribute
-the zone files.  When querying a source of IANA root zone data, the
-resolver <span class="bcp14">SHOULD</span> minimize impact to the source by querying at a rate
-no faster than specified by the SOA refresh timer and <span class="bcp14">SHOULD</span> use
-data freshness protocol checks over downloading the entire contents
-at each refresh (example checks include the HEAD method <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>
-when using HTTP(s) or by querying the root zone's SOA over DNS
-first when using AXFR, IXFR or XoT).  Once fetched, an
-implementation <span class="bcp14">MUST NOT</span> make use of an obtained IANA root zone with
-a SOA serial number less than any previously obtained copy
-<span>[<a href="#RFC1982" class="cite xref">RFC1982</a>]</span>.<a href="#section-5.2-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.2.1">A LocalRoot implementation <span class="bcp14">SHOULD</span> select one of the available
+sources from step 1, and from it retrieve a current copy of the
+IANA root zone.  Resolvers <span class="bcp14">SHOULD</span> prioritize sources that can be
+fetched the most efficiently.  For example, when supported, https
+sources should be preferred as it allows for compression
+negotiation as well as the use of low-cost, well-distributed
+Content Delivery Networks (CDNs).<a href="#section-5.2-3.2.1" class="pilcrow">¶</a></p>
+<p id="section-5.2-3.2.2">
+When sending requests to a source of IANA root zone data, the
+resolver <span class="bcp14">SHOULD</span> minimize its impact on the source by querying at a
+rate no faster than specified by the SOA refresh timer and <span class="bcp14">SHOULD</span>
+use data freshness protocol checks instead of downloading the
+entire contents at each refresh (example checks include the HEAD
+method <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span> when using HTTP(s) or by querying the root
+zone's SOA over DNS first when using AXFR, IXFR or XoT).  Once
+fetched, an implementation <span class="bcp14">MUST NOT</span> make use of the obtained IANA
+root zone data with a SOA serial number less than any previously
+obtained copy <span>[<a href="#RFC1982" class="cite xref">RFC1982</a>]</span>.<a href="#section-5.2-3.2.2" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-3.3">
-            <p id="section-5.2-3.3.1">If the resolver failed to retrieve the IANA root zone content in
-step 2, or the zone content's serial number was deemed to be older
-than an already cached copy then it <span class="bcp14">SHOULD</span> attempt to retrieve the
-IANA root zone from another source on that list if there are other
-available sources from available sources from step 1.  If the
-resolver has exhausted the list of sources, it <span class="bcp14">SHOULD</span> stop
-attempting to download the IANA root zone and wait another refresh
-time length until retrying all of the sources again.<a href="#section-5.2-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.3.1">If the LocalRoot implementation failed to retrieve the IANA root
+zone data in step 2, or the SOA serial number was deemed to be
+older than the already cached data, then it <span class="bcp14">SHOULD</span> attempt to
+retrieve the IANA root zone data from another source. If the
+LocalRoot implementation resolver has exhausted the list of
+sources, it <span class="bcp14">SHOULD</span> stop attempting to download the IANA root zone
+data and <span class="bcp14">SHOULD</span> wait another refresh time length until retrying all
+of the sources again.<a href="#section-5.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-3.4">
             <p id="section-5.2-3.4.1">Having successfully downloaded a copy of the IANA root zone, the
-resolver <span class="bcp14">MUST</span> verify the contents of the IANA root zone using the
-ZONEMD <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> record contained within it.  Note that this
-REQUIRES verification of the ZONEMD record using DNSSEC <span>[<a href="#BCP237" class="cite xref">BCP237</a>]</span>
-and the configured IANA root zone trust anchor.  The contents of
-the fetched zone <span class="bcp14">MUST NOT</span> be used until after ZONEMD verification
-is complete and successful.  Once the zone data has been verified
-as the IANA root zone, the resolver can begin LocalRoot enabled DNS
+LocalRoot implementation <span class="bcp14">MUST</span> verify the contents of the IANA root
+zone data using the ZONEMD <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> record contained within it.
+Note that this REQUIRES verification of the ZONEMD record using
+DNSSEC <span>[<a href="#BCP237" class="cite xref">BCP237</a>]</span> with the configured IANA root zone trust anchor.
+The contents of the fetched zone <span class="bcp14">MUST NOT</span> be used until after
+ZONEMD verification, including its DNSSEC verification, is complete
+and successful.  Once the IANA root zone data has been verified,
+the LocalRoot implementation can begin LocalRoot enabled DNS
 resolution, potentially using the steps defined in
-<a href="#integrating-root-zone-data" class="auto internal xref">Section 5.3, Paragraph 1</a>.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
+<a href="#integrating-root-zone-data" class="auto internal xref">Section 5.3</a>.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-3.5">
-            <p id="section-5.2-3.5.1">The resolver <span class="bcp14">MUST</span> check the sources in step 1 at a regular interval
-to identify when a new copy of the IANA root zone is available.
-This internal <span class="bcp14">MAY</span> be configurable and <span class="bcp14">SHOULD</span> default to the IANA
-root zone's current SOA refresh value. When a resolver has detected
-that a new copy of the IANA root zone is available, the resolver
-<span class="bcp14">SHOULD</span> start at step 1 to obtain a new zone.  Resolvers <span class="bcp14">MAY</span> check
-multiple sources to ensure one source has not fallen significantly
-behind in its copy of the IANA root zone.<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.5.1">The resolver <span class="bcp14">MUST</span> check at least one the sources in step 1 at a
+regular interval to identify when a new copy of the IANA root zone
+data is available.  This frequency <span class="bcp14">MAY</span> be configurable and <span class="bcp14">SHOULD</span>
+default to the IANA root zone's current SOA refresh value. When a
+resolver has detected that a new copy of the IANA root zone data is
+available, the resolver <span class="bcp14">SHOULD</span> start at step 1 to obtain a new copy
+of the IANA root zone data.  Resolvers <span class="bcp14">MAY</span> check multiple sources
+to ensure one source has not fallen significantly behind in its
+copy of the IANA root zone.<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-5.2-4">Resolvers <span class="bcp14">MUST</span> have an upper limit beyond which if a new copy is not
-available it will revert to using regular DNS queries to the IANA root
-zone instead of continuing to use the previously downloaded copy.  If
-at any point this upper limit has been reached, the resolver <span class="bcp14">SHOULD</span>
-fall back to using regular DNS mechanisms for performing DNS
-resolutions on behalf of its clients.  This upper limit value <span class="bcp14">MAY</span> be
-configurable and <span class="bcp14">SHOULD</span> default to the root zone's current SOA expiry
-value.  Once the LocalRoot implementation's copy of the IANA root zone
-has been successfully refreshed and is no longer considered expired,
-the resolver may resume LocalRoot enabled resolution operations.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Resolvers <span class="bcp14">MUST</span> have an upper limit beyond which if a new copy of the
+IANA root zone data is not available it will revert to sending regular
+DNS queries to the RSS for performing DNS resolutions on behalf of its
+clients.  This upper limit value <span class="bcp14">MAY</span> be configurable and <span class="bcp14">SHOULD</span>
+default to the root zone's current SOA expiry value.  Once the
+LocalRoot implementation's copy of the IANA root zone has been
+successfully refreshed and is no longer considered expired, the
+resolver may resume LocalRoot enabled resolution operations.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="integrating-and-serving-root-zone-data-during-resolution">
+<div id="integrating-root-zone-data">
 <section id="section-5.3">
         <h3 id="name-integrating-and-serving-roo">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-integrating-and-serving-roo" class="section-name selfRef">Integrating and serving root zone data during resolution</a>
         </h3>
-<div id="integrating-root-zone-data">
-<p id="section-5.3-1">Any mechanism that a recursive resolver can use to serve the data
-obtained in <a href="#protocol-steps" class="auto internal xref">Section 5.2</a> in such a way that it is functionally
-indishinguishable to a client from having followed regular DNS
-resolution processes should be considered an acceptable
-implementation.  Two example implementation descriptions are included
-in the following two subsections.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-</div>
+<p id="section-5.3-1">Any mechanism that a LocalRoot implementation uses to integrate the
+IANA root zone obtained in <a href="#protocol-steps" class="auto internal xref">Section 5.2</a> when performing DNS
+resolution tasks is sufficient, if it is virtually
+indistinguishable to a DNS resolver's client.  Two example
+implementation strategies are included below.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <div id="pre-caching-the-root-zone-data">
 <section id="section-5.3.1">
           <h4 id="name-pre-caching-the-root-zone-d">
@@ -1910,6 +1915,10 @@ publication points at TBD-URL.<a href="#section-9-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refTitle">"The DNS XFR URI Schemes"</span>, <span>n.d.</span>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-hardaker-dnsop-dns-xfr-scheme/">https://datatracker.ietf.org/doc/draft-hardaker-dnsop-dns-xfr-scheme/</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="draft-hardaker-dnsop-iana-root-zone-publication-points">[draft-hardaker-dnsop-iana-root-zone-publication-points]</dt>
+        <dd>
+<span class="refTitle">"A format for publishing a list of sources of IANA root zone data"</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/hardaker/draft-hardaker-dnsop-iana-root-zone-publication-points">https://github.com/hardaker/draft-hardaker-dnsop-iana-root-zone-publication-points</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="draft-hardaker-dnsop-root-zone-publication-list-guidelines">[draft-hardaker-dnsop-root-zone-publication-list-guidelines]</dt>
         <dd>
 <span class="refTitle">"Guidelines for IANA DNS Root Zone Publication List Providers"</span>, <span>n.d.</span>, <span>&lt;<a href="https://raw.githubusercontent.com/hardaker/draft-hardaker-dnsop-root-zone-publication-list-guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-publication-list-guidelines.md">https://raw.githubusercontent.com/hardaker/draft-hardaker-dnsop-root-zone-publication-list-guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-publication-list-guidelines.md</a>&gt;</span>. </dd>
@@ -1934,6 +1943,10 @@ publication points at TBD-URL.<a href="#section-9-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Denenberg, R.</span>, <span class="refAuthor">Kunze, J.</span>, and <span class="refAuthor">D. Lynch</span>, <span class="refTitle">"Uniform Resource Locators for Z39.50"</span>, <span class="seriesInfo">RFC 2056</span>, <span class="seriesInfo">DOI 10.17487/RFC2056</span>, <time datetime="1996-11" class="refDate">November 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2056">https://www.rfc-editor.org/rfc/rfc2056</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC2826">[RFC2826]</dt>
+        <dd>
+<span class="refAuthor">IAB</span>, <span class="refTitle">"IAB Technical Comment on the Unique DNS Root"</span>, <span class="seriesInfo">RFC 2826</span>, <span class="seriesInfo">DOI 10.17487/RFC2826</span>, <time datetime="2000-05" class="refDate">May 2000</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2826">https://www.rfc-editor.org/rfc/rfc2826</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC5936">[RFC5936]</dt>
         <dd>
 <span class="refAuthor">Lewis, E.</span> and <span class="refAuthor">A. Hoenes, Ed.</span>, <span class="refTitle">"DNS Zone Transfer Protocol (AXFR)"</span>, <span class="seriesInfo">RFC 5936</span>, <span class="seriesInfo">DOI 10.17487/RFC5936</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5936">https://www.rfc-editor.org/rfc/rfc5936</a>&gt;</span>. </dd>
@@ -1953,6 +1966,10 @@ publication points at TBD-URL.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <dt id="RFC9156">[RFC9156]</dt>
         <dd>
 <span class="refAuthor">Bortzmeyer, S.</span>, <span class="refAuthor">Dolmans, R.</span>, and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"DNS Query Name Minimisation to Improve Privacy"</span>, <span class="seriesInfo">RFC 9156</span>, <span class="seriesInfo">DOI 10.17487/RFC9156</span>, <time datetime="2021-11" class="refDate">November 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9156">https://www.rfc-editor.org/rfc/rfc9156</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RSSAC055">[RSSAC055]</dt>
+        <dd>
+<span class="refTitle">"Principles Guiding the Operation of the Public Root Server System"</span>, <span>n.d.</span>, <span>&lt;<a href="https://itp.cdn.icann.org/en/files/root-server-system-advisory-committee-rssac-publications/rssac-055-07jul21-en.pdf">https://itp.cdn.icann.org/en/files/root-server-system-advisory-committee-rssac-publications/rssac-055-07jul21-en.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="UNBOUND-AUTH-ZONE">[UNBOUND-AUTH-ZONE]</dt>
       <dd>
