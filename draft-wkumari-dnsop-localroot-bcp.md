@@ -207,7 +207,7 @@ Readers are expected to be familiar with the terminology defined in
   as the functionality of a LocalRoot implementation behaves
   identically to a resolver that is not Localroot enabled.
 
-# Components a LocalRoot enabled resolver {#functionality}
+# Components of a LocalRoot enabled resolver {#functionality}
 
 To implement the goals described in {{goals}} and meet the
 requirements described in {{requirements}}, a LocalRoot enabled
@@ -223,9 +223,14 @@ resolver will need to perform three fundamental tasks:
 This functionally entirely alleviates the need for sending any (other)
 DNS requests to the RSS.
 
-Each of these tasks are described in the subsections below.  Note that
-implementations may vary significantly in how these tasks are
-performed, ranging from static configuration to more active systems.
+These steps may be implemented as a singular component within a
+recursive resolver or within multiple components operating in
+coordination. Implementations may also vary significantly in how these
+tasks are performed, ranging from static configuration to more active
+systems.  We refer to this entire system, regardless of implementation
+sytle, as a the LocalRoot implementation.
+
+Each of these tasks are described in the subsections below.
 
 ## Identifying locations from where root zone data can be obtained {#root-zone-sources}
 
@@ -242,14 +247,15 @@ ways, including but not limited to:
    (akin to how the root hints file is distributed with many resolvers
    today).
 3. Downloading a list of available sources from the IANA using the
-   sources described in {{iana-root-zone-list}}.
+   sources described in {{draft-hardaker-dnsop-iana-root-zone-publication-points}}.
 
-To support LocalRoot implementations, IANA will aggregate, publish and
-maintain a list of IANA DNS root zone sources at *TBD-URL*
-{{draft-hardaker-dnsop-iana-root-zone-publication-points}}.  Guidance to IANA (or for other entities
-wishing to collect and redistribute a list of sources) for how to
-collect and maintain a list of IANA root data publication sources is
-discussed separately in
+To support LocalRoot implementations wishing to implement option 3
+above, IANA will aggregate, publish and maintain a list of IANA DNS
+root zone sources at *TBD-URL* (see
+{{draft-hardaker-dnsop-iana-root-zone-publication-points}}).  Guidance
+to IANA (or for other entities wishing to collect and redistribute a
+list of sources) for how to collect and maintain a list of IANA root
+data publication sources is discussed separately in
 {{draft-hardaker-dnsop-root-zone-publication-list-guidelines}}.
 
 
@@ -473,6 +479,7 @@ document and is submitting it as a nomination for the
 best-band-name-ever award.
 
 # History of the LocalRoot concept
+{:numbered="false"}
 
 Note: DNSOP needs to discuss whether to publish this as a BCP or as a
 proposed standard.  Currently this is listed as STD track based on a
@@ -503,6 +510,7 @@ This document differs in a number of critical ways (TBD: this list is incomplete
 6. Adds protocol steps for ensuring resolution stability and resiliency.
 
 ## An important change from RFC8806
+{:numbered="false"}
 
 {{RFC8806}} Section 2 (Requirements) states that:
 
