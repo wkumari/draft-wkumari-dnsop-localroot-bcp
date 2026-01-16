@@ -1,5 +1,5 @@
 ---
-title: "Populating resolvers with the root zone."
+title: "Populating resolvers with the root zone"
 abbrev: "LocalRoot"
 category: std
 
@@ -62,6 +62,7 @@ normative:
   RFC8976:
 
 informative:
+  RFC2826:  # IANA global unique DNS root 
   RFC5936:  # DNS Zone Transfer
   RFC7766:  # DNS Transport over TCP
   RFC7706:
@@ -92,12 +93,18 @@ informative:
   draft-hardaker-dnsop-root-zone-publication-list-guidelines:
     title: Guidelines for IANA DNS Root Zone Publication List Providers
     target: https://raw.githubusercontent.com/hardaker/draft-hardaker-dnsop-root-zone-publication-list-guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-publication-list-guidelines.md
+  draft-hardaker-dnsop-iana-root-zone-publication-points:
+    title: A format for publishing a list of sources of IANA root zone data
+    target: https://github.com/hardaker/draft-hardaker-dnsop-iana-root-zone-publication-points
   NOROOTS:
     title: On Eliminating Root Nameservers from the DNS
     target: https://www.icir.org/mallman/pubs/All19b/All19b.pdf
   DNEROOTNAMES:
     title: NoError vs NxDomain by-week
     target: https://rssac002.root-servers.org/rcode_0_v_3.html
+  RSSAC055:
+    title: Principles Guiding the Operation of the Public Root Server System
+    target: https://itp.cdn.icann.org/en/files/root-server-system-advisory-committee-rssac-publications/rssac-055-07jul21-en.pdf
 
 --- abstract
 
@@ -180,10 +187,14 @@ resolvers used on the public Internet.
 
 ## Terminology used in this document
 
-* IANA root zone: the DNS root zone as published by IANA.  {{RFC8499}}
-  describes the same root zone as "The zone of a DNS-based tree whose
-  apex is the zero- length label.  Also sometimes called ''the DNS
-  root'."
+* IANA root zone: the Internet's unique DNS root zone as published by
+  IANA {{RFC2826}}.  This is the same source of root zone data used by
+  the Root Server Operators {{RSSAC055}}. {{RFC8499}} describes the
+  same root zone as "The zone of a DNS-based tree whose apex is the
+  zero- length label.  Also sometimes called ''the DNS root'."
+
+* IANA root zone data: the complete set of contents that makes up the
+  IANA root zone.
 
 * A LocalRoot enabled resolver: a recursive resolver that makes use of
   a local copy of the root zone data by any means possible.
@@ -296,7 +307,7 @@ behavior is (essentially) indistinguishable from the mechanism defined
 in RFC8806, this is viewed as being an acceptable implementation
 decision.
 
-# Functionality of a LocalRoot enabled resolver
+# Functionality components a LocalRoot enabled resolver
 
 To implement the goals described in {{goals}} and meet the
 requirements described in {{requirements}}, a LocalRoot enabled
@@ -332,7 +343,7 @@ ways, including but not limited to:
 
 To support LocalRoot implementations, IANA will aggregate, publish and
 maintain a list of IANA DNS root zone sources at *TBD-URL*
-{{iana-root-zone-list}}.  Guidance to IANA (or for other entities
+{{/draft-hardaker-dnsop-iana-root-zone-publication-points}}.  Guidance to IANA (or for other entities
 wishing to collect and redistribute a list of sources) for how to
 collect and maintain a list of IANA root data publication sources is
 discussed separately in
@@ -341,7 +352,7 @@ discussed separately in
 
 ## Downloading and refreshing root zone data {#protocol-steps}
 
-When retrieving a copy of the IANA root zone from a list of IANA root
+For retrieving a copy of the IANA root zone from a list of IANA root
 zone publication points, a LocalRoot enabled implementation MAY be use
 the following steps.  Note that as long as the desired effect of
 performing normal DNS resolution remains stable when combined with
@@ -353,65 +364,68 @@ to performing DNS resolution by issuing queries directly to the RSS
 instead.  If a resolver is unable to do so, it MUST respond to client
 requests with a SERVFAIL response code.
 
-1. The resolver SHOULD use a list of root zone sources identified in
-   {{root-zone-sources}} for obtaining a copy of the IANA root zone.
+1. A LocalRoot implementation SHOULD use a list of root zone sources
+   identified in {{root-zone-sources}} for obtaining a copy of the
+   IANA root zone.
 
-2. The resolver MUST select one of the available sources from step 1,
-   and from it retrieve a current copy of the IANA root zone.
-   Resolvers SHOULD prioritize sources they can fetch the most
-   efficiently.  For example, when supported, https sources should be
-   preferred as it allows for compression negotiation as well as the
-   possibility of using low-cost, well-distributed CDNs to distribute
-   the zone files.  When querying a source of IANA root zone data, the
-   resolver SHOULD minimize impact to the source by querying at a rate
-   no faster than specified by the SOA refresh timer and SHOULD use
-   data freshness protocol checks over downloading the entire contents
-   at each refresh (example checks include the HEAD method {{RFC9110}}
-   when using HTTP(s) or by querying the root zone's SOA over DNS
-   first when using AXFR, IXFR or XoT).  Once fetched, an
-   implementation MUST NOT make use of an obtained IANA root zone with
-   a SOA serial number less than any previously obtained copy
-   {{RFC1982}}.
+2. A LocalRoot implementation SHOULD select one of the available
+   sources from step 1, and from it retrieve a current copy of the
+   IANA root zone.  Resolvers SHOULD prioritize sources that can be
+   fetched the most efficiently.  For example, when supported, https
+   sources should be preferred as it allows for compression
+   negotiation as well as the use of low-cost, well-distributed
+   Content Delivery Networks (CDNs).
 
-3. If the resolver failed to retrieve the IANA root zone content in
-   step 2, or the zone content's serial number was deemed to be older
-   than an already cached copy then it SHOULD attempt to retrieve the
-   IANA root zone from another source on that list if there are other
-   available sources from available sources from step 1.  If the
-   resolver has exhausted the list of sources, it SHOULD stop
-   attempting to download the IANA root zone and wait another refresh
-   time length until retrying all of the sources again.
+   When sending requests to a source of IANA root zone data, the
+   resolver SHOULD minimize its impact on the source by querying at a
+   rate no faster than specified by the SOA refresh timer and SHOULD
+   use data freshness protocol checks instead of downloading the
+   entire contents at each refresh (example checks include the HEAD
+   method {{RFC9110}} when using HTTP(s) or by querying the root
+   zone's SOA over DNS first when using AXFR, IXFR or XoT).  Once
+   fetched, an implementation MUST NOT make use of the obtained IANA
+   root zone data with a SOA serial number less than any previously
+   obtained copy {{RFC1982}}.
+
+3. If the LocalRoot implementation failed to retrieve the IANA root
+   zone data in step 2, or the SOA serial number was deemed to be
+   older than the already cached data, then it SHOULD attempt to
+   retrieve the IANA root zone data from another source. If the
+   LocalRoot implementation resolver has exhausted the list of
+   sources, it SHOULD stop attempting to download the IANA root zone
+   data and SHOULD wait another refresh time length until retrying all
+   of the sources again.
 
 4. Having successfully downloaded a copy of the IANA root zone, the
-   resolver MUST verify the contents of the IANA root zone using the
-   ZONEMD {{RFC8976}} record contained within it.  Note that this
-   REQUIRES verification of the ZONEMD record using DNSSEC {{BCP237}}
-   and the configured IANA root zone trust anchor.  The contents of
-   the fetched zone MUST NOT be used until after ZONEMD verification
-   is complete and successful.  Once the zone data has been verified
-   as the IANA root zone, the resolver can begin LocalRoot enabled DNS
+   LocalRoot implementation MUST verify the contents of the IANA root
+   zone data using the ZONEMD {{RFC8976}} record contained within it.
+   Note that this REQUIRES verification of the ZONEMD record using
+   DNSSEC {{BCP237}} with the configured IANA root zone trust anchor.
+   The contents of the fetched zone MUST NOT be used until after
+   ZONEMD verification, including its DNSSEC verification, is complete
+   and successful.  Once the IANA root zone data has been verified,
+   the LocalRoot implementation can begin LocalRoot enabled DNS
    resolution, potentially using the steps defined in
    {{integrating-root-zone-data}}.
 
-5. The resolver MUST check the sources in step 1 at a regular interval
-   to identify when a new copy of the IANA root zone is available.
-   This internal MAY be configurable and SHOULD default to the IANA
-   root zone's current SOA refresh value. When a resolver has detected
-   that a new copy of the IANA root zone is available, the resolver
-   SHOULD start at step 1 to obtain a new zone.  Resolvers MAY check
-   multiple sources to ensure one source has not fallen significantly
-   behind in its copy of the IANA root zone.
+5. The resolver MUST check at least one the sources in step 1 at a
+   regular interval to identify when a new copy of the IANA root zone
+   data is available.  This frequency MAY be configurable and SHOULD
+   default to the IANA root zone's current SOA refresh value. When a
+   resolver has detected that a new copy of the IANA root zone data is
+   available, the resolver SHOULD start at step 1 to obtain a new copy
+   of the IANA root zone data.  Resolvers MAY check multiple sources
+   to ensure one source has not fallen significantly behind in its
+   copy of the IANA root zone.
 
-Resolvers MUST have an upper limit beyond which if a new copy is not
-available it will revert to using regular DNS queries to the IANA root
-zone instead of continuing to use the previously downloaded copy.  If
-at any point this upper limit has been reached, the resolver SHOULD
-fall back to using regular DNS mechanisms for performing DNS
-resolutions on behalf of its clients.  This upper limit value MAY be
-configurable and SHOULD default to the root zone's current SOA expiry
-value.  Once the LocalRoot implementation's copy of the IANA root zone
-has been successfully refreshed and is no longer considered expired,
-the resolver may resume LocalRoot enabled resolution operations.
+Resolvers MUST have an upper limit beyond which if a new copy of the
+IANA root zone data is not available it will revert to sending regular
+DNS queries to the RSS for performing DNS resolutions on behalf of its
+clients.  This upper limit value MAY be configurable and SHOULD
+default to the root zone's current SOA expiry value.  Once the
+LocalRoot implementation's copy of the IANA root zone has been
+successfully refreshed and is no longer considered expired, the
+resolver may resume LocalRoot enabled resolution operations.
 
 ## Integrating and serving root zone data during resolution
 
