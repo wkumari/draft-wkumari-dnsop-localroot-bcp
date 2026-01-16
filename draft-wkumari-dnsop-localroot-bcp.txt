@@ -547,11 +547,6 @@ Table of Contents
               (AXFR)", RFC 5936, DOI 10.17487/RFC5936, June 2010,
               <https://www.rfc-editor.org/rfc/rfc5936>.
 
-   [RFC7706]  Kumari, W. and P. Hoffman, "Decreasing Access Time to Root
-              Servers by Running One on Loopback", RFC 7706,
-              DOI 10.17487/RFC7706, November 2015,
-              <https://www.rfc-editor.org/rfc/rfc7706>.
-
    [RFC7766]  Dickinson, J., Dickinson, S., Bellis, R., Mankin, A., and
               D. Wessels, "DNS Transport over TCP - Implementation
               Requirements", RFC 7766, DOI 10.17487/RFC7766, March 2016,
@@ -583,8 +578,8 @@ Acknowledgments
    discussed this with you, and you are not listed, please please let us
    know and we'll add you.
 
-   This work has been founded upon previous documents.  These include
-   [RFC7706] and [RFC8806] authored by Warren Kumari and Paul Hoffman
+   This work has been founded upon previous documents.  Most
+   importantly, [RFC8806], authored by Warren Kumari and Paul Hoffman,
    and "On Eliminating Root Nameservers from the DNS" [NOROOTS] by Mark
    Allman.
 
