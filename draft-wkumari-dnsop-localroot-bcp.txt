@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 21 July 2026                                            J. Reid
+Expires: 24 July 2026                                            J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                         17 January 2026
+                                                         20 January 2026
 
 
                 Populating resolvers with the root zone
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 July 2026.
+   This Internet-Draft will expire on 24 July 2026.
 
 Copyright Notice
 
@@ -250,7 +250,7 @@ Table of Contents
        entities wishing to collect and redistribute a list of sources)
        for how to collect and maintain a list of IANA root data
        publication sources is also discussed separately in
-       [draft-hardaker-dnsop-root-zone-publication-list-guidelines].
+       [draft-hardaker-dnsop-root-zone-pub-list-guidelines].
 
 3.2.  Downloading and refreshing root zone data
 
@@ -512,16 +512,13 @@ Table of Contents
 
    [draft-hardaker-dnsop-iana-root-zone-publication-points]
               "A format for publishing a list of sources of IANA root
-              zone data", n.d., <https://github.com/hardaker/draft-
+              zone data", n.d., <https://datatracker.ietf.org/doc/draft-
               hardaker-dnsop-iana-root-zone-publication-points>.
 
-   [draft-hardaker-dnsop-root-zone-publication-list-guidelines]
+   [draft-hardaker-dnsop-root-zone-pub-list-guidelines]
               "Guidelines for IANA DNS Root Zone Publication List
-              Providers", n.d.,
-              <https://raw.githubusercontent.com/hardaker/draft-
-              hardaker-dnsop-root-zone-publication-list-
-              guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-
-              publication-list-guidelines.md>.
+              Providers", n.d., <https://datatracker.ietf.org/doc/draft-
+              hardaker-dnsop-root-zone-pub-list-guidelines>.
 
    [KNOT-PREFILL]
               "Knot Resolver Prefill", n.d., <https://knot-
