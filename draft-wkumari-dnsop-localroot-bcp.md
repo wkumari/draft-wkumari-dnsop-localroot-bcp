@@ -89,12 +89,12 @@ informative:
   draft-hardaker-dnsop-dns-xfr-scheme:
     title: The DNS XFR URI Schemes
     target: https://datatracker.ietf.org/doc/draft-hardaker-dnsop-dns-xfr-scheme/
-  draft-hardaker-dnsop-root-zone-publication-list-guidelines:
+  draft-hardaker-dnsop-root-zone-pub-list-guidelines:
     title: Guidelines for IANA DNS Root Zone Publication List Providers
-    target: https://raw.githubusercontent.com/hardaker/draft-hardaker-dnsop-root-zone-publication-list-guidelines/refs/heads/main/draft-hardaker-dnsop-root-zone-publication-list-guidelines.md
+    target: https://datatracker.ietf.org/doc/draft-hardaker-dnsop-root-zone-pub-list-guidelines
   draft-hardaker-dnsop-iana-root-zone-publication-points:
     title: A format for publishing a list of sources of IANA root zone data
-    target: https://github.com/hardaker/draft-hardaker-dnsop-iana-root-zone-publication-points
+    target: https://datatracker.ietf.org/doc/draft-hardaker-dnsop-iana-root-zone-publication-points
   NOROOTS:
     title: On Eliminating Root Nameservers from the DNS
     target: https://www.icir.org/mallman/pubs/All19b/All19b.pdf
@@ -251,7 +251,7 @@ ways, including but not limited to:
    entities wishing to collect and redistribute a list of sources) for
    how to collect and maintain a list of IANA root data publication
    sources is also discussed separately in
-   {{draft-hardaker-dnsop-root-zone-publication-list-guidelines}}.
+   {{draft-hardaker-dnsop-root-zone-pub-list-guidelines}}.
 
 
 ## Downloading and refreshing root zone data {#protocol-steps}
