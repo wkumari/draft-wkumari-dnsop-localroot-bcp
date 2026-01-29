@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-27T00:26:09.629130+00:00",
+  "timestamp": "2026-01-29T00:27:59.782444+00:00",
   "repo": "wkumari/draft-wkumari-dnsop-localroot-bcp",
   "labels": [
     {
@@ -49,7 +49,24 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 7,
+      "id": "I_kwDOPU1mrM7mNxC0",
+      "title": "Better text for HTTP vs AXFR",
+      "url": "https://github.com/wkumari/draft-wkumari-dnsop-localroot-bcp/issues/7",
+      "state": "OPEN",
+      "author": "hardaker",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Based on discussions within DNSOP, we should better highlight why you might pick HTTP(S) and/or AXFR style transfers in an unbiased way.",
+      "createdAt": "2026-01-27T20:44:19Z",
+      "updatedAt": "2026-01-27T20:44:19Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": [
     {
       "number": 1,
