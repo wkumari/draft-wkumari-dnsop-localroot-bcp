@@ -385,9 +385,10 @@ deploying a LocalRoot implementation:
   will revert to sending regular DNS queries to the RSS for performing
   DNS resolutions on behalf of its clients.  This upper limit value
   MAY be configurable and SHOULD default to the root zone's current
-  SOA expiry value.  Once the LocalRoot implementation's copy of the
-  IANA root zone has been successfully refreshed and is no longer
-  considered expired, the resolver may resume LocalRoot enabled
+  SOA expiry value.  It MUST NOT be longer than the root zone's
+  current SOA expiry value.  Once the LocalRoot implementation's copy
+  of the IANA root zone has been successfully refreshed and is no
+  longer considered expired, the resolver may resume LocalRoot enabled
   resolution operations.
 
 # Operational Considerations
