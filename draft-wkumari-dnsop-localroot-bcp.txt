@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 24 July 2026                                            J. Reid
+Expires: 29 August 2026                                          J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                         20 January 2026
+                                                        25 February 2026
 
 
                 Populating resolvers with the root zone
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 July 2026.
+   This Internet-Draft will expire on 29 August 2026.
 
 Copyright Notice
 
@@ -385,7 +385,8 @@ Table of Contents
       will revert to sending regular DNS queries to the RSS for
       performing DNS resolutions on behalf of its clients.  This upper
       limit value MAY be configurable and SHOULD default to the root
-      zone's current SOA expiry value.  Once the LocalRoot
+      zone's current SOA expiry value.  It MUST NOT be longer than the
+      root zone's current SOA expiry value.  Once the LocalRoot
       implementation's copy of the IANA root zone has been successfully
       refreshed and is no longer considered expired, the resolver may
       resume LocalRoot enabled resolution operations.
