@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 29 August 2026                                          J. Reid
+Expires: 14 September 2026                                       J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                        25 February 2026
+                                                           13 March 2026
 
 
                 Populating resolvers with the root zone
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 August 2026.
+   This Internet-Draft will expire on 14 September 2026.
 
 Copyright Notice
 
@@ -333,7 +333,10 @@ Table of Contents
 
    Once the IANA root zone data has been collected and verified as
    complete and correct (Section 3.2), a resolver MAY simply update its
-   cache with the newly obtained records.
+   cache with the newly obtained records.  Note that it is RECOMMENDED
+   that such implementations also perform aggressive DNSSEC caching
+   [RFC8198], otherwise significant traffic will still be sent to the
+   Root Server System.
 
 3.3.2.  Running a local authoratative copy of the root zone in parallel
 
@@ -390,6 +393,9 @@ Table of Contents
       implementation's copy of the IANA root zone has been successfully
       refreshed and is no longer considered expired, the resolver may
       resume LocalRoot enabled resolution operations.
+
+   *  A LocalRoot implementation SHOULD use the EDNS EXPIRE Option
+      [RFC7314].
 
 5.  Operational Considerations
 
@@ -470,6 +476,10 @@ Table of Contents
               Rose, "DNS Security Introduction and Requirements",
               RFC 4033, DOI 10.17487/RFC4033, March 2005,
               <https://www.rfc-editor.org/rfc/rfc4033>.
+
+   [RFC7314]  Andrews, M., "Extension Mechanisms for DNS (EDNS) EXPIRE
+              Option", RFC 7314, DOI 10.17487/RFC7314, July 2014,
+              <https://www.rfc-editor.org/rfc/rfc7314>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
