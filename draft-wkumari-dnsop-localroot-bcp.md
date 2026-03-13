@@ -56,6 +56,7 @@ normative:
   BCP237:
   RFC1982:  # SOA math
   RFC4033:  # DNSSEC
+  RFC7314:
   RFC8198:
   RFC8499:
   RFC8806:
@@ -335,7 +336,10 @@ below.
 
 Once the IANA root zone data has been collected and verified as complete
 and correct ({{protocol-steps}}), a resolver MAY simply update its
-cache with the newly obtained records.
+cache with the newly obtained records.  Note that it is RECOMMENDED
+that such implementations also perform aggressive DNSSEC caching
+{{RFC8198}}, otherwise significant traffic will still be sent to the
+Root Server System.
 
 ### Running a local authoratative copy of the root zone in parallel
 
@@ -390,6 +394,8 @@ deploying a LocalRoot implementation:
   of the IANA root zone has been successfully refreshed and is no
   longer considered expired, the resolver may resume LocalRoot enabled
   resolution operations.
+
+- A LocalRoot implementation SHOULD use the EDNS EXPIRE Option {{RFC7314}}.
 
 # Operational Considerations
 
