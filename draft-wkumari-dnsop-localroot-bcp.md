@@ -159,9 +159,6 @@ Other mechanisms for implementing LocalRoot functionality MAY be used.
 To a client, the net effect of using any technique SHOULD be nearly
 indistinguishable to that of a non-Localroot resolver.
 
-This behavior SHOULD be used by all general-purpose recursive
-resolvers used on the public Internet.
-
 Note that enabling LocalRoot functionality in a resolver should have
 little effect on improving resolver speed to its stub resolver clients
 for queries under Top Level Domains (TLDs), as the TTL for most TLDs
