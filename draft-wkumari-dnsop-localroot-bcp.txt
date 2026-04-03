@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 14 September 2026                                       J. Reid
+Expires: 5 October 2026                                          J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                           13 March 2026
+                                                            3 April 2026
 
 
                 Populating resolvers with the root zone
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 September 2026.
+   This Internet-Draft will expire on 5 October 2026.
 
 Copyright Notice
 
@@ -147,9 +147,6 @@ Table of Contents
    MAY be used.  To a client, the net effect of using any technique
    SHOULD be nearly indistinguishable to that of a non-Localroot
    resolver.
-
-   This behavior SHOULD be used by all general-purpose recursive
-   resolvers used on the public Internet.
 
    Note that enabling LocalRoot functionality in a resolver should have
    little effect on improving resolver speed to its stub resolver
