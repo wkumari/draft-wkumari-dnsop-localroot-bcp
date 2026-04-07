@@ -392,6 +392,10 @@ deploying a LocalRoot implementation:
   longer considered expired, the resolver may resume LocalRoot enabled
   resolution operations.
 
+- A LocalRoot implementation MUST revert to using regular DNS for
+  querying the root server when the downloaded zone contains RRTYPEs
+  or cryptographic algorithm types it does not understand.
+
 - A LocalRoot implementation SHOULD use the EDNS EXPIRE Option {{RFC7314}}.
 
 # Operational Considerations
