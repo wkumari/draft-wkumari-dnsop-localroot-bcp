@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 5 October 2026                                          J. Reid
+Expires: 9 October 2026                                          J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                            3 April 2026
+                                                            7 April 2026
 
 
                 Populating resolvers with the root zone
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 October 2026.
+   This Internet-Draft will expire on 9 October 2026.
 
 Copyright Notice
 
@@ -390,6 +390,10 @@ Table of Contents
       implementation's copy of the IANA root zone has been successfully
       refreshed and is no longer considered expired, the resolver may
       resume LocalRoot enabled resolution operations.
+
+   *  A LocalRoot implementation MUST revert to using regular DNS for
+      querying the root server when the downloaded zone contains RRTYPEs
+      or cryptographic algorithm types it does not understand.
 
    *  A LocalRoot implementation SHOULD use the EDNS EXPIRE Option
       [RFC7314].
