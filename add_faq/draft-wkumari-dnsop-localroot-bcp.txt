@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 25 December 2026                                        J. Reid
+Expires: 27 December 2026                                        J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                            23 June 2026
+                                                            25 June 2026
 
 
                 Populating resolvers with the root zone
@@ -72,7 +72,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 December 2026.
+   This Internet-Draft will expire on 27 December 2026.
 
 Copyright Notice
 
@@ -117,7 +117,7 @@ Table of Contents
    Frequently Asked Questions (FAQ)
      Why is this a BCP and not a Proposed Standard?!
      Does this document require new functionality in resolvers?
-       Whadda ya mean "sort of"?
+     So, isn't this just RFC 8806?!
      Loss of measurement data / the ability of researchers to measure
            the root server system
    Authors' Addresses
@@ -692,7 +692,7 @@ Frequently Asked Questions (FAQ)
    this document, and to help clarify the intent of the document.  It is
    intentionally written in a more informal style than the rest of the
    document... well, this isn't strictly true - it's not intentionally
-   less formal, it's jsut that I really didn't want to bother making it
+   less formal, it's just that I really didn't want to bother making it
    more formal :-)
 
 Why is this a BCP and not a Proposed Standard?!
@@ -708,29 +708,27 @@ Why is this a BCP and not a Proposed Standard?!
 
 Does this document require new functionality in resolvers?
 
-   No.  Almost all resolvers already (sort of) implement [RFC8806].  For
-   example, BIND 9 has a "mirror" zone type [BIND-MIRROR], Unbound has
-   an "auth-zone" type [UNBOUND-AUTH-ZONE], and Knot Resolver has a
-   "prefill" module [KNOT-PREFILL].
+   No.  Almost all resolvers already implement the concepts described in
+   this draft.  For example, BIND 9 has a "mirror" zone type
+   [BIND-MIRROR], Unbound has an "auth-zone" type [UNBOUND-AUTH-ZONE],
+   and Knot Resolver has a "prefill" module [KNOT-PREFILL].
 
    This document does contain additional functionality that resolver
    implementations may choose to implement (draft-hardaker-dnsop-iana-
    root-zone-publication-points), but this is simply optional
    enhancements, and not a requirement.
 
-Whadda ya mean "sort of"?
+So, isn't this just RFC 8806?!
 
-   Many resolvers already implement the behavior / spirit described in
+   Almost.  Many resolvers already implement the behavior described in
    [RFC8806], but are not strictly compliant with [RFC8806].  [RFC8806]
    states that the resolver must run an authoritative service for the
    root zone on the same host, and that the authoritative root service
    must only respond to queries from the same host.  Many resolvers do
    not implement the localroot feature this way, and instead implement a
    "prefill" of the resolver's cache, or act more like a secondary.
-   This document is agnostic as to how the resolver implementors
-   actually implement the LocalRoot behavior - they are the folk writing
-   the code, and are more than competent to figure out how to make it
-   work best in their codebases...
+   This document describes the behavior that implementations should
+   strive to meet, not the implementation details themselves.
 
 Loss of measurement data / the ability of researchers to measure the
 root server system

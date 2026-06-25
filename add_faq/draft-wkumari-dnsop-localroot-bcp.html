@@ -1070,7 +1070,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 25 December 2026</td>
+<td class="center">Expires 27 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1086,12 +1086,12 @@ svg {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-23" class="published">23 June 2026</time>
+<time datetime="2026-06-25" class="published">25 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-25">25 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-27">27 December 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1168,7 +1168,7 @@ is intended to be removed before publication. }<a href="#section-abstract-3" cla
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 25 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 27 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1285,14 +1285,12 @@ is intended to be removed before publication. }<a href="#section-abstract-3" cla
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
                 <p id="section-toc.1-1.10.2.2.1"><a href="#appendix-C.2" class="auto internal xref"></a><a href="#name-does-this-document-require-" class="internal xref">Does this document require new functionality in resolvers?</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2.2.1">
-                    <p id="section-toc.1-1.10.2.2.2.1.1"><a href="#appendix-C.2.1" class="auto internal xref"></a><a href="#name-whadda-ya-mean-sort-of" class="internal xref">Whadda ya mean "sort of"?</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
-                <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-C.3" class="auto internal xref"></a><a href="#name-loss-of-measurement-data-th" class="internal xref">Loss of measurement data / the ability of researchers to measure the root server system</a></p>
+                <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-C.3" class="auto internal xref"></a><a href="#name-so-isnt-this-just-rfc-8806" class="internal xref">So, isn't this just RFC 8806?!</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
+                <p id="section-toc.1-1.10.2.4.1"><a href="#appendix-C.4" class="auto internal xref"></a><a href="#name-loss-of-measurement-data-th" class="internal xref">Loss of measurement data / the ability of researchers to measure the root server system</a></p>
 </li>
             </ul>
 </li>
@@ -1975,7 +1973,7 @@ decision.<a href="#appendix-B.1-4" class="pilcrow">¶</a></p>
       </h2>
 <p id="appendix-C-1"><strong>NOTE:</strong> This section to be removed before publication. It
 is here to help answer questions that have been raised during the development
-of this document, and to help clarify the intent of the document. It is intentionally written in a more informal style than the rest of the document... well, this isn't strictly true - it's not intentionally less formal, it's jsut that I really didn't want to bother making it more formal :-)<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+of this document, and to help clarify the intent of the document. It is intentionally written in a more informal style than the rest of the document... well, this isn't strictly true - it's not intentionally less formal, it's just that I really didn't want to bother making it more formal :-)<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 <div id="why-is-this-a-bcp-and-not-a-proposed-standard">
 <section id="appendix-C.1">
         <h3 id="name-why-is-this-a-bcp-and-not-a">
@@ -1995,53 +1993,51 @@ things further (like the DT "Search Email Archives" functionality, etc.)<a href=
         <h3 id="name-does-this-document-require-">
 <a href="#name-does-this-document-require-" class="section-name selfRef">Does this document require new functionality in resolvers?</a>
         </h3>
-<p id="appendix-C.2-1">No. Almost all resolvers already (sort of) implement <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>. For example,
-BIND 9 has a "mirror" zone type <span>[<a href="#BIND-MIRROR" class="cite xref">BIND-MIRROR</a>]</span>, Unbound has an "auth-zone"
-type <span>[<a href="#UNBOUND-AUTH-ZONE" class="cite xref">UNBOUND-AUTH-ZONE</a>]</span>, and Knot Resolver has a "prefill" module
-<span>[<a href="#KNOT-PREFILL" class="cite xref">KNOT-PREFILL</a>]</span>.<a href="#appendix-C.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.2-1">No. Almost all resolvers already implement the concepts described in this
+draft. For example, BIND 9 has a "mirror" zone type <span>[<a href="#BIND-MIRROR" class="cite xref">BIND-MIRROR</a>]</span>, Unbound
+has an "auth-zone" type <span>[<a href="#UNBOUND-AUTH-ZONE" class="cite xref">UNBOUND-AUTH-ZONE</a>]</span>, and Knot Resolver has a
+"prefill" module <span>[<a href="#KNOT-PREFILL" class="cite xref">KNOT-PREFILL</a>]</span>.<a href="#appendix-C.2-1" class="pilcrow">¶</a></p>
 <p id="appendix-C.2-2">This document does contain additional functionality that resolver
 implementations may choose to implement
 (draft-hardaker-dnsop-iana-root-zone-publication-points), but this is simply
 optional enhancements, and not a requirement.<a href="#appendix-C.2-2" class="pilcrow">¶</a></p>
-<div id="whadda-ya-mean-sort-of">
-<section id="appendix-C.2.1">
-          <h4 id="name-whadda-ya-mean-sort-of">
-<a href="#name-whadda-ya-mean-sort-of" class="section-name selfRef">Whadda ya mean "sort of"?</a>
-          </h4>
-<p id="appendix-C.2.1-1">Many resolvers already implement the behavior / spirit described in
-<span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>, but are not strictly compliant with <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>. <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>
-states that the resolver must run an authoritative service for the root zone on
-the same host, and that the authoritative root service must only respond to
-queries from the same host. Many resolvers do not implement the localroot
-feature this way, and instead implement a "prefill" of the resolver's cache, or
-act more like a secondary. This document is agnostic as to how the resolver
-implementors actually implement the LocalRoot behavior - they are the folk
-writing the code, and are more than competent to figure out how to make it work
-best in their codebases...<a href="#appendix-C.2.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="so-isnt-this-just-rfc-8806">
+<section id="appendix-C.3">
+        <h3 id="name-so-isnt-this-just-rfc-8806">
+<a href="#name-so-isnt-this-just-rfc-8806" class="section-name selfRef">So, isn't this just RFC 8806?!</a>
+        </h3>
+<p id="appendix-C.3-1">Almost. Many resolvers already implement the behavior described in <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>,
+but are not strictly compliant with <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>. <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> states that the
+resolver must run an authoritative service for the root zone on the same host,
+and that the authoritative root service must only respond to queries from the
+same host. Many resolvers do not implement the localroot feature this way, and
+instead implement a "prefill" of the resolver's cache, or act more like a
+secondary. This document describes the behavior that implementations should
+strive to meet, not the implementation details themselves.<a href="#appendix-C.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="loss-of-measurement-data-the-ability-of-researchers-to-measure-the-root-server-system">
-<section id="appendix-C.3">
+<section id="appendix-C.4">
         <h3 id="name-loss-of-measurement-data-th">
 <a href="#name-loss-of-measurement-data-th" class="section-name selfRef">Loss of measurement data / the ability of researchers to measure the root server system</a>
         </h3>
-<p id="appendix-C.3-1">This is a concern that has been raised by some researchers - if resolvers
+<p id="appendix-C.4-1">This is a concern that has been raised by some researchers - if resolvers
 implement LocalRoot functionality, they won't show up in the DITL data, as they
 are not querying the root servers. Yes, this is completely true - whenever you
 increase the privacy of a system, you reduce the amount of information that
-leaks from that system.<a href="#appendix-C.3-1" class="pilcrow">¶</a></p>
-<p id="appendix-C.3-2">The authors note that this issue already affects the DITL data, as many
+leaks from that system.<a href="#appendix-C.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.4-2">The authors note that this issue already affects the DITL data, as many
 resolvers already implement LocalRoot functionality (or similar) and do not
 query the root servers. In addition, the DITL data is already missing a sizable
 amount of the queries - see Kazunori Fujiwara's presentation from DNS-OARC 46
-(Edinburgh): <span>[<a href="#DITL-BIAS" class="cite xref">DITL-BIAS</a>]</span>.<a href="#appendix-C.3-2" class="pilcrow">¶</a></p>
-<p id="appendix-C.3-3">Furthermore, the DITL data, while useful and fascinating, only provides a very
+(Edinburgh): <span>[<a href="#DITL-BIAS" class="cite xref">DITL-BIAS</a>]</span>.<a href="#appendix-C.4-2" class="pilcrow">¶</a></p>
+<p id="appendix-C.4-3">Furthermore, the DITL data, while useful and fascinating, only provides a very
 narrow view of the DNS: it only shows queries that are sent to the root
 servers, and does not show queries that are sent to other servers (such as
 TLDs, or authoritative servers for other zones), doesn't account for caching,
-etc.<a href="#appendix-C.3-3" class="pilcrow">¶</a></p>
+etc.<a href="#appendix-C.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
