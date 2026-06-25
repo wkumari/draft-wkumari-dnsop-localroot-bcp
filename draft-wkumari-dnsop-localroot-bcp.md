@@ -551,7 +551,7 @@ decision.
 {:numbered="false"}
 **NOTE:** This section to be removed before publication. It
 is here to help answer questions that have been raised during the development
-of this document, and to help clarify the intent of the document. It is intentionally written in a more informal style than the rest of the document... well, this isn't strictly true - it's not intentionally less formal, it's jsut that I really didn't want to bother making it more formal :-)
+of this document, and to help clarify the intent of the document. It is intentionally written in a more informal style than the rest of the document... well, this isn't strictly true - it's not intentionally less formal, it's just that I really didn't want to bother making it more formal :-)
 
 ## Why is this a BCP and not a Proposed Standard?!
 {:numbered="false"}
@@ -565,28 +565,26 @@ things further (like the DT "Search Email Archives" functionality, etc.)
 
 ## Does this document require new functionality in resolvers?
 {:numbered="false"}
-No. Almost all resolvers already (sort of) implement {{RFC8806}}. For example,
-BIND 9 has a "mirror" zone type {{BIND-MIRROR}}, Unbound has an "auth-zone"
-type {{UNBOUND-AUTH-ZONE}}, and Knot Resolver has a "prefill" module
-{{KNOT-PREFILL}}.
+No. Almost all resolvers already implement the concepts described in this
+draft. For example, BIND 9 has a "mirror" zone type {{BIND-MIRROR}}, Unbound
+has an "auth-zone" type {{UNBOUND-AUTH-ZONE}}, and Knot Resolver has a
+"prefill" module {{KNOT-PREFILL}}.
 
 This document does contain additional functionality that resolver
 implementations may choose to implement
 (draft-hardaker-dnsop-iana-root-zone-publication-points), but this is simply
 optional enhancements, and not a requirement.
 
-### Whadda ya mean "sort of"?
+## So, isn't this just RFC 8806?!
 {:numbered="false"}
-Many resolvers already implement the behavior / spirit described in
-{{RFC8806}}, but are not strictly compliant with {{RFC8806}}. {{RFC8806}}
-states that the resolver must run an authoritative service for the root zone on
-the same host, and that the authoritative root service must only respond to
-queries from the same host. Many resolvers do not implement the localroot
-feature this way, and instead implement a "prefill" of the resolver's cache, or
-act more like a secondary. This document is agnostic as to how the resolver
-implementors actually implement the LocalRoot behavior - they are the folk
-writing the code, and are more than competent to figure out how to make it work
-best in their codebases...
+Almost. Many resolvers already implement the behavior described in {{RFC8806}},
+but are not strictly compliant with {{RFC8806}}. {{RFC8806}} states that the
+resolver must run an authoritative service for the root zone on the same host,
+and that the authoritative root service must only respond to queries from the
+same host. Many resolvers do not implement the localroot feature this way, and
+instead implement a "prefill" of the resolver's cache, or act more like a
+secondary. This document describes the behavior that implementations should
+strive to meet, not the implementation details themselves.
 
 ## Loss of measurement data / the ability of researchers to measure the root server system
 {:numbered="false"}
