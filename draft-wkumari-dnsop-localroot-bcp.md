@@ -105,6 +105,9 @@ informative:
   RSSAC055:
     title: Principles Guiding the Operation of the Public Root Server System
     target: https://itp.cdn.icann.org/en/files/root-server-system-advisory-committee-rssac-publications/rssac-055-07jul21-en.pdf
+  DITL-BIAS:
+    title: "DNS-OARC 46: Estimation on the Root DITL Dataset"
+    target: https://indico.dns-oarc.net/event/56/contributions/1207/attachments/1160/2507/ditldataset-20260514.pdf
 
 --- abstract
 
@@ -121,6 +124,11 @@ root zone.
 This document shows how resolvers can fetch, cache and maintain a copy
 of the root zone, how to detect if the contents becomes stale, and
 procedures for handling error conditions.
+
+{ Editor note: This document contains a FAQ section. It will help answer
+questions about why this document is not a BCP but still has BCP in the name,
+how and why this document differs from RFC8806, etc etc etc.  The FAQ section
+is intended to be removed before publication. }
 
 --- middle
 
@@ -398,9 +406,6 @@ deploying a LocalRoot implementation:
 
 - A LocalRoot implementation SHOULD use the EDNS EXPIRE Option {{RFC7314}}.
 
-# Operational Considerations
-
-TBD
 
 # Security Considerations
 
@@ -542,3 +547,61 @@ behavior is (essentially) indistinguishable from the mechanism defined
 in RFC8806, this is viewed as being an acceptable implementation
 decision.
 
+# Frequently Asked Questions (FAQ)
+{:numbered="false"}
+**NOTE:** This section to be removed before publication. It
+is here to help answer questions that have been raised during the development
+of this document, and to help clarify the intent of the document. It is intentionally written in a more informal style than the rest of the document... well, this isn't strictly true - it's not intentionally less formal, it's just that I really didn't want to bother making it more formal :-)
+
+## Why is this a BCP and not a Proposed Standard?!
+{:numbered="false"}
+It's not. We initially thought it should be a BCP, but
+discussions with the WG quickly convinced us that resolver operators should be
+able to make the decision themselves. The draft name
+(draft-wkumari-dnsop-localroot-bcp) does currently contain "bcp", but when this
+is adopted we plan on changing the name to "draft-ietf-dnsop-localroot" (or
+similar). We don't want to change it now, as that would just confuse
+things further (like the DT "Search Email Archives" functionality, etc.)
+
+## Does this document require new functionality in resolvers?
+{:numbered="false"}
+No. Almost all resolvers already implement the concepts described in this
+draft. For example, BIND 9 has a "mirror" zone type {{BIND-MIRROR}}, Unbound
+has an "auth-zone" type {{UNBOUND-AUTH-ZONE}}, and Knot Resolver has a
+"prefill" module {{KNOT-PREFILL}}.
+
+This document does contain additional functionality that resolver
+implementations may choose to implement
+(draft-hardaker-dnsop-iana-root-zone-publication-points), but this is simply
+optional enhancements, and not a requirement.
+
+## So, isn't this just RFC 8806?!
+{:numbered="false"}
+Almost. Many resolvers already implement the behavior described in {{RFC8806}},
+but are not strictly compliant with {{RFC8806}}. {{RFC8806}} states that the
+resolver must run an authoritative service for the root zone on the same host,
+and that the authoritative root service must only respond to queries from the
+same host. Many resolvers do not implement the localroot feature this way, and
+instead implement a "prefill" of the resolver's cache, or act more like a
+secondary. This document describes the behavior that implementations should
+strive to meet, not the implementation details themselves.
+
+## Loss of measurement data / the ability of researchers to measure the root server system
+{:numbered="false"}
+This is a concern that has been raised by some researchers - if resolvers
+implement LocalRoot functionality, they won't show up in the DITL data, as they
+are not querying the root servers. Yes, this is completely true - whenever you
+increase the privacy of a system, you reduce the amount of information that
+leaks from that system.
+
+The authors note that this issue already affects the DITL data, as many
+resolvers already implement LocalRoot functionality (or similar) and do not
+query the root servers. In addition, the DITL data is already missing a sizable
+amount of the queries - see Kazunori Fujiwara's presentation from DNS-OARC 46
+(Edinburgh): {{DITL-BIAS}}.
+
+Furthermore, the DITL data, while useful and fascinating, only provides a very
+narrow view of the DNS: it only shows queries that are sent to the root
+servers, and does not show queries that are sent to other servers (such as
+TLDs, or authoritative servers for other zones), doesn't account for caching,
+etc.
