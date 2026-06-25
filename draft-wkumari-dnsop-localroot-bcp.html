@@ -22,8 +22,12 @@ root zone.
        This document shows how resolvers can fetch, cache and maintain a copy
 of the root zone, how to detect if the contents becomes stale, and
 procedures for handling error conditions. 
+       { Editor note: This document contains a FAQ section. It will help answer
+questions about why this document is not a BCP but still has BCP in the name,
+how and why this document differs from RFC8806, etc etc etc.  The FAQ section
+is intended to be removed before publication. } 
     " name="description">
-<meta content="xml2rfc 3.32.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="DNS" name="keyword">
 <meta content="DNSSEC" name="keyword">
 <meta content="zone cut" name="keyword">
@@ -31,18 +35,19 @@ procedures for handling error conditions.
 <meta content="referral" name="keyword">
 <meta content="draft-wkumari-dnsop-localroot-bcp-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.32.0
-    Python 3.12.12
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.4
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
-    requests 2.32.5
-    wcwidth 0.6.0
+    requests 2.33.1
+    wcwidth 0.8.1
 -->
 <link href="draft-wkumari-dnsop-localroot-bcp.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -309,16 +314,19 @@ h1, h2, h3, h4, h5, h6 {
   font-size-adjust: 0.5;
   color: var(--title-color);
 }
-h1#title {
-  font-size: 32px;
-  line-height: 40px;
-  clear: both;
-}
-h1#title, h1#rfcnum {
-  margin: 1.5em 0 0.2em;
-}
-h1#rfcnum + h1#title {
-  margin: 0.2em 0;
+h1 {
+  &#title {
+    font-size: 32px;
+    line-height: 40px;
+    clear: both;
+    margin: 1.5em 0 0.2em;
+  }
+  &#rfcnum {
+    margin: 1.5em 0 0.2em;
+    & + h1#title {
+      margin: 0.2em 0;
+    }
+  }
 }
 
 h1, h2, h3 {
@@ -338,10 +346,10 @@ h4, h5, h6 {
 #abstract+p {
   font-size: 18px;
   line-height: 24px;
-}
-#abstract+p code, #abstract+p samp, #abstract+p tt {
-  font-size: 16px;
-  line-height: 0;
+  & code, & samp, & tt {
+    font-size: 16px;
+    line-height: 0;
+  }
 }
 
 p {
@@ -352,59 +360,59 @@ p {
 div {
   margin: 0;
 }
-.alignRight.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignRight.art-text pre {
-  padding: 0;
-  width: auto;
-}
 .alignRight {
   margin: 1em 0;
-}
-.alignRight > *:first-child {
-  border: none;
-  margin: 0;
-  float: right;
-  clear: both;
-}
-.alignRight > *:nth-child(2) {
-  clear: both;
-  display: block;
-  border: none;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    margin: 0;
+    float: right;
+    clear: both;
+  }
+  & > *:nth-child(2) {
+    clear: both;
+    display: block;
+    border: none;
+  }
 }
 svg {
   display: block;
-}
-/* font-family isn't space-separated, but =~ will have to do */
-svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
-  font-family: var(--font-mono);
-}
-.alignCenter.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignCenter.art-text pre {
-  padding: 0;
-  width: auto;
+  /* font-family isn't space-separated, but =~ will have to do */
+  &[font-family~="monospace" i], & [font-family~="monospace" i] {
+    font-family: var(--font-mono);
+  }
 }
 .alignCenter {
   margin: 1em 0;
-}
-.alignCenter > *:first-child {
-  border: none;
-  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
-     support flexbox yet.
-  */
-  display: table;
-  margin: 0 auto;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+       support flexbox yet.
+    */
+    display: table;
+    margin: 0 auto;
+  }
 }
 
 /* lists */
@@ -442,26 +450,25 @@ dl {
     --indent: 5ch;
     & > dt {
       min-width: calc(var(--indent) - 2ch);
+      float: none;
     }
-  }
-  &.olPercent > dt {
-    float: none;
   }
 
   dl > dd > & {
     margin-top: 0.5em;
     margin-bottom: 0;
   }
-}
-dl:not(.dlNewline) > dt {
-  float: left;
-  margin-right: 2ch;
-  min-width: 8ch;
-}
-dl > dd {
-  margin-bottom: .8em;
-  margin-left: var(--indent) !important; /* stupid element overrides */
-  min-height: 2ex;
+
+  &:not(.dlNewline) > dt {
+    float: left;
+    margin-right: 2ch;
+    min-width: 8ch;
+  }
+  & > dd {
+    margin-bottom: .8em;
+    margin-left: var(--indent) !important; /* stupid element overrides */
+    min-height: 2ex;
+  }
 }
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
@@ -477,20 +484,22 @@ dl > dd {
 }
 
 /* links */
-a, a[href].selfRef:hover {
+a {
   text-decoration: none;
+  &[href] {
+    color: var(--link-color);
+    &:hover { text-decoration: underline; }
+    &.selfRef {
+      color: var(--text-color);
+      &:hover {
+        text-decoration: none;
+        background-color: var(--highlight-color);
+      }
+    }
+  }
 }
-a[href] {
-  color: var(--link-color);
-}
-a[href].selfRef, .iref + a[href].internal {
+.iref + a[href].internal {
   color: var(--text-color);
-}
-a[href]:hover {
-  text-decoration: underline;
-}
-a[href].selfRef:hover {
-  background-color: var(--highlight-color);
 }
 a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
   white-space: nowrap;
@@ -526,9 +535,9 @@ img {
 figure {
   margin: 0.5em 0;
   padding: 0;
-}
-figure blockquote {
-  margin: 0.8em 0.4em 0.4em;
+  & blockquote {
+    margin: 0.8em 0.4em 0.4em;
+  }
 }
 figcaption, caption {
   font-style: italic;
@@ -538,17 +547,19 @@ figcaption, caption {
 }
 @media screen {
   /* Auto-collapse boilerplate. */
-  :is(#status-of-memo, #copyright) p {
-    margin: -2px 0;
-    max-height: 0;
-    transition: max-height 2s ease, margin 0.5s ease 0.5s;
-    overflow: hidden;
-  }
-  :is(#status-of-memo, #copyright):hover p,
-  :is(#status-of-memo, #copyright) h2:target ~ p {
-    margin: 0.5em 0;
-    max-height: 500px;
-    overflow: auto;
+  :is(#status-of-memo, #copyright) {
+    & p {
+      margin: -2px 0;
+      max-height: 0;
+      transition: max-height 2s ease, margin 0.5s ease 0.5s;
+      overflow: hidden;
+    }
+    &:hover p,
+    & h2:target ~ p {
+      margin: 0.5em 0;
+      max-height: 500px;
+      overflow: auto;
+    }
   }
   pre, svg {
     display: inline-block;
@@ -598,25 +609,17 @@ table {
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
-}
-table.right {
-  margin-left: auto;
-}
-table.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-table.left {
-  margin-right: auto;
-}
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
+  &.right { margin-left: auto; }
+  &.center { margin-left: auto; margin-right: auto; }
+  &.left { margin-right: auto; }
+  & .text-left { text-align: left; }
+  & .text-center { text-align: center; }
+  & .text-right { text-align: right; }
+  & caption {
+    margin: 0;
+    padding: 3px 0 3px 1em;
+  }
+  & p { margin: 0; }
 }
 
 thead, tbody {
@@ -636,13 +639,6 @@ th {
 :is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
   background-color: var(--highlight-color);
 }
-table caption {
-  margin: 0;
-  padding: 3px 0 3px 1em;
-}
-table p {
-  margin: 0;
-}
 
 /* pilcrow */
 a.pilcrow {
@@ -653,18 +649,16 @@ a.pilcrow {
     color: var(--pilcrow-weak);
     &:hover { text-decoration: none; }
   }
-}
-@media not print {
-  :hover > a.pilcrow, a.pilcrow:focus {
-    opacity: 1;
+  @media not print {
+    :hover > &, &:focus {
+      opacity: 1;
+    }
+    &[href]:hover {
+      color: var(--pilcrow-strong);
+      background-color: transparent;
+    }
   }
-  a.pilcrow[href]:hover {
-    color: var(--pilcrow-strong);
-    background-color: transparent;
-  }
-}
-@media print {
-  a.pilcrow {
+  @media print {
     display: none;
   }
 }
@@ -723,9 +717,9 @@ sub, sup {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 2em;
-}
-.docInfo .prepared {
-  float: right;
+  & .prepared {
+    float: right;
+  }
 }
 
 /* table of contents */
@@ -815,23 +809,27 @@ hr.addr {
   max-width: calc(100% - 16px);
 }
 @media (min-width: 500px) {
-  #authors-addresses > section {
-    column-count: 2;
-    column-gap: 20px;
-  }
-  #authors-addresses > section > h2 {
-    column-span: all;
-  }
-  /* hack for break-inside: avoid-column */
-  #authors-addresses address {
-    display: inline-block;
-    break-inside: avoid-column;
+  #authors-addresses {
+    & > section {
+      column-count: 2;
+      column-gap: 20px;
+    }
+    & > section > h2 {
+      column-span: all;
+    }
+    /* hack for break-inside: avoid-column */
+    & address {
+      display: inline-block;
+      break-inside: avoid-column;
+    }
   }
 }
 
 /* Comments */
-.rfcEditorRemove p:first-of-type {
-  font-style: italic;
+.rfcEditorRemove {
+  & p:first-of-type {
+    font-style: italic;
+  }
 }
 .cref {
   background-color: rgba(249, 232, 105, 0.3);
@@ -842,19 +840,21 @@ hr.addr {
 }
 
 @media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
-    & > ul { margin-bottom: 2em; }
-    & ul {
-      margin: 0 0 0 4px;
-      & :is(p, li) {
-        margin: 2px 0;
+  #toc {
+    & nav {
+      font-family: var(--font-title);
+      font-weight: 360;
+      & > ul { margin-bottom: 2em; }
+      & ul {
+        margin: 0 0 0 4px;
+        & :is(p, li) {
+          margin: 2px 0;
+        }
       }
     }
-  }
-  #toc a.toplink {
-    float: right;
+    & a.toplink {
+      float: right;
+    }
   }
 }
 @media not screen {
@@ -875,54 +875,54 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 2px 0 2px 6px;
-    padding-right: 1em;
-    font-size: 18px;
-    line-height: 24px;
-    min-width: 190px;
-    text-align: right;
-    background-color: #444;
-    color: white;
-    cursor: pointer;
-    &::before { /* css hamburger */
-      float: right;
-      position: relative;
-      width: 1em;
-      height: 1px;
-      left: -164px;
-      margin: 8px 0 0 0;
-      background: white none repeat scroll 0 0;
-      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-      content: "";
+    & h2 {
+      margin: 0;
+      padding: 2px 0 2px 6px;
+      padding-right: 1em;
+      font-size: 18px;
+      line-height: 24px;
+      min-width: 190px;
+      text-align: right;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      &::before { /* css hamburger */
+        float: right;
+        position: relative;
+        width: 1em;
+        height: 1px;
+        left: -164px;
+        margin: 8px 0 0 0;
+        background: white none repeat scroll 0 0;
+        box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+        content: "";
+      }
     }
-  }
-  #toc nav {
-    display: none;
-    background-color: var(--background-color);
-    padding: 0.5em 1em 1em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    height: calc(100vh - 48px);
-    border-left: 1px solid #ddd;
-  }
-  #toc.active {
-    opacity: 1;
-    & nav { display: block; }
-  }
-  /* Make the collapsed ToC header render white on gray also when it's a link */
-  #toc h2 a,
-  #toc h2 a:is(:link, :focus, :hover),
-  #toc a.toplink,
-  #toc a.toplink:hover {
-    color: white;
-    background-color: #444;
-    text-decoration: none;
-  }
-  #toc a.toplink {
-    margin: 2px 0.5em 0;
+    & nav {
+      display: none;
+      background-color: var(--background-color);
+      padding: 0.5em 1em 1em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      height: calc(100vh - 48px);
+      border-left: 1px solid #ddd;
+    }
+    &.active {
+      opacity: 1;
+      & nav { display: block; }
+    }
+    /* Make the collapsed ToC header render white on gray also when it's a link */
+    & h2 a,
+    & h2 a:is(:link, :focus, :hover),
+    & a.toplink,
+    & a.toplink:hover {
+      color: white;
+      background-color: #444;
+      text-decoration: none;
+    }
+    & a.toplink {
+      margin: 2px 0.5em 0;
+    }
   }
 }
 
@@ -941,26 +941,26 @@ hr.addr {
     margin: 0;
     padding: 0;
     z-index: 1;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 0.25em 1em 1em 0;
-  }
-  #toc nav {
-    display: block;
-    height: calc(90vh - 84px);
-    bottom: 0;
-    padding: 0.5em 0 2em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
+    & h2 {
+      margin: 0;
+      padding: 0.25em 1em 1em 0;
+    }
+    & nav {
+      display: block;
+      height: calc(90vh - 84px);
+      bottom: 0;
+      padding: 0.5em 0 2em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    & a.toplink {
+      margin: 8px 0.5em 0;
+    }
   }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
-  }
-  #toc a.toplink {
-    margin: 8px 0.5em 0;
   }
 }
 
@@ -976,12 +976,13 @@ hr.addr {
   #n-copyright-notice {
     border-bottom: none;
   }
-  #toc, #n-introduction {
-    page-break-before: always;
-  }
   #toc {
+    page-break-before: always;
     border-top: none;
     padding-top: 0;
+  }
+  #n-introduction {
+    page-break-before: always;
   }
   figure, pre, .vcard {
     page-break-inside: avoid;
@@ -1043,17 +1044,19 @@ hr.addr {
 }
 
 /* SVG Trick: a prefix match works because only black and white are allowed */
-svg :is([stroke="black"], [stroke^="#000"]) {
-  stroke: var(--text-color);
-}
-svg :is([stroke="white"], [stroke^="#fff"]) {
-  stroke: var(--background-color);
-}
-svg :is([fill="black"], [fill^="#000"], :not([fill])) {
-  fill: var(--text-color);
-}
-svg :is([fill="white"], [fill^="#fff"]) {
-  fill: var(--background-color);
+svg {
+  & :is([stroke="black"], [stroke^="#000"]) {
+    stroke: var(--text-color);
+  }
+  & :is([stroke="white"], [stroke^="#fff"]) {
+    stroke: var(--background-color);
+  }
+  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+    fill: var(--text-color);
+  }
+  & :is([fill="white"], [fill^="#fff"]) {
+    fill: var(--background-color);
+  }
 }
 </style>
 
@@ -1063,11 +1066,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">LocalRoot</td>
-<td class="right">April 2026</td>
+<td class="right">June 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 9 October 2026</td>
+<td class="center">Expires 27 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1083,12 +1086,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-07" class="published">7 April 2026</time>
+<time datetime="2026-06-25" class="published">25 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-09">9 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-27">27 December 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,6 +1128,10 @@ root zone.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">This document shows how resolvers can fetch, cache and maintain a copy
 of the root zone, how to detect if the contents becomes stale, and
 procedures for handling error conditions.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">{ Editor note: This document contains a FAQ section. It will help answer
+questions about why this document is not a BCP but still has BCP in the name,
+how and why this document differs from RFC8806, etc etc etc.  The FAQ section
+is intended to be removed before publication. }<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1161,7 +1168,7 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 27 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1232,49 +1239,63 @@ procedures for handling error conditions.<a href="#section-abstract-2" class="pi
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-localroot-enabled-resolver-" class="internal xref">LocalRoot enabled resolver requirements</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-operational-considerations" class="internal xref">Operational Considerations</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-iana-root-zone-data-securit" class="internal xref">IANA root zone data security</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-leakage-of-potentially-sens" class="internal xref">Leakage of potentially sensitive information</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-local-resiliency-of-the-dns" class="internal xref">Local resiliency of the DNS</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-iana-root-zone-data-securit" class="internal xref">IANA root zone data security</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-leakage-of-potentially-sens" class="internal xref">Leakage of potentially sensitive information</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
-                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-local-resiliency-of-the-dns" class="internal xref">Local resiliency of the DNS</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-history-of-the-localroot-co" class="internal xref">History of the LocalRoot concept</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-B.1" class="auto internal xref"></a><a href="#name-an-important-change-from-rf" class="internal xref">An important change from RFC8806</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-history-of-the-localroot-co" class="internal xref">History of the LocalRoot concept</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-frequently-asked-questions-" class="internal xref">Frequently Asked Questions (FAQ)</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
-                <p id="section-toc.1-1.10.2.1.1"><a href="#appendix-B.1" class="auto internal xref"></a><a href="#name-an-important-change-from-rf" class="internal xref">An important change from RFC8806</a></p>
+                <p id="section-toc.1-1.10.2.1.1"><a href="#appendix-C.1" class="auto internal xref"></a><a href="#name-why-is-this-a-bcp-and-not-a" class="internal xref">Why is this a BCP and not a Proposed Standard?!</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#appendix-C.2" class="auto internal xref"></a><a href="#name-does-this-document-require-" class="internal xref">Does this document require new functionality in resolvers?</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-C.3" class="auto internal xref"></a><a href="#name-so-isnt-this-just-rfc-8806" class="internal xref">So, isn't this just RFC 8806?!</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
+                <p id="section-toc.1-1.10.2.4.1"><a href="#appendix-C.4" class="auto internal xref"></a><a href="#name-loss-of-measurement-data-th" class="internal xref">Loss of measurement data / the ability of researchers to measure the root server system</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1630,41 +1651,33 @@ or cryptographic algorithm types it does not understand.<a href="#section-4-2.8.
       </ul>
 </section>
 </div>
-<div id="operational-considerations">
-<section id="section-5">
-      <h2 id="name-operational-considerations">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
-      </h2>
-<p id="section-5-1">TBD<a href="#section-5-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="security-considerations">
-<section id="section-6">
+<section id="section-5">
       <h2 id="name-security-considerations">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-6-1">There are areas of potential concern that are mitigated to some extent
-by using this mechanism.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">There are areas of potential concern that are mitigated to some extent
+by using this mechanism.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="iana-root-zone-data-security">
-<section id="section-6.1">
+<section id="section-5.1">
         <h3 id="name-iana-root-zone-data-securit">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-iana-root-zone-data-securit" class="section-name selfRef">IANA root zone data security</a>
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-iana-root-zone-data-securit" class="section-name selfRef">IANA root zone data security</a>
         </h3>
-<p id="section-6.1-1">Secure DNS verification of an obtained copy of the IANA root zone is
+<p id="section-5.1-1">Secure DNS verification of an obtained copy of the IANA root zone is
 possible because of the use of the RSS's ZONEMD <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> record.
 This allows for the entire zone to be fetched and subsequently
 verified before being used within recursive resolvers resolvers.
 DNSSEC provides the same assurance for individual signed resource
 records sourced from the root zone, including of the ZONEMD record
-itself.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+itself.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="leakage-of-potentially-sensitive-information">
-<section id="section-6.2">
+<section id="section-5.2">
         <h3 id="name-leakage-of-potentially-sens">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-leakage-of-potentially-sens" class="section-name selfRef">Leakage of potentially sensitive information</a>
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-leakage-of-potentially-sens" class="section-name selfRef">Leakage of potentially sensitive information</a>
         </h3>
-<p id="section-6.2-1">One privacy concern with the use of DNS is the leakage of potentially
+<p id="section-5.2-1">One privacy concern with the use of DNS is the leakage of potentially
 sensitive information that may be contained in the query name used in
 DNS queries. Most root servers (except b.root-servers.net) do not
 currently support queries over encrypted transports, resulting in
@@ -1679,44 +1692,44 @@ for non-existent names (generated from keyword searches and
 mis-configurations) can cause additional privacy leaks.  <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>
 eliminates the need for the resolver to perform specific queries to
 any root nameserver, and obviates any such consideration of query name
-leakage <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+leakage <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="local-resiliency-of-the-dns">
-<section id="section-6.3">
+<section id="section-5.3">
         <h3 id="name-local-resiliency-of-the-dns">
-<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-local-resiliency-of-the-dns" class="section-name selfRef">Local resiliency of the DNS</a>
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-local-resiliency-of-the-dns" class="section-name selfRef">Local resiliency of the DNS</a>
         </h3>
-<p id="section-6.3-1">Another issue solved with LocalRoot is that when information is always
+<p id="section-5.3-1">Another issue solved with LocalRoot is that when information is always
 available locally, usage of it is no longer subject to DDoS attacks
 against dependent networks and remote servers.  By having the answers
 effectively permanently in cache, no queries to the upstream service
 provider (such as root servers) are needed since LocalRoot enabled
 resolvers effectively always have a cached set of data that is
 considered fresh longer than the typical TTL records within the zone
-<span>[<a href="#CACHEME" class="cite xref">CACHEME</a>]</span> <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<span>[<a href="#CACHEME" class="cite xref">CACHEME</a>]</span> <span>[<a href="#LOCALROOTPRIVACY" class="cite xref">LOCALROOTPRIVACY</a>]</span>.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-7">
+<section id="section-6">
       <h2 id="name-iana-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-7-1">This document contains no requests to IANA, although its companion
-documents do.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">This document contains no requests to IANA, although its companion
+documents do.<a href="#section-6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-8">
+<section id="section-7">
       <h2 id="name-references">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-8.1">
+<section id="section-7.1">
         <h3 id="name-normative-references">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="BCP237">[BCP237]</dt>
@@ -1767,9 +1780,9 @@ documents do.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-8.2">
+<section id="section-7.2">
         <h3 id="name-informative-references">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="BIND-MIRROR">[BIND-MIRROR]</dt>
@@ -1779,6 +1792,10 @@ documents do.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <dt id="CACHEME">[CACHEME]</dt>
         <dd>
 <span class="refTitle">"Cache Me If You Can: Effects of DNS Time-to-Live"</span>, <span>n.d.</span>, <span>&lt;<a href="https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf">https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DITL-BIAS">[DITL-BIAS]</dt>
+        <dd>
+<span class="refTitle">"DNS-OARC 46: Estimation on the Root DITL Dataset"</span>, <span>n.d.</span>, <span>&lt;<a href="https://indico.dns-oarc.net/event/56/contributions/1207/attachments/1160/2507/ditldataset-20260514.pdf">https://indico.dns-oarc.net/event/56/contributions/1207/attachments/1160/2507/ditldataset-20260514.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="DNEROOTNAMES">[DNEROOTNAMES]</dt>
         <dd>
@@ -1949,8 +1966,84 @@ decision.<a href="#appendix-B.1-4" class="pilcrow">¶</a></p>
 </div>
 </section>
 </div>
-<div id="authors-addresses">
+<div id="frequently-asked-questions-faq">
 <section id="appendix-C">
+      <h2 id="name-frequently-asked-questions-">
+<a href="#name-frequently-asked-questions-" class="section-name selfRef">Frequently Asked Questions (FAQ)</a>
+      </h2>
+<p id="appendix-C-1"><strong>NOTE:</strong> This section to be removed before publication. It
+is here to help answer questions that have been raised during the development
+of this document, and to help clarify the intent of the document. It is intentionally written in a more informal style than the rest of the document... well, this isn't strictly true - it's not intentionally less formal, it's just that I really didn't want to bother making it more formal :-)<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<div id="why-is-this-a-bcp-and-not-a-proposed-standard">
+<section id="appendix-C.1">
+        <h3 id="name-why-is-this-a-bcp-and-not-a">
+<a href="#name-why-is-this-a-bcp-and-not-a" class="section-name selfRef">Why is this a BCP and not a Proposed Standard?!</a>
+        </h3>
+<p id="appendix-C.1-1">It's not. We initially thought it should be a BCP, but
+discussions with the WG quickly convinced us that resolver operators should be
+able to make the decision themselves. The draft name
+(draft-wkumari-dnsop-localroot-bcp) does currently contain "bcp", but when this
+is adopted we plan on changing the name to "draft-ietf-dnsop-localroot" (or
+similar). We don't want to change it now, as that would just confuse
+things further (like the DT "Search Email Archives" functionality, etc.)<a href="#appendix-C.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="does-this-document-require-new-functionality-in-resolvers">
+<section id="appendix-C.2">
+        <h3 id="name-does-this-document-require-">
+<a href="#name-does-this-document-require-" class="section-name selfRef">Does this document require new functionality in resolvers?</a>
+        </h3>
+<p id="appendix-C.2-1">No. Almost all resolvers already implement the concepts described in this
+draft. For example, BIND 9 has a "mirror" zone type <span>[<a href="#BIND-MIRROR" class="cite xref">BIND-MIRROR</a>]</span>, Unbound
+has an "auth-zone" type <span>[<a href="#UNBOUND-AUTH-ZONE" class="cite xref">UNBOUND-AUTH-ZONE</a>]</span>, and Knot Resolver has a
+"prefill" module <span>[<a href="#KNOT-PREFILL" class="cite xref">KNOT-PREFILL</a>]</span>.<a href="#appendix-C.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.2-2">This document does contain additional functionality that resolver
+implementations may choose to implement
+(draft-hardaker-dnsop-iana-root-zone-publication-points), but this is simply
+optional enhancements, and not a requirement.<a href="#appendix-C.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="so-isnt-this-just-rfc-8806">
+<section id="appendix-C.3">
+        <h3 id="name-so-isnt-this-just-rfc-8806">
+<a href="#name-so-isnt-this-just-rfc-8806" class="section-name selfRef">So, isn't this just RFC 8806?!</a>
+        </h3>
+<p id="appendix-C.3-1">Almost. Many resolvers already implement the behavior described in <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>,
+but are not strictly compliant with <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>. <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> states that the
+resolver must run an authoritative service for the root zone on the same host,
+and that the authoritative root service must only respond to queries from the
+same host. Many resolvers do not implement the localroot feature this way, and
+instead implement a "prefill" of the resolver's cache, or act more like a
+secondary. This document describes the behavior that implementations should
+strive to meet, not the implementation details themselves.<a href="#appendix-C.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="loss-of-measurement-data-the-ability-of-researchers-to-measure-the-root-server-system">
+<section id="appendix-C.4">
+        <h3 id="name-loss-of-measurement-data-th">
+<a href="#name-loss-of-measurement-data-th" class="section-name selfRef">Loss of measurement data / the ability of researchers to measure the root server system</a>
+        </h3>
+<p id="appendix-C.4-1">This is a concern that has been raised by some researchers - if resolvers
+implement LocalRoot functionality, they won't show up in the DITL data, as they
+are not querying the root servers. Yes, this is completely true - whenever you
+increase the privacy of a system, you reduce the amount of information that
+leaks from that system.<a href="#appendix-C.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.4-2">The authors note that this issue already affects the DITL data, as many
+resolvers already implement LocalRoot functionality (or similar) and do not
+query the root servers. In addition, the DITL data is already missing a sizable
+amount of the queries - see Kazunori Fujiwara's presentation from DNS-OARC 46
+(Edinburgh): <span>[<a href="#DITL-BIAS" class="cite xref">DITL-BIAS</a>]</span>.<a href="#appendix-C.4-2" class="pilcrow">¶</a></p>
+<p id="appendix-C.4-3">Furthermore, the DITL data, while useful and fascinating, only provides a very
+narrow view of the DNS: it only shows queries that are sent to the root
+servers, and does not show queries that are sent to other servers (such as
+TLDs, or authoritative servers for other zones), doesn't account for caching,
+etc.<a href="#appendix-C.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-D">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

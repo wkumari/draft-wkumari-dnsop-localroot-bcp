@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 9 October 2026                                          J. Reid
+Expires: 27 December 2026                                        J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                            7 April 2026
+                                                            25 June 2026
 
 
                 Populating resolvers with the root zone
@@ -31,6 +31,12 @@ Abstract
    This document shows how resolvers can fetch, cache and maintain a
    copy of the root zone, how to detect if the contents becomes stale,
    and procedures for handling error conditions.
+
+   { Editor note: This document contains a FAQ section.  It will help
+   answer questions about why this document is not a BCP but still has
+   BCP in the name, how and why this document differs from RFC8806, etc
+   etc etc.  The FAQ section is intended to be removed before
+   publication. }
 
 About This Document
 
@@ -66,7 +72,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 October 2026.
+   This Internet-Draft will expire on 27 December 2026.
 
 Copyright Notice
 
@@ -97,18 +103,23 @@ Table of Contents
        3.3.2.  Running a local authoratative copy of the root zone in
                parallel
    4.  LocalRoot enabled resolver requirements
-   5.  Operational Considerations
-   6.  Security Considerations
-     6.1.  IANA root zone data security
-     6.2.  Leakage of potentially sensitive information
-     6.3.  Local resiliency of the DNS
-   7.  IANA Considerations
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+   5.  Security Considerations
+     5.1.  IANA root zone data security
+     5.2.  Leakage of potentially sensitive information
+     5.3.  Local resiliency of the DNS
+   6.  IANA Considerations
+   7.  References
+     7.1.  Normative References
+     7.2.  Informative References
    Acknowledgments
    History of the LocalRoot concept
      An important change from RFC8806
+   Frequently Asked Questions (FAQ)
+     Why is this a BCP and not a Proposed Standard?!
+     Does this document require new functionality in resolvers?
+     So, isn't this just RFC 8806?!
+     Loss of measurement data / the ability of researchers to measure
+           the root server system
    Authors' Addresses
 
 1.  Introduction
@@ -398,16 +409,12 @@ Table of Contents
    *  A LocalRoot implementation SHOULD use the EDNS EXPIRE Option
       [RFC7314].
 
-5.  Operational Considerations
-
-   TBD
-
-6.  Security Considerations
+5.  Security Considerations
 
    There are areas of potential concern that are mitigated to some
    extent by using this mechanism.
 
-6.1.  IANA root zone data security
+5.1.  IANA root zone data security
 
    Secure DNS verification of an obtained copy of the IANA root zone is
    possible because of the use of the RSS's ZONEMD [RFC8976] record.
@@ -417,7 +424,7 @@ Table of Contents
    records sourced from the root zone, including of the ZONEMD record
    itself.
 
-6.2.  Leakage of potentially sensitive information
+5.2.  Leakage of potentially sensitive information
 
    One privacy concern with the use of DNS is the leakage of potentially
    sensitive information that may be contained in the query name used in
@@ -436,7 +443,7 @@ Table of Contents
    any root nameserver, and obviates any such consideration of query
    name leakage [LOCALROOTPRIVACY].
 
-6.3.  Local resiliency of the DNS
+5.3.  Local resiliency of the DNS
 
    Another issue solved with LocalRoot is that when information is
    always available locally, usage of it is no longer subject to DDoS
@@ -447,14 +454,14 @@ Table of Contents
    is considered fresh longer than the typical TTL records within the
    zone [CACHEME] [LOCALROOTPRIVACY].
 
-7.  IANA Considerations
+6.  IANA Considerations
 
    This document contains no requests to IANA, although its companion
    documents do.
 
-8.  References
+7.  References
 
-8.1.  Normative References
+7.1.  Normative References
 
    [BCP237]   Best Current Practice 237,
               <https://www.rfc-editor.org/info/bcp237>.
@@ -503,7 +510,7 @@ Table of Contents
               DOI 10.17487/RFC8976, February 2021,
               <https://www.rfc-editor.org/rfc/rfc8976>.
 
-8.2.  Informative References
+7.2.  Informative References
 
    [BIND-MIRROR]
               "BIND 9 Mirror Zones", n.d.,
@@ -512,6 +519,11 @@ Table of Contents
 
    [CACHEME]  "Cache Me If You Can: Effects of DNS Time-to-Live", n.d.,
               <https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf>.
+
+   [DITL-BIAS]
+              "DNS-OARC 46: Estimation on the Root DITL Dataset", n.d.,
+              <https://indico.dns-oarc.net/event/56/contributions/1207/
+              attachments/1160/2507/ditldataset-20260514.pdf>.
 
    [DNEROOTNAMES]
               "NoError vs NxDomain by-week", n.d.,
@@ -672,6 +684,72 @@ An important change from RFC8806
    behavior is (essentially) indistinguishable from the mechanism
    defined in RFC8806, this is viewed as being an acceptable
    implementation decision.
+
+Frequently Asked Questions (FAQ)
+
+   *NOTE:* This section to be removed before publication.  It is here to
+   help answer questions that have been raised during the development of
+   this document, and to help clarify the intent of the document.  It is
+   intentionally written in a more informal style than the rest of the
+   document... well, this isn't strictly true - it's not intentionally
+   less formal, it's just that I really didn't want to bother making it
+   more formal :-)
+
+Why is this a BCP and not a Proposed Standard?!
+
+   It's not.  We initially thought it should be a BCP, but discussions
+   with the WG quickly convinced us that resolver operators should be
+   able to make the decision themselves.  The draft name (draft-wkumari-
+   dnsop-localroot-bcp) does currently contain "bcp", but when this is
+   adopted we plan on changing the name to "draft-ietf-dnsop-localroot"
+   (or similar).  We don't want to change it now, as that would just
+   confuse things further (like the DT "Search Email Archives"
+   functionality, etc.)
+
+Does this document require new functionality in resolvers?
+
+   No.  Almost all resolvers already implement the concepts described in
+   this draft.  For example, BIND 9 has a "mirror" zone type
+   [BIND-MIRROR], Unbound has an "auth-zone" type [UNBOUND-AUTH-ZONE],
+   and Knot Resolver has a "prefill" module [KNOT-PREFILL].
+
+   This document does contain additional functionality that resolver
+   implementations may choose to implement (draft-hardaker-dnsop-iana-
+   root-zone-publication-points), but this is simply optional
+   enhancements, and not a requirement.
+
+So, isn't this just RFC 8806?!
+
+   Almost.  Many resolvers already implement the behavior described in
+   [RFC8806], but are not strictly compliant with [RFC8806].  [RFC8806]
+   states that the resolver must run an authoritative service for the
+   root zone on the same host, and that the authoritative root service
+   must only respond to queries from the same host.  Many resolvers do
+   not implement the localroot feature this way, and instead implement a
+   "prefill" of the resolver's cache, or act more like a secondary.
+   This document describes the behavior that implementations should
+   strive to meet, not the implementation details themselves.
+
+Loss of measurement data / the ability of researchers to measure the
+root server system
+
+   This is a concern that has been raised by some researchers - if
+   resolvers implement LocalRoot functionality, they won't show up in
+   the DITL data, as they are not querying the root servers.  Yes, this
+   is completely true - whenever you increase the privacy of a system,
+   you reduce the amount of information that leaks from that system.
+
+   The authors note that this issue already affects the DITL data, as
+   many resolvers already implement LocalRoot functionality (or similar)
+   and do not query the root servers.  In addition, the DITL data is
+   already missing a sizable amount of the queries - see Kazunori
+   Fujiwara's presentation from DNS-OARC 46 (Edinburgh): [DITL-BIAS].
+
+   Furthermore, the DITL data, while useful and fascinating, only
+   provides a very narrow view of the DNS: it only shows queries that
+   are sent to the root servers, and does not show queries that are sent
+   to other servers (such as TLDs, or authoritative servers for other
+   zones), doesn't account for caching, etc.
 
 Authors' Addresses
 
