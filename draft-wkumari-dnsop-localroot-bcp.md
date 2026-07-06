@@ -581,21 +581,30 @@ draft. For example, BIND 9 has a "mirror" zone type {{BIND-MIRROR}}, Unbound
 has an "auth-zone" type {{UNBOUND-AUTH-ZONE}}, and Knot Resolver has a
 "prefill" module {{KNOT-PREFILL}}.
 
-This document does contain additional functionality that resolver
+Our goal with this document was to better describe the differences in
+existing implementations by defining the expected behavior of a
+LocalRoot implementation, rather than by being explicit in how
+software must be implemented.
+
+This document also contains additional functionality that resolver
 implementations may choose to implement
 (draft-hardaker-dnsop-iana-root-zone-publication-points), but this is simply
 optional enhancements, and not a requirement.
 
 ## So, isn't this just RFC 8806?!
-{:numbered="false"}
-Almost. Many resolvers already implement the behavior described in {{RFC8806}},
-but are not strictly compliant with {{RFC8806}}. {{RFC8806}} states that the
-resolver must run an authoritative service for the root zone on the same host,
-and that the authoritative root service must only respond to queries from the
-same host. Many resolvers do not implement the localroot feature this way, and
-instead implement a "prefill" of the resolver's cache, or act more like a
-secondary. This document describes the behavior that implementations should
-strive to meet, not the implementation details themselves.
+{:numbered="false"} No. Many resolvers already implement the behavior
+described in {{RFC8806}}, but are not strictly compliant with
+{{RFC8806}}. Hence, the reason for restating the goals into expected
+behavior rather than specifying a required, exact implementation.
+
+Specifically, {{RFC8806}} states that the resolver must run an
+authoritative service for the root zone on the same host, and that the
+authoritative root service must only respond to queries from the same
+host. Most resolvers do not implement the LocalRoot features this way,
+and instead implement a "prefill" of the resolver's cache, or act more
+like a secondary. This document describes the behavior that
+implementations should strive to meet, not the implementation details
+themselves.
 
 ## Loss of measurement data / the ability of researchers to measure the root server system
 {:numbered="false"}
@@ -605,14 +614,16 @@ are not querying the root servers. Yes, this is completely true - whenever you
 increase the privacy of a system, you reduce the amount of information that
 leaks from that system.
 
-The authors note that this issue already affects the DITL data, as many
-resolvers already implement LocalRoot functionality (or similar) and do not
-query the root servers. In addition, the DITL data is already missing a sizable
-amount of the queries - see Kazunori Fujiwara's presentation from DNS-OARC 46
-(Edinburgh): {{DITL-BIAS}}.
+The authors note that this issue already affects the DITL data, as
+many resolvers already implement LocalRoot functionality (or similar)
+and many operators have deployed those features, and thus do not query
+the root servers. In addition, the DITL data is already missing a
+sizable amount of the queries - see Kazunori Fujiwara's presentation
+from DNS-OARC 46 (Edinburgh): {{DITL-BIAS}}.
 
 Furthermore, the DITL data, while useful and fascinating, only provides a very
 narrow view of the DNS: it only shows queries that are sent to the root
 servers, and does not show queries that are sent to other servers (such as
 TLDs, or authoritative servers for other zones), doesn't account for caching,
 etc.
+
