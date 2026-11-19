@@ -86,7 +86,19 @@ informative:
     target: http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf
   CACHEME:
     title: "Cache Me If You Can: Effects of DNS Time-to-Live"
-    target: https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf
+    target:https://urldefense.us/v2/url?u=https-3A__dl.acm.org_doi_10.1145_3355369.3355568&d=DwICaQ&c=qzHnJIRvjI6L-clJH8JwLQvf_Iq43fzikf6aoxZgMb8&r=0c5g_jBisMd0Mvrv260WjCsDo_lphr-fsVao5L9S4DI&m=s1JdyiOQHVU6xmMD0D5X8CHrMvlXv-56EAtJMOCwtefKceFy4xIdjZNmRFVB-kxK&s=RfEZq5od8R14_q_sXhRGJ1Bx58LCoijs4XGDA_P072Y&e=
+    author:
+      -
+        name: Giovane Moura
+      -
+        name: John Heidemann
+      -
+        name: Ricardo de O. Schmidt
+      -
+        name: Wes Hardaker
+    seriesinfo:
+      ACM: 2019 Internet Measurement Conference
+      DOI: 10.1145/3355369.3355568
   draft-hardaker-dnsop-dns-xfr-scheme:
     title: The DNS XFR URI Schemes
     target: https://datatracker.ietf.org/doc/draft-hardaker-dnsop-dns-xfr-scheme/
