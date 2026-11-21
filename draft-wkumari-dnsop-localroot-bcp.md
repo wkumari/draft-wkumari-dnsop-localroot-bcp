@@ -179,7 +179,7 @@ regular intervals and populating its resolver's cache with
 information, or by running an authoritative server in parallel that
 acts as a local, authoritative root server for its associated resolver.
 Other mechanisms for implementing LocalRoot functionality MAY be used.
-To a client, the net effect of using any technique SHOULD be nearly
+To a client, the net effect of using any technique should be nearly
 indistinguishable to that of a non-Localroot resolver.
 
 Note that enabling LocalRoot functionality in a resolver should have
@@ -319,7 +319,7 @@ requests with a SERVFAIL response code.
   retrieve the IANA root zone data from another source. If the
   LocalRoot implementation has exhausted the list of
   sources, it SHOULD stop attempting to download the IANA root zone
-  data and SHOULD wait one refresh interval before retrying
+  data and SHOULD wait one SOA RETRY interval before retrying
   sources.
 
 1. After successfully downloading a copy of the IANA root zone, the
@@ -389,8 +389,8 @@ The following requirements are to be followed when creating and/or
 deploying a LocalRoot implementation:
 
 - A LocalRoot implementation MUST have a configured DNSSEC trust
-  anchor such as an up-to-date copy of the public part of the Key Signing
-  Key (KSK) {{RFC4033}} or used to sign the IANA root or its DS record.
+  anchor using an up-to-date copy of the public part of the Key Signing
+  Key (KSK) {{RFC4033}}.
 
 - A LocalRoot implementation MUST retrieve or be provisioned with a
   copy of the entire current IANA root zone (including all DNSSEC-related
@@ -439,7 +439,7 @@ by using this mechanism.
 Secure DNS verification of an obtained copy of the IANA root zone is
 possible because of the use of the RSS's ZONEMD {{RFC8976}} record.
 This allows for the entire zone to be fetched and subsequently
-verified before being used within recursive resolvers resolvers.
+verified before being used within recursive resolvers.
 DNSSEC provides the same assurance for individual signed resource
 records sourced from the IANA root zone, including of the ZONEMD record
 itself.
@@ -495,7 +495,7 @@ This work has been founded upon previous documents.  Most importantly,
 Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark Allman.
 
 The authors would like to thank Joe Abley, Vint Cerf, John Crain,
-Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
+Marco Davids, Tatuya Jinmei, Peter Koch, Matt Larson, Florian Obser, Swapneel
 Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and
 many many others for their comments, suggestions and input to both
 past and current versions of this document.
