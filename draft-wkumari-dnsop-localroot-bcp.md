@@ -71,22 +71,22 @@ informative:
 
   BIND-MIRROR:
     title: "BIND 9 Mirror Zones"
-    target: https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror
+    target: <https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror>
   UNBOUND-AUTH-ZONE:
     title: "Unbound Auth Zone"
-    target: https://nlnetlabs.nl/documentation/unbound
+    target: <https://nlnetlabs.nl/documentation/unbound>
   KNOT-PREFILL:
     title: "Knot Resolver Prefill"
-    target: https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html
+    target: <https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html>
   QNAMEMIN:
     title: DNS Query Privacy
-    target: https://www.potaroo.net/ispcol/2019-08/qmin.html
+    target: <https://www.potaroo.net/ispcol/2019-08/qmin.html>
   LOCALROOTPRIVACY:
     title: Analyzing and mitigating privacy with the DNS root service
-    target: http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf
+    target: <http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf>
   CACHEME:
     title: "Cache Me If You Can: Effects of DNS Time-to-Live"
-    target:https://urldefense.us/v2/url?u=https-3A__dl.acm.org_doi_10.1145_3355369.3355568&d=DwICaQ&c=qzHnJIRvjI6L-clJH8JwLQvf_Iq43fzikf6aoxZgMb8&r=0c5g_jBisMd0Mvrv260WjCsDo_lphr-fsVao5L9S4DI&m=s1JdyiOQHVU6xmMD0D5X8CHrMvlXv-56EAtJMOCwtefKceFy4xIdjZNmRFVB-kxK&s=RfEZq5od8R14_q_sXhRGJ1Bx58LCoijs4XGDA_P072Y&e=
+    target: <https://dl.acm.org/doi/10.1145/3355369.3355568>
     author:
       -
         name: Giovane Moura
@@ -179,7 +179,7 @@ regular intervals and populating its resolver's cache with
 information, or by running an authoritative server in parallel that
 acts as a local, authoritative root server for its associated resolver.
 Other mechanisms for implementing LocalRoot functionality MAY be used.
-To a client, the net effect of using any technique SHOULD be nearly
+To a client, the net effect of using any technique should be nearly
 indistinguishable to that of a non-Localroot resolver.
 
 Note that enabling LocalRoot functionality in a resolver should have
@@ -319,7 +319,7 @@ requests with a SERVFAIL response code.
   retrieve the IANA root zone data from another source. If the
   LocalRoot implementation has exhausted the list of
   sources, it SHOULD stop attempting to download the IANA root zone
-  data and SHOULD wait one refresh interval before retrying
+  data and SHOULD wait one SOA RETRY interval before retrying
   sources.
 
 1. After successfully downloading a copy of the IANA root zone, the
@@ -389,8 +389,8 @@ The following requirements are to be followed when creating and/or
 deploying a LocalRoot implementation:
 
 - A LocalRoot implementation MUST have a configured DNSSEC trust
-  anchor such as an up-to-date copy of the public part of the Key Signing
-  Key (KSK) {{RFC4033}} or used to sign the IANA root or its DS record.
+  anchor using an up-to-date copy of the public part of the Key Signing
+  Key (KSK) {{RFC4033}}.
 
 - A LocalRoot implementation MUST retrieve or be provisioned with a
   copy of the entire current IANA root zone (including all DNSSEC-related
@@ -439,7 +439,7 @@ by using this mechanism.
 Secure DNS verification of an obtained copy of the IANA root zone is
 possible because of the use of the RSS's ZONEMD {{RFC8976}} record.
 This allows for the entire zone to be fetched and subsequently
-verified before being used within recursive resolvers resolvers.
+verified before being used within recursive resolvers.
 DNSSEC provides the same assurance for individual signed resource
 records sourced from the IANA root zone, including of the ZONEMD record
 itself.
@@ -495,7 +495,7 @@ This work has been founded upon previous documents.  Most importantly,
 Eliminating Root Nameservers from the DNS" {{NOROOTS}} by Mark Allman.
 
 The authors would like to thank Joe Abley, Vint Cerf, John Crain,
-Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
+Marco Davids, Tatuya Jinmei, Peter Koch, Matt Larson, Florian Obser, Swapneel
 Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and
 many many others for their comments, suggestions and input to both
 past and current versions of this document.
@@ -604,7 +604,8 @@ implementations may choose to implement
 optional enhancements, and not a requirement.
 
 ## So, isn't this just RFC 8806?!
-{:numbered="false"} No. Many resolvers already implement the behavior
+{:numbered="false"}
+No. Many resolvers already implement the behavior
 described in {{RFC8806}}, but are not strictly compliant with
 {{RFC8806}}. Hence, the reason for restating the goals into expected
 behavior rather than specifying a required, exact implementation.
