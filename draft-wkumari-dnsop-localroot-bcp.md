@@ -71,22 +71,22 @@ informative:
 
   BIND-MIRROR:
     title: "BIND 9 Mirror Zones"
-    target: https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror
+    target: <https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror>
   UNBOUND-AUTH-ZONE:
     title: "Unbound Auth Zone"
-    target: https://nlnetlabs.nl/documentation/unbound
+    target: <https://nlnetlabs.nl/documentation/unbound>
   KNOT-PREFILL:
     title: "Knot Resolver Prefill"
-    target: https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html
+    target: <https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html>
   QNAMEMIN:
     title: DNS Query Privacy
-    target: https://www.potaroo.net/ispcol/2019-08/qmin.html
+    target: <https://www.potaroo.net/ispcol/2019-08/qmin.html>
   LOCALROOTPRIVACY:
     title: Analyzing and mitigating privacy with the DNS root service
-    target: http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf
+    target: <http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf>
   CACHEME:
     title: "Cache Me If You Can: Effects of DNS Time-to-Live"
-    target:https://urldefense.us/v2/url?u=https-3A__dl.acm.org_doi_10.1145_3355369.3355568&d=DwICaQ&c=qzHnJIRvjI6L-clJH8JwLQvf_Iq43fzikf6aoxZgMb8&r=0c5g_jBisMd0Mvrv260WjCsDo_lphr-fsVao5L9S4DI&m=s1JdyiOQHVU6xmMD0D5X8CHrMvlXv-56EAtJMOCwtefKceFy4xIdjZNmRFVB-kxK&s=RfEZq5od8R14_q_sXhRGJ1Bx58LCoijs4XGDA_P072Y&e=
+    target: <https://dl.acm.org/doi/10.1145/3355369.3355568>
     author:
       -
         name: Giovane Moura
@@ -604,7 +604,8 @@ implementations may choose to implement
 optional enhancements, and not a requirement.
 
 ## So, isn't this just RFC 8806?!
-{:numbered="false"} No. Many resolvers already implement the behavior
+{:numbered="false"}
+No. Many resolvers already implement the behavior
 described in {{RFC8806}}, but are not strictly compliant with
 {{RFC8806}}. Hence, the reason for restating the goals into expected
 behavior rather than specifying a required, exact implementation.
