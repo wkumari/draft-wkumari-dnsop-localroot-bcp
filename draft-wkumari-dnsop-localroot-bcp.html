@@ -27,7 +27,7 @@ questions about why this document is not a BCP but still has BCP in the name,
 how and why this document differs from RFC8806, etc etc etc.  The FAQ section
 is intended to be removed before publication. } 
     " name="description">
-<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="xml2rfc 3.35.0" name="generator">
 <meta content="DNS" name="keyword">
 <meta content="DNSSEC" name="keyword">
 <meta content="zone cut" name="keyword">
@@ -35,19 +35,19 @@ is intended to be removed before publication. }
 <meta content="referral" name="keyword">
 <meta content="draft-wkumari-dnsop-localroot-bcp-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.0
-    Python 3.14.5
-    ConfigArgParse 1.7.5
+  xml2rfc 3.35.0
+    Python 3.14.10
+    ConfigArgParse 1.10.1
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.14.7
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.1
+    wcwidth 0.9.4
 -->
 <link href="draft-wkumari-dnsop-localroot-bcp.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -83,7 +83,6 @@ is intended to be removed before publication. }
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -132,7 +131,6 @@ is intended to be removed before publication. }
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -197,7 +195,6 @@ is intended to be removed before publication. }
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 }
 
 @font-face {
@@ -1051,7 +1048,7 @@ svg {
   & :is([stroke="white"], [stroke^="#fff"]) {
     stroke: var(--background-color);
   }
-  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+  & :is([fill="black"], [fill^="#000"], :not([fill], [fill] *)) {
     fill: var(--text-color);
   }
   & :is([fill="white"], [fill^="#fff"]) {
@@ -1066,11 +1063,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">LocalRoot</td>
-<td class="right">June 2026</td>
+<td class="right">November 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Kumari, et al.</td>
-<td class="center">Expires 28 December 2026</td>
+<td class="center">Expires 27 May 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1086,12 +1083,12 @@ svg {
 <a href="https://www.rfc-editor.org/rfc/rfcRFC8806" class="eref">RFC8806</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-26" class="published">26 June 2026</time>
+<time datetime="2026-11-23" class="published">23 November 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-28">28 December 2026</time></dd>
+<dd class="expires"><time datetime="2027-05-27">27 May 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1168,7 +1165,7 @@ is intended to be removed before publication. }<a href="#section-abstract-3" cla
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 27 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1340,7 +1337,7 @@ regular intervals and populating its resolver's cache with
 information, or by running an authoritative server in parallel that
 acts as a local, authoritative root server for its associated resolver.
 Other mechanisms for implementing LocalRoot functionality <span class="bcp14">MAY</span> be used.
-To a client, the net effect of using any technique <span class="bcp14">SHOULD</span> be nearly
+To a client, the net effect of using any technique should be nearly
 indistinguishable to that of a non-Localroot resolver.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 <p id="section-1.1-3">Note that enabling LocalRoot functionality in a resolver should have
 little effect on improving resolver speed to its stub resolver clients
@@ -1519,7 +1516,7 @@ obtained copy <span>[<a href="#RFC1982" class="cite xref">RFC1982</a>]</span>.<a
   retrieve the IANA root zone data from another source. If the
   LocalRoot implementation has exhausted the list of
   sources, it <span class="bcp14">SHOULD</span> stop attempting to download the IANA root zone
-  data and <span class="bcp14">SHOULD</span> wait one refresh interval before retrying
+  data and <span class="bcp14">SHOULD</span> wait one SOA RETRY interval before retrying
   sources.<a href="#section-3.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.2-3.4">
@@ -1615,8 +1612,8 @@ deploying a LocalRoot implementation:<a href="#section-4-1" class="pilcrow">¶</
 <ul class="normal">
 <li class="normal" id="section-4-2.1">
           <p id="section-4-2.1.1">A LocalRoot implementation <span class="bcp14">MUST</span> have a configured DNSSEC trust
-anchor such as an up-to-date copy of the public part of the Key Signing
-Key (KSK) <span>[<a href="#RFC4033" class="cite xref">RFC4033</a>]</span> or used to sign the IANA root or its DS record.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
+anchor using an up-to-date copy of the public part of the Key Signing
+Key (KSK) <span>[<a href="#RFC4033" class="cite xref">RFC4033</a>]</span>.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.2">
           <p id="section-4-2.2.1">A LocalRoot implementation <span class="bcp14">MUST</span> retrieve or be provisioned with a
@@ -1680,7 +1677,7 @@ by using this mechanism.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-1">Secure DNS verification of an obtained copy of the IANA root zone is
 possible because of the use of the RSS's ZONEMD <span>[<a href="#RFC8976" class="cite xref">RFC8976</a>]</span> record.
 This allows for the entire zone to be fetched and subsequently
-verified before being used within recursive resolvers resolvers.
+verified before being used within recursive resolvers.
 DNSSEC provides the same assurance for individual signed resource
 records sourced from the IANA root zone, including of the ZONEMD record
 itself.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
@@ -1801,11 +1798,11 @@ documents do.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <dl class="references">
 <dt id="BIND-MIRROR">[BIND-MIRROR]</dt>
         <dd>
-<span class="refTitle">"BIND 9 Mirror Zones"</span>, <span>n.d.</span>, <span>&lt;<a href="https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror">https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror</a>&gt;</span>. </dd>
+<span class="refTitle">"BIND 9 Mirror Zones"</span>, <span>n.d.</span>, <span>&lt;<a href="&lt;https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror&gt;">&lt;https://bind9.readthedocs.io/en/stable/reference.html#namedconf-statement-type%20mirror&gt;</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="CACHEME">[CACHEME]</dt>
         <dd>
-<span class="refTitle">"Cache Me If You Can: Effects of DNS Time-to-Live"</span>, <span>n.d.</span>, <span>&lt;<a href="https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf">https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf</a>&gt;</span>. </dd>
+<span class="refAuthor">Moura, G.</span>, <span class="refAuthor">Heidemann, J.</span>, <span class="refAuthor">Schmidt, R. de O.</span>, and <span class="refAuthor">W. Hardaker</span>, <span class="refTitle">"Cache Me If You Can: Effects of DNS Time-to-Live"</span>, <span class="seriesInfo">ACM 2019 Internet Measurement Conference</span>, <span class="seriesInfo">DOI 10.1145/3355369.3355568</span>, <span>n.d.</span>, <span>&lt;<a href="&lt;https://dl.acm.org/doi/10.1145/3355369.3355568&gt;">&lt;https://dl.acm.org/doi/10.1145/3355369.3355568&gt;</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="DITL-BIAS">[DITL-BIAS]</dt>
         <dd>
@@ -1829,7 +1826,7 @@ documents do.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="KNOT-PREFILL">[KNOT-PREFILL]</dt>
         <dd>
-<span class="refTitle">"Knot Resolver Prefill"</span>, <span>n.d.</span>, <span>&lt;<a href="https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html">https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html</a>&gt;</span>. </dd>
+<span class="refTitle">"Knot Resolver Prefill"</span>, <span>n.d.</span>, <span>&lt;<a href="&lt;https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html&gt;">&lt;https://knot-resolver.readthedocs.io/en/stable/modules-prefill.html&gt;</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Locally-Served">[Locally-Served]</dt>
         <dd>
@@ -1837,7 +1834,7 @@ documents do.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="LOCALROOTPRIVACY">[LOCALROOTPRIVACY]</dt>
         <dd>
-<span class="refTitle">"Analyzing and mitigating privacy with the DNS root service"</span>, <span>n.d.</span>, <span>&lt;<a href="http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf">http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf</a>&gt;</span>. </dd>
+<span class="refTitle">"Analyzing and mitigating privacy with the DNS root service"</span>, <span>n.d.</span>, <span>&lt;<a href="&lt;http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf&gt;">&lt;http://ant.isi.edu/~hardaker/papers/2018-02-ndss-analyzing-root-privacy.pdf&gt;</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NOROOTS">[NOROOTS]</dt>
         <dd>
@@ -1845,7 +1842,7 @@ documents do.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="QNAMEMIN">[QNAMEMIN]</dt>
         <dd>
-<span class="refTitle">"DNS Query Privacy"</span>, <span>n.d.</span>, <span>&lt;<a href="https://www.potaroo.net/ispcol/2019-08/qmin.html">https://www.potaroo.net/ispcol/2019-08/qmin.html</a>&gt;</span>. </dd>
+<span class="refTitle">"DNS Query Privacy"</span>, <span>n.d.</span>, <span>&lt;<a href="&lt;https://www.potaroo.net/ispcol/2019-08/qmin.html&gt;">&lt;https://www.potaroo.net/ispcol/2019-08/qmin.html&gt;</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2826">[RFC2826]</dt>
         <dd>
@@ -1873,7 +1870,7 @@ documents do.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="UNBOUND-AUTH-ZONE">[UNBOUND-AUTH-ZONE]</dt>
       <dd>
-<span class="refTitle">"Unbound Auth Zone"</span>, <span>n.d.</span>, <span>&lt;<a href="https://nlnetlabs.nl/documentation/unbound">https://nlnetlabs.nl/documentation/unbound</a>&gt;</span>. </dd>
+<span class="refTitle">"Unbound Auth Zone"</span>, <span>n.d.</span>, <span>&lt;<a href="&lt;https://nlnetlabs.nl/documentation/unbound&gt;">&lt;https://nlnetlabs.nl/documentation/unbound&gt;</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -1892,7 +1889,7 @@ you, and you are not listed, please please let us know and we'll add you.<a href
 <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>, authored by Warren Kumari and Paul Hoffman, and "On
 Eliminating Root Nameservers from the DNS" <span>[<a href="#NOROOTS" class="cite xref">NOROOTS</a>]</span> by Mark Allman.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <p id="appendix-A-3">The authors would like to thank Joe Abley, Vint Cerf, John Crain,
-Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
+Marco Davids, Tatuya Jinmei, Peter Koch, Matt Larson, Florian Obser, Swapneel
 Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and
 many many others for their comments, suggestions and input to both
 past and current versions of this document.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
@@ -2016,10 +2013,14 @@ things further (like the DT "Search Email Archives" functionality, etc.)<a href=
 draft. For example, BIND 9 has a "mirror" zone type <span>[<a href="#BIND-MIRROR" class="cite xref">BIND-MIRROR</a>]</span>, Unbound
 has an "auth-zone" type <span>[<a href="#UNBOUND-AUTH-ZONE" class="cite xref">UNBOUND-AUTH-ZONE</a>]</span>, and Knot Resolver has a
 "prefill" module <span>[<a href="#KNOT-PREFILL" class="cite xref">KNOT-PREFILL</a>]</span>.<a href="#appendix-C.2-1" class="pilcrow">¶</a></p>
-<p id="appendix-C.2-2">This document does contain additional functionality that resolver
+<p id="appendix-C.2-2">Our goal with this document was to better describe the differences in
+existing implementations by defining the expected behavior of a
+LocalRoot implementation, rather than by being explicit in how
+software must be implemented.<a href="#appendix-C.2-2" class="pilcrow">¶</a></p>
+<p id="appendix-C.2-3">This document also contains additional functionality that resolver
 implementations may choose to implement
 (draft-hardaker-dnsop-iana-root-zone-publication-points), but this is simply
-optional enhancements, and not a requirement.<a href="#appendix-C.2-2" class="pilcrow">¶</a></p>
+optional enhancements, and not a requirement.<a href="#appendix-C.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="so-isnt-this-just-rfc-8806">
@@ -2027,14 +2028,18 @@ optional enhancements, and not a requirement.<a href="#appendix-C.2-2" class="pi
         <h3 id="name-so-isnt-this-just-rfc-8806">
 <a href="#name-so-isnt-this-just-rfc-8806" class="section-name selfRef">So, isn't this just RFC 8806?!</a>
         </h3>
-<p id="appendix-C.3-1">Almost. Many resolvers already implement the behavior described in <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>,
-but are not strictly compliant with <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>. <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> states that the
-resolver must run an authoritative service for the root zone on the same host,
-and that the authoritative root service must only respond to queries from the
-same host. Many resolvers do not implement the localroot feature this way, and
-instead implement a "prefill" of the resolver's cache, or act more like a
-secondary. This document describes the behavior that implementations should
-strive to meet, not the implementation details themselves.<a href="#appendix-C.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.3-1">No. Many resolvers already implement the behavior
+described in <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>, but are not strictly compliant with
+<span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span>. Hence, the reason for restating the goals into expected
+behavior rather than specifying a required, exact implementation.<a href="#appendix-C.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.3-2">Specifically, <span>[<a href="#RFC8806" class="cite xref">RFC8806</a>]</span> states that the resolver must run an
+authoritative service for the root zone on the same host, and that the
+authoritative root service must only respond to queries from the same
+host. Most resolvers do not implement the LocalRoot features this way,
+and instead implement a "prefill" of the resolver's cache, or act more
+like a secondary. This document describes the behavior that
+implementations should strive to meet, not the implementation details
+themselves.<a href="#appendix-C.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="loss-of-measurement-data-the-ability-of-researchers-to-measure-the-root-server-system">
@@ -2047,11 +2052,12 @@ implement LocalRoot functionality, they won't show up in the DITL data, as they
 are not querying the root servers. Yes, this is completely true - whenever you
 increase the privacy of a system, you reduce the amount of information that
 leaks from that system.<a href="#appendix-C.4-1" class="pilcrow">¶</a></p>
-<p id="appendix-C.4-2">The authors note that this issue already affects the DITL data, as many
-resolvers already implement LocalRoot functionality (or similar) and do not
-query the root servers. In addition, the DITL data is already missing a sizable
-amount of the queries - see Kazunori Fujiwara's presentation from DNS-OARC 46
-(Edinburgh): <span>[<a href="#DITL-BIAS" class="cite xref">DITL-BIAS</a>]</span>.<a href="#appendix-C.4-2" class="pilcrow">¶</a></p>
+<p id="appendix-C.4-2">The authors note that this issue already affects the DITL data, as
+many resolvers already implement LocalRoot functionality (or similar)
+and many operators have deployed those features, and thus do not query
+the root servers. In addition, the DITL data is already missing a
+sizable amount of the queries - see Kazunori Fujiwara's presentation
+from DNS-OARC 46 (Edinburgh): <span>[<a href="#DITL-BIAS" class="cite xref">DITL-BIAS</a>]</span>.<a href="#appendix-C.4-2" class="pilcrow">¶</a></p>
 <p id="appendix-C.4-3">Furthermore, the DITL data, while useful and fascinating, only provides a very
 narrow view of the DNS: it only shows queries that are sent to the root
 servers, and does not show queries that are sent to other servers (such as

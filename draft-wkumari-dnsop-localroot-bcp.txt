@@ -6,11 +6,11 @@ Domain Name System Operations                                  W. Kumari
 Internet-Draft                                              Google, Inc.
 Updates: RFC8806 (if approved)                               W. Hardaker
 Intended status: Standards Track                USC/ISI and Google, Inc.
-Expires: 28 December 2026                                        J. Reid
+Expires: 27 May 2027                                             J. Reid
                                                                 RTFM llp
                                                                G. Huston
                                                                    APNIC
-                                                            26 June 2026
+                                                        23 November 2026
 
 
                 Populating resolvers with the root zone
@@ -72,7 +72,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 December 2026.
+   This Internet-Draft will expire on 27 May 2027.
 
 Copyright Notice
 
@@ -158,7 +158,7 @@ Table of Contents
    acts as a local, authoritative root server for its associated
    resolver.  Other mechanisms for implementing LocalRoot functionality
    MAY be used.  To a client, the net effect of using any technique
-   SHOULD be nearly indistinguishable to that of a non-Localroot
+   should be nearly indistinguishable to that of a non-Localroot
    resolver.
 
    Note that enabling LocalRoot functionality in a resolver should have
@@ -307,7 +307,7 @@ Table of Contents
        retrieve the IANA root zone data from another source.  If the
        LocalRoot implementation has exhausted the list of sources, it
        SHOULD stop attempting to download the IANA root zone data and
-       SHOULD wait one refresh interval before retrying sources.
+       SHOULD wait one SOA RETRY interval before retrying sources.
 
    4.  After successfully downloading a copy of the IANA root zone, the
        LocalRoot implementation MUST verify the contents of the IANA
@@ -379,9 +379,8 @@ Table of Contents
    deploying a LocalRoot implementation:
 
    *  A LocalRoot implementation MUST have a configured DNSSEC trust
-      anchor such as an up-to-date copy of the public part of the Key
-      Signing Key (KSK) [RFC4033] or used to sign the IANA root or its
-      DS record.
+      anchor using an up-to-date copy of the public part of the Key
+      Signing Key (KSK) [RFC4033].
 
    *  A LocalRoot implementation MUST retrieve or be provisioned with a
       copy of the entire current IANA root zone (including all DNSSEC-
@@ -431,10 +430,10 @@ Table of Contents
    Secure DNS verification of an obtained copy of the IANA root zone is
    possible because of the use of the RSS's ZONEMD [RFC8976] record.
    This allows for the entire zone to be fetched and subsequently
-   verified before being used within recursive resolvers resolvers.
-   DNSSEC provides the same assurance for individual signed resource
-   records sourced from the IANA root zone, including of the ZONEMD
-   record itself.
+   verified before being used within recursive resolvers.  DNSSEC
+   provides the same assurance for individual signed resource records
+   sourced from the IANA root zone, including of the ZONEMD record
+   itself.
 
 5.2.  Leakage of potentially sensitive information
 
@@ -526,11 +525,14 @@ Table of Contents
 
    [BIND-MIRROR]
               "BIND 9 Mirror Zones", n.d.,
-              <https://bind9.readthedocs.io/en/stable/
-              reference.html#namedconf-statement-type%20mirror>.
+              <<https://bind9.readthedocs.io/en/stable/
+              reference.html#namedconf-statement-type%20mirror>>.
 
-   [CACHEME]  "Cache Me If You Can: Effects of DNS Time-to-Live", n.d.,
-              <https://ant.isi.edu/~johnh/PAPERS/Moura19b.pdf>.
+   [CACHEME]  Moura, G., Heidemann, J., Schmidt, R. de O., and W.
+              Hardaker, "Cache Me If You Can: Effects of DNS Time-to-
+              Live", ACM 2019 Internet Measurement Conference,
+              DOI 10.1145/3355369.3355568, n.d.,
+              <<https://dl.acm.org/doi/10.1145/3355369.3355568>>.
 
    [DITL-BIAS]
               "DNS-OARC 46: Estimation on the Root DITL Dataset", n.d.,
@@ -557,8 +559,8 @@ Table of Contents
               hardaker-dnsop-root-zone-pub-list-guidelines>.
 
    [KNOT-PREFILL]
-              "Knot Resolver Prefill", n.d., <https://knot-
-              resolver.readthedocs.io/en/stable/modules-prefill.html>.
+              "Knot Resolver Prefill", n.d., <<https://knot-
+              resolver.readthedocs.io/en/stable/modules-prefill.html>>.
 
    [Locally-Served]
               "IANA Locally-Served DNS Zones Registry", n.d.,
@@ -567,14 +569,14 @@ Table of Contents
 
    [LOCALROOTPRIVACY]
               "Analyzing and mitigating privacy with the DNS root
-              service", n.d., <http://ant.isi.edu/~hardaker/
-              papers/2018-02-ndss-analyzing-root-privacy.pdf>.
+              service", n.d., <<http://ant.isi.edu/~hardaker/
+              papers/2018-02-ndss-analyzing-root-privacy.pdf>>.
 
    [NOROOTS]  "On Eliminating Root Nameservers from the DNS", n.d.,
               <https://www.icir.org/mallman/pubs/All19b/All19b.pdf>.
 
    [QNAMEMIN] "DNS Query Privacy", n.d.,
-              <https://www.potaroo.net/ispcol/2019-08/qmin.html>.
+              <<https://www.potaroo.net/ispcol/2019-08/qmin.html>>.
 
    [RFC2826]  IAB, "IAB Technical Comment on the Unique DNS Root",
               RFC 2826, DOI 10.17487/RFC2826, May 2000,
@@ -606,7 +608,7 @@ Table of Contents
 
    [UNBOUND-AUTH-ZONE]
               "Unbound Auth Zone", n.d.,
-              <https://nlnetlabs.nl/documentation/unbound>.
+              <<https://nlnetlabs.nl/documentation/unbound>>.
 
 Acknowledgments
 
@@ -621,10 +623,10 @@ Acknowledgments
    Allman.
 
    The authors would like to thank Joe Abley, Vint Cerf, John Crain,
-   Marco Davids, Peter Koch, Matt Larson, Florian Obser, Swapneel
-   Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne Woolf, and
-   many many others for their comments, suggestions and input to both
-   past and current versions of this document.
+   Marco Davids, Tatuya Jinmei, Peter Koch, Matt Larson, Florian Obser,
+   Swapneel Patnekar, Puneet Sood, Robert Story, Ondrej Sury, Suzanne
+   Woolf, and many many others for their comments, suggestions and input
+   to both past and current versions of this document.
 
    In addition, one of the authors would like to once again thank the
    bands "Infected Mushroom", "Kraftwerk", and "deadmau5" for providing
@@ -730,22 +732,31 @@ Does this document require new functionality in resolvers?
    [BIND-MIRROR], Unbound has an "auth-zone" type [UNBOUND-AUTH-ZONE],
    and Knot Resolver has a "prefill" module [KNOT-PREFILL].
 
-   This document does contain additional functionality that resolver
+   Our goal with this document was to better describe the differences in
+   existing implementations by defining the expected behavior of a
+   LocalRoot implementation, rather than by being explicit in how
+   software must be implemented.
+
+   This document also contains additional functionality that resolver
    implementations may choose to implement (draft-hardaker-dnsop-iana-
    root-zone-publication-points), but this is simply optional
    enhancements, and not a requirement.
 
 So, isn't this just RFC 8806?!
 
-   Almost.  Many resolvers already implement the behavior described in
-   [RFC8806], but are not strictly compliant with [RFC8806].  [RFC8806]
-   states that the resolver must run an authoritative service for the
-   root zone on the same host, and that the authoritative root service
-   must only respond to queries from the same host.  Many resolvers do
-   not implement the localroot feature this way, and instead implement a
-   "prefill" of the resolver's cache, or act more like a secondary.
-   This document describes the behavior that implementations should
-   strive to meet, not the implementation details themselves.
+   No.  Many resolvers already implement the behavior described in
+   [RFC8806], but are not strictly compliant with [RFC8806].  Hence, the
+   reason for restating the goals into expected behavior rather than
+   specifying a required, exact implementation.
+
+   Specifically, [RFC8806] states that the resolver must run an
+   authoritative service for the root zone on the same host, and that
+   the authoritative root service must only respond to queries from the
+   same host.  Most resolvers do not implement the LocalRoot features
+   this way, and instead implement a "prefill" of the resolver's cache,
+   or act more like a secondary.  This document describes the behavior
+   that implementations should strive to meet, not the implementation
+   details themselves.
 
 Loss of measurement data / the ability of researchers to measure the
 root server system
@@ -758,9 +769,10 @@ root server system
 
    The authors note that this issue already affects the DITL data, as
    many resolvers already implement LocalRoot functionality (or similar)
-   and do not query the root servers.  In addition, the DITL data is
-   already missing a sizable amount of the queries - see Kazunori
-   Fujiwara's presentation from DNS-OARC 46 (Edinburgh): [DITL-BIAS].
+   and many operators have deployed those features, and thus do not
+   query the root servers.  In addition, the DITL data is already
+   missing a sizable amount of the queries - see Kazunori Fujiwara's
+   presentation from DNS-OARC 46 (Edinburgh): [DITL-BIAS].
 
    Furthermore, the DITL data, while useful and fascinating, only
    provides a very narrow view of the DNS: it only shows queries that
